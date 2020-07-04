@@ -70,7 +70,7 @@ public class JsonChampionCards {
 					rarity,  
 					ob.get("recharge_seconds").getAsInt(),
 					multiply,
-					ob.get("championIcon_URL").getAsString(), 
+					ob.get("championCard_URL").getAsString(), 
 					null, 
 					ret_msg);
 			

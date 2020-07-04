@@ -23,7 +23,7 @@ public enum PaladinsQueue {
 	Custom_Event_End_Times(489), Multi_Queue(999);
 
 	private int queueId;
-
+	//424, 428, 437, 452, 465, 469, 486
 	PaladinsQueue(int queueId) {
 		this.queueId = queueId;
 	}

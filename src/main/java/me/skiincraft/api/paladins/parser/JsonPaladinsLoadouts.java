@@ -11,7 +11,7 @@ import com.google.gson.JsonParser;
 import me.skiincraft.api.paladins.objects.LoadoutItems;
 import me.skiincraft.api.paladins.Queue;
 import me.skiincraft.api.paladins.common.Champion;
-import me.skiincraft.api.paladins.common.ChampionLoadouts;
+import me.skiincraft.api.paladins.common.ChampionLoadout;
 
 public class JsonPaladinsLoadouts {
 		
@@ -23,14 +23,13 @@ public class JsonPaladinsLoadouts {
 		this.queue = queue;
 	}
 	
-	public List<ChampionLoadouts> loadoutsJsonParser(){
+	public List<ChampionLoadout> loadoutsJsonParser(){
 		JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-		List<ChampionLoadouts> loadouts = new ArrayList<ChampionLoadouts>();
+		List<ChampionLoadout> loadouts = new ArrayList<ChampionLoadout>();
 		for (JsonElement ele : array) {
 			JsonObject object = ele.getAsJsonObject();
 			
-			List<Champion> champlist = (queue.getLoadedchampions().size() != 0) 
-					? queue.getLoadedchampions() : queue.refreshChampions();
+			List<Champion> champlist = queue.getLoadedchampions();
 			
 			Champion champion = null;
 			int championId = object.get("ChampionId").getAsInt(); 
@@ -43,12 +42,13 @@ public class JsonPaladinsLoadouts {
 			
 			JsonArray arrayitems = object.get("LoadoutItems").getAsJsonArray();
 			
-			ChampionLoadouts champl = new ChampionLoadouts(champion,
+			ChampionLoadout champl = new ChampionLoadout(champion,
 					object.get("DeckName").getAsString(),
 					object.get("DeckId").getAsInt(),
 					loadoutitems(arrayitems),
 					championId,
-					object.get("DeckName").getAsString());
+					object.get("ChampionName").getAsString(),
+					object.get("playerName").getAsString());
 			loadouts.add(champl);
 
 		}

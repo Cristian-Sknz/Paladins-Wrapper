@@ -29,8 +29,7 @@ public class JsonChampionSkins {
 		for (JsonElement ele : array) {
 			JsonObject object = ele.getAsJsonObject();
 			
-			List<Champion> champlist = (queue.getLoadedchampions().size() != 0) 
-					? queue.getLoadedchampions() : queue.refreshChampions();
+			List<Champion> champlist = queue.getLoadedchampions();
 			
 			Champion champion = null;
 			String championname = object.get("champion_name").getAsString(); 

@@ -31,8 +31,7 @@ public class JsonChampionRanks {
 		for (JsonElement ele : array) {
 			JsonObject object = ele.getAsJsonObject();
 			
-			List<Champion> champlist = (queue.getLoadedchampions().size() != 0) 
-					? queue.getLoadedchampions() : queue.refreshChampions();
+			List<Champion> champlist = queue.getLoadedchampions();
 			
 			Champion champion = null;
 			int championId = object.get("champion_id").getAsInt(); 

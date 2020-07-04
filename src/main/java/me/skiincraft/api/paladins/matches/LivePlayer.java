@@ -14,11 +14,10 @@ public class LivePlayer {
 	private String playerName;
 	private String region;
 	private LeagueSeason tier;
-	
-	
+	private int team;
 	
 	public LivePlayer(LiveMatchChampion champion, int championsPlayed, int accountLevel, Date playerCreated, int playerId, String playerName,
-			String region, LeagueSeason tier) {
+			String region, LeagueSeason tier, int team) {
 		this.championsPlayed = championsPlayed;
 		this.champion = champion;
 		this.accountLevel = accountLevel;
@@ -27,6 +26,7 @@ public class LivePlayer {
 		this.playerName = playerName;
 		this.region = region;
 		this.tier = tier;
+		this.team = team;
 	}
 	
 	public LiveMatchChampion getChampion() {
@@ -53,6 +53,9 @@ public class LivePlayer {
 	}
 	public LeagueSeason getTier() {
 		return tier;
+	}
+	public int getTeam() {
+		return team;
 	}
 
 	@Override

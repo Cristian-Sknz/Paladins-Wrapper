@@ -41,9 +41,11 @@ public interface PaladinsPlayer {
 	long getWorshippersSize();
 	long getTotalXP();
 	int getWins();
-	String getPlayername();
-	String getGamerTag();
+	String getInGameName();
+	String getHirezName();
+	String getHirezGamerTag();
 	String ret_msg();
+	
 	
 	JsonObject getJsonObject();
 	

@@ -38,13 +38,16 @@ public class PaladinsPlayerBuilder implements PaladinsPlayer {
 
 	@Override
 	public String getAvatarURL() {
-		return object.get("AvatarURL").getAsString().replace("/", "");
+		if (object.get("AvatarURL").isJsonNull()) {
+			return "https://i.pinimg.com/474x/e4/df/a2/e4dfa24b1b0c57472ffec4a0a99ef59b.jpg";
+		}
+		return object.get("AvatarURL").getAsString();
 	}
 
 	@Override
 	public Date getCreated() {
 		String date = object.get("Created_Datetime").getAsString().replace("\\", "");
-		DateFormat inFormat3 = new SimpleDateFormat( "dd/MM/yyyy hh:mm:ss aa");
+		DateFormat inFormat3 = new SimpleDateFormat( "MM/dd/yyyy hh:mm:ss aa");
 		try {
 			return inFormat3.parse(date);
 		} catch (ParseException e) {
@@ -66,7 +69,7 @@ public class PaladinsPlayerBuilder implements PaladinsPlayer {
 	@Override
 	public Date getLastLogin() {
 		String date = object.get("Last_Login_Datetime").getAsString().replace("\\", "");
-		DateFormat inFormat3 = new SimpleDateFormat( "dd/MM/yyyy hh:mm:ss aa");
+		DateFormat inFormat3 = new SimpleDateFormat( "MM/dd/yyyy hh:mm:ss aa");
 		try {
 			return inFormat3.parse(date);
 		} catch (ParseException e) {
@@ -87,6 +90,9 @@ public class PaladinsPlayerBuilder implements PaladinsPlayer {
 
 	@Override
 	public String getLoadingFrame() {
+		if (object.get("LoadingFrame").isJsonNull()) {
+			return "Default";
+		}
 		return object.get("LoadingFrame").getAsString();
 	}
 
@@ -128,7 +134,7 @@ public class PaladinsPlayerBuilder implements PaladinsPlayer {
 				return plat;
 			}
 		}
-		return Platform.Steam;
+		return Platform.PC;
 	}
 
 	@Override
@@ -145,7 +151,8 @@ public class PaladinsPlayerBuilder implements PaladinsPlayer {
 				r.get("Rank").getAsInt(), 
 				r.get("Season").getAsInt(), 
 				r.get("Trend").getAsInt(), 
-				r.get("player_id").getAsInt(), r.get("ret_msg").getAsString());
+				getId(), 
+				(r.get("ret_msg").getAsString() == null) ? null : r.get("ret_msg").getAsString());
 	}
 
 	@Override
@@ -162,7 +169,8 @@ public class PaladinsPlayerBuilder implements PaladinsPlayer {
 				r.get("Rank").getAsInt(), 
 				r.get("Season").getAsInt(), 
 				r.get("Trend").getAsInt(), 
-				r.get("player_id").getAsInt(), r.get("ret_msg").getAsString());
+				getId(), 
+				(r.get("ret_msg").getAsString() == null) ? null : r.get("ret_msg").getAsString());
 	}
 
 	@Override
@@ -179,12 +187,13 @@ public class PaladinsPlayerBuilder implements PaladinsPlayer {
 				r.get("Rank").getAsInt(), 
 				r.get("Season").getAsInt(), 
 				r.get("Trend").getAsInt(), 
-				r.get("player_id").getAsInt(), r.get("ret_msg").getAsString());
+				getId(), 
+				null);
 	}
 
 	@Override
 	public String getRegion() {
-		return object.get("Brazil").getAsString();
+		return object.get("Region").getAsString();
 	}
 
 	@Override
@@ -225,23 +234,31 @@ public class PaladinsPlayerBuilder implements PaladinsPlayer {
 	}
 
 	@Override
-	public String getPlayername() {
+	public String getHirezName() {
+		if (object.get("hz_player_name").isJsonNull()) {
+			return "";
+		}
 		return object.get("hz_player_name").getAsString();
 	}
 
 	@Override
-	public String getGamerTag() {
+	public String getHirezGamerTag() {
 		return object.get("hz_gamer_tag").getAsString();
 	}
 
 	@Override
 	public String ret_msg() {
-		return object.get("ret_msg").getAsString();
+		return (object.get("ret_msg").getAsString() == null) ? null : object.get("ret_msg").getAsString();
 	}
 
 	@Override
 	public JsonObject getJsonObject() {
 		return object;
+	}
+
+	public String getInGameName() {
+		return (getPlatform() == Platform.PC) ? (getHirezName() != "")? getHirezName() : getName()
+				: getName();
 	}
 
 }
