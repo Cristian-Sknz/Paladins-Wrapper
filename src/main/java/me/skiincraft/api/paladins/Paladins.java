@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import com.github.kevinsawicki.http.HttpRequest;
@@ -212,7 +213,7 @@ public class Paladins {
 
 	public String getTimeStamp() {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		Calendar calendar = Calendar.getInstance();
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT-03:00"));
 		calendar.setTimeInMillis(timestamp.getTime());
 		calendar.add(Calendar.HOUR, 3);
 		timestamp = new Timestamp(calendar.getTime().getTime());
