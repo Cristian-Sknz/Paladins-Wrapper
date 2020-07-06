@@ -56,9 +56,18 @@ public class JsonChampionCards {
 			}
 			
 			String ret_msg = ob.get("ret_msg").toString();
-			float multiply = cardValueMultiplicator(ob.get("card_description").getAsString());
+			String carddescription = ob.get("card_description").getAsString();
+			float multiply = 0;
+			try {
+			multiply = cardValueMultiplicator(ob.get("card_description").getAsString());
 			String multiplystring = String.valueOf(multiply).replace(".0", "");
-			String carddescription = ob.get("card_description").getAsString().replace("{scale=" + multiplystring + "|" + multiplystring + "}", "{multiply}");
+			carddescription = ob.get("card_description").getAsString()
+					.replace("{scale=" + multiplystring + "|" + multiplystring + "}", "{multiply}")
+					.replace("{scale=" + multiplystring + "|" + multiplystring + ")", "{multiply}");
+			} catch (StringIndexOutOfBoundsException e) {
+				e.printStackTrace();
+				System.out.println(carddescription);
+			}
 			Card card;
 			card = new Card(ob.get("card_name").getAsString(), 
 					ob.get("card_name_english").getAsString(), 
@@ -89,11 +98,12 @@ public class JsonChampionCards {
 			if (ch == '{') {
 				chaveinicial = i;
 			}
-			if (ch == '}') {
+			if (ch == '}'|| ch == ')') {
 				chavefinal = i+1;
 			}
 			i++;
 		}
+		
 		String desc = cardDescription.substring(chaveinicial, chavefinal);
 		if (desc.length() == 0 || desc.length() == 1) {
 			return 0;

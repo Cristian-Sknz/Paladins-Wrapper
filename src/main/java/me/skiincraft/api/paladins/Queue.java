@@ -89,6 +89,8 @@ public class Queue {
 			String bodyPT = request.body();
 			String bodyEN = request2.body();
 			
+			System.out.println(bodyPT);
+			
 			List<Champion> champions = new JsonChampions(bodyPT, bodyEN, this).refreshchampions();
 			loadedchampions = champions;
 		return champions;
@@ -323,7 +325,7 @@ public class Queue {
 		if (body == "[]") {
 			throw new PlayerNotFoundException("Não foi possivel encontrar o jogador solicitado");
 		}
-		
+		System.out.println(body);
 		List<SearchPlayer> search = new ArrayList<>();
 		for (JsonElement ele : array) {
 			JsonObject object = ele.getAsJsonObject();
@@ -335,13 +337,7 @@ public class Queue {
 			
 			if (platform != null) {
 				if (platform == Platform.PC) {
-					if (object.get("portal_id").getAsInt() == platform.getPortalId()[0]) {
-						search.add(psearch);
-					}
-					if (object.get("portal_id").getAsInt() == platform.getPortalId()[1]) {
-						search.add(psearch);
-					}
-					if (object.get("portal_id").getAsInt() == platform.getPortalId()[2]) {
+					if (Platform.getPlatformByPortalId(object.get("portal_id").getAsInt()) == Platform.PC) {
 						search.add(psearch);
 					}
 				} else {
