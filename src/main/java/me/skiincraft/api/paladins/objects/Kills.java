@@ -18,7 +18,6 @@ public class Kills {
 
 	public Kills(int multikills, int firstblood, int solokills, int doublekills, int triplekills, int quadrakills,
 			int pentakills, int goldfury, int pheonix, int siege_juggernaut, int wild_juggernaut) {
-		super();
 		this.multikills = multikills;
 		this.firstblood = firstblood;
 		this.solokills = solokills;

@@ -2,30 +2,37 @@ package me.skiincraft.api.paladins.entity;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Consumer;
 
-import me.skiincraft.api.paladins.Paladins;
+import com.google.gson.GsonBuilder;
 import me.skiincraft.api.paladins.Queue;
+import me.skiincraft.api.paladins.builder.Paladins;
 
 public class Session {
 	
 	public int timerId;
 	
 	private String sessionId;
-	private String signature;
 	private String timestamp;
-	private String requestMsg;
+	private String requestMessage;
+	
 	private Queue requester;
 	private Paladins paladins;
 	private Timer timer;
 	
-	public Session(String sessionId, String signature, String timestamp, String requestMsg,
+	private Consumer<Session> onValidation;
+	
+	public Session(String sessionId, String timestamp, String requestMessage,
 			Paladins paladins) {
 		this.sessionId = sessionId;
-		this.signature = signature;
 		this.timestamp = timestamp;
-		this.requestMsg = requestMsg;
+		this.requestMessage = requestMessage;
 		this.paladins = paladins;
+		
 		this.requester = new Queue(this);
+		if (onValidation != null) {
+			onValidation.accept(this);
+		}
 		autoReconnect();
 	}
 	
@@ -43,11 +50,16 @@ public class Session {
 				if (!getPaladins().hasValidSession(thissession)) {
 					System.out.println("Sessão está invalida, recriando outra sessão.");
 					
-					getPaladins().createSession();
+					Session newSession = getPaladins().createSession();
 					getPaladins().getSessionsCache().remove(thissession);
+					if (onValidation != null) {
+						onValidation.accept(newSession);
+					}
+					
 					cancel();
 				} else {
 					System.out.println("[Session-Worker-"+ timerId +"]"+ "Sessão-" + sessionId + " ainda é valida.");
+					onValidation.accept(thissession);
 				}
 			}
 		}, 8*(1000*60), 8*(1000*60));
@@ -57,7 +69,7 @@ public class Session {
 		return sessionId;
 	}
 	public String getRequestMsg() {
-		return requestMsg;
+		return requestMessage;
 	}
 	
 	public boolean hasValidSession() {
@@ -76,6 +88,18 @@ public class Session {
 
 	public Queue getRequester() {
 		return requester;
+	}
+	
+	public String toJson() {
+		return new GsonBuilder().setPrettyPrinting().create().toJson(this);
+	}
+	
+	public Consumer<Session> getOnValidation() {
+		return onValidation;
+	}
+	
+	public void setOnValidation(Consumer<Session> onValidation) {
+		this.onValidation = onValidation;
 	}
 	
 }

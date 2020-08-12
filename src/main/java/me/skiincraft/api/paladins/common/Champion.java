@@ -5,7 +5,6 @@ import java.util.List;
 import me.skiincraft.api.paladins.Queue;
 import me.skiincraft.api.paladins.enums.Language;
 import me.skiincraft.api.paladins.objects.Ability;
-import me.skiincraft.api.paladins.objects.Card;
 
 public class Champion {
 	
@@ -27,7 +26,7 @@ public class Champion {
 	private List<Ability> abilityPT;
 	private List<Ability> abilityEN;
 	
-	private List<Card> loadedCards;
+	private List<ChampionSkin> loadedCards;
 
 	public Champion(int championId, String championName, String championEnglishName, String championIcon, String title,
 			String englishTitle, String role, String englishRole, String lore, String englishLore, int health,
@@ -89,11 +88,11 @@ public class Champion {
 		return abilityEN;
 	}
 	
-	public List<Card> getCardsPT() {
+	public List<ChampionSkin> getCardsPT() {
 		return queue.getChampionsCards(getChampionId(), Language.Portuguese);
 	}
 	
-	public List<Card> getCardsEN() {
+	public List<ChampionSkin> getCardsEN() {
 		return queue.getChampionsCards(getChampionId(), Language.English);
 	}
 
@@ -122,7 +121,7 @@ public class Champion {
 		this.queue = queue;
 	}
 
-	public List<Card> getLoadedCards() {
+	public List<ChampionSkin> getLoadedCards() {
 		if (loadedCards == null || loadedCards.size() == 0) {
 			loadedCards = getCardsPT();
 			loadedCards.addAll(getCardsEN());

@@ -3,3 +3,4 @@
 .settings
 # Ignore Gradle build output directory
 build
+src/main/java/me/skiincraft/api/paladins/testi.java

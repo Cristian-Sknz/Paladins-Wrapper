@@ -8,7 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import me.skiincraft.api.paladins.objects.LoadoutItems;
+import me.skiincraft.api.paladins.objects.LoadoutItem;
 import me.skiincraft.api.paladins.Queue;
 import me.skiincraft.api.paladins.common.Champion;
 import me.skiincraft.api.paladins.common.ChampionLoadout;
@@ -55,12 +55,12 @@ public class JsonPaladinsLoadouts {
 		return loadouts;
 	}
 	
-	private List<LoadoutItems> loadoutitems(JsonArray array) {
-		List<LoadoutItems> itens = new ArrayList<LoadoutItems>();
+	private List<LoadoutItem> loadoutitems(JsonArray array) {
+		List<LoadoutItem> itens = new ArrayList<LoadoutItem>();
 		
 		for (JsonElement ele : array) {
 			JsonObject object = ele.getAsJsonObject();
-			itens.add(new LoadoutItems(object.get("ItemId").getAsInt(),
+			itens.add(new LoadoutItem(object.get("ItemId").getAsInt(),
 					object.get("ItemName").getAsString(), object.get("Points").getAsInt()));
 		}
 		return itens;

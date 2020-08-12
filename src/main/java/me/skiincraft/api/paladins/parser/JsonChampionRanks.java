@@ -33,12 +33,11 @@ public class JsonChampionRanks {
 			
 			List<Champion> champlist = queue.getLoadedchampions();
 			
-			Champion champion = null;
+			 
 			int championId = object.get("champion_id").getAsInt(); 
-			for (Champion champ : champlist) {
-				if (champ.getChampionId() == championId) {
-					champion = champ;
-				}
+			Champion champion = champlist.stream().filter(c -> c.getChampionId() == championId).findFirst().orElse(null);
+			if (champion == null) {
+				System.out.println(object);
 			}
 			DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
 			

@@ -1,5 +1,9 @@
 package me.skiincraft.api.paladins.enums;
 
+import me.skiincraft.api.paladins.EndPoint;
+import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.entity.player.Player;
+
 public class PlayerStatus {
 
 	public enum Status {
@@ -24,22 +28,20 @@ public class PlayerStatus {
 		}
 	}
 
-	private int matchId;
-	private PaladinsQueue queue;
+	private long matchId;
 	private Status status;
+	private EndPoint endPoint;
+	private String player;
 	
-	public PlayerStatus(int matchId, Status status, PaladinsQueue queue) {
+	public PlayerStatus(String player, long matchId, Status status, EndPoint endPoint) {
+		this.player = player;
 		this.matchId = matchId;
 		this.status = status;
-		this.queue = queue;
+		this.endPoint = endPoint;
 	}
 
-	public int getMatchId() {
+	public long getMatchId() {
 		return matchId;
-	}
-	
-	public PaladinsQueue getMatchQueue() {
-		return queue;
 	}
 	
 	public boolean isLiveMatch() {
@@ -49,9 +51,14 @@ public class PlayerStatus {
 	public Status getStatus() {
 		return status;
 	}
-
-	@Override
-	public String toString() {
-		return "PlayerStatus [matchId=" + matchId + ", queue=" + getMatchQueue() + ", status=" + status + "]";
+	
+	public Request<Player> getPlayer(){
+		return endPoint.getPlayer(player);
 	}
+
+	public String toString() {
+		return "PlayerStatus [matchId=" + matchId + ", status=" + status +"]";
+	}
+
+	
 }

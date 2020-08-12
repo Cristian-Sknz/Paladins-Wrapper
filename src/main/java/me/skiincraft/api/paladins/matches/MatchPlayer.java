@@ -2,7 +2,7 @@ package me.skiincraft.api.paladins.matches;
 
 import java.util.List;
 
-import me.skiincraft.api.paladins.entity.PaladinsMatch;
+import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.objects.Item;
 import me.skiincraft.api.paladins.objects.Kills;
 import me.skiincraft.api.paladins.objects.LeagueSeason;
@@ -32,7 +32,7 @@ public class MatchPlayer {
 	private long healing;
 	private long selfHealing;
 	
-	private PaladinsMatch match;
+	private Match match;
 	
 	private long playerId;
 	private String playerRegion;
@@ -49,7 +49,7 @@ public class MatchPlayer {
 			long damageUsingWeapon, long damageUsingMagical, long damageUsingPhysical, long damageMitigated,
 			long damage, long damageTaken, long damageTakenUsingMagical, long damageTakenUsingPhysical,
 			Kills killsDetails, int killstreak, int kills, int deaths, int goldEarned, int goldPerMinute, long healing,
-			long selfHealing, PaladinsMatch match, long playerId, String playerRegion, String playername,
+			long selfHealing, Match match, long playerId, String playerRegion, String playername,
 			LeagueSeason playerLeague, int playerPortalId, long playerPortalUserId, List<Item> itemactive, boolean hasWin, String json) {
 		this.level = level;
 		this.assists = assists;
@@ -159,7 +159,7 @@ public class MatchPlayer {
 		return selfHealing;
 	}
 
-	public PaladinsMatch getMatch() {
+	public Match getMatch() {
 		return match;
 	}
 

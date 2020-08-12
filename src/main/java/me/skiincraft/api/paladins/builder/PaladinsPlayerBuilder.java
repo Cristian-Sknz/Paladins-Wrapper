@@ -5,10 +5,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import me.skiincraft.api.paladins.entity.PaladinsPlayer;
+import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.enums.Platform;
 import me.skiincraft.api.paladins.enums.Tier;
 import me.skiincraft.api.paladins.objects.LeagueSeason;
@@ -18,12 +19,17 @@ import me.skiincraft.api.paladins.ranked.RankedConquest;
 import me.skiincraft.api.paladins.ranked.RankedController;
 import me.skiincraft.api.paladins.ranked.RankedKBM;
 
-public class PaladinsPlayerBuilder implements PaladinsPlayer {
+public class PaladinsPlayerBuilder implements Player {
 
 	public JsonObject object;
 	
 	public PaladinsPlayerBuilder(String json) {
 		object = new JsonParser().parse(json).getAsJsonArray().get(0).getAsJsonObject();
+	}
+	
+	public PaladinsPlayerBuilder(JsonArray json, int num) {
+		object = json.get(num).getAsJsonObject();
+		System.out.println(object.get("ActivePlayerId"));
 	}
 	
 	@Override
@@ -214,12 +220,12 @@ public class PaladinsPlayerBuilder implements PaladinsPlayer {
 	}
 
 	@Override
-	public int getAchievementsSize() {
+	public int getTotalAchievements() {
 		return object.get("Total_Achievements").getAsInt();
 	}
 
 	@Override
-	public long getWorshippersSize() {
+	public long getTotalWorshippers() {
 		return object.get("Total_Worshippers").getAsLong();
 	}
 

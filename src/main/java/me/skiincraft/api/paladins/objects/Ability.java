@@ -6,18 +6,18 @@ public class Ability {
 	
 	private String name;
 	private String description;
-	private int id;
+	private long id;
 	private String avatarUrl;
 	private DamageType damagetype;
 	private int cooldown;
 	private boolean hasCooldown;
 	
-	public Ability(String name, String description, int id, String avatarUrl,
+	public Ability(String name, String description, long id, String url,
 			DamageType damagetype, int cooldown, boolean hasCooldown) {
 		this.name = name;
 		this.description = description;
 		this.id = id;
-		this.avatarUrl = avatarUrl;
+		this.avatarUrl = url;
 		this.damagetype = damagetype;
 		this.cooldown = cooldown;
 		this.hasCooldown = hasCooldown;
@@ -31,7 +31,7 @@ public class Ability {
 		return description;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 

@@ -3,7 +3,7 @@ package me.skiincraft.api.paladins.enums;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum PaladinsQueue {
+public enum Queue {
 	None(0), Custom_Siege_Stone_Keep(423), Live_Siege(424), Live_Pratice_Siege(425), Custom_Siege_Bazaar(426),
 	Practice(427), Live_Competitive_GamePad(428), zzRETIRED(429), Custom_Siege_Timber_Mill(430),
 	Custom_Siege_Fish_Market(431), Custom_Siege_Frozen_Guard(432), Custom_Siege_Frog_Isle(433), Shooting_Range(434),
@@ -24,7 +24,7 @@ public enum PaladinsQueue {
 
 	private int queueId;
 	//424, 428, 437, 452, 465, 469, 486
-	PaladinsQueue(int queueId) {
+	Queue(int queueId) {
 		this.queueId = queueId;
 	}
 
@@ -32,36 +32,36 @@ public enum PaladinsQueue {
 		return this.queueId;
 	}
 
-	public static PaladinsQueue[] getLives() {
-		List<PaladinsQueue> customs = new ArrayList<>();
-		for (PaladinsQueue queue : values()) {
+	public static Queue[] getLives() {
+		List<Queue> customs = new ArrayList<>();
+		for (Queue queue : values()) {
 			if (queue.name().contains("LIVE")) {
 				customs.add(queue);
 			}
 		}
-		PaladinsQueue[] queue = new PaladinsQueue[customs.size()];
+		Queue[] queue = new Queue[customs.size()];
 		customs.toArray(queue);
 		return queue;
 	}
 
-	public static PaladinsQueue[] getCustoms() {
-		List<PaladinsQueue> customs = new ArrayList<>();
-		for (PaladinsQueue queue : values()) {
+	public static Queue[] getCustoms() {
+		List<Queue> customs = new ArrayList<>();
+		for (Queue queue : values()) {
 			if (queue.name().contains("Custom")) {
 				customs.add(queue);
 			}
 		}
-		PaladinsQueue[] queue = new PaladinsQueue[customs.size()];
+		Queue[] queue = new Queue[customs.size()];
 		customs.toArray(queue);
 		return queue;
 	}
 
-	public static PaladinsQueue getQueueById(int id) {
-		for (PaladinsQueue queue : PaladinsQueue.values()) {
+	public static Queue getQueueById(int id) {
+		for (Queue queue : Queue.values()) {
 			if (queue.getQueueId() == id) {
 				return queue;
 			}
 		}
-		return PaladinsQueue.None;
+		return Queue.None;
 	}
 }

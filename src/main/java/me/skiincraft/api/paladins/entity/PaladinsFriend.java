@@ -1,6 +1,7 @@
 package me.skiincraft.api.paladins.entity;
 
 import me.skiincraft.api.paladins.Queue;
+import me.skiincraft.api.paladins.entity.player.Player;
 
 public class PaladinsFriend {
 	  /*{
@@ -18,8 +19,8 @@ public class PaladinsFriend {
 	private int userId;
 	private String status;
 	private Queue queue;
-	private PaladinsPlayer player;
-	public PaladinsFriend(int accoundId, int friendFlags, String name, int userId, String status, PaladinsPlayer player, Queue queue) {
+	private Player player;
+	public PaladinsFriend(int accoundId, int friendFlags, String name, int userId, String status, Player player, Queue queue) {
 		this.accoundId = accoundId;
 		this.friendFlags = friendFlags;
 		this.name = name;
@@ -28,7 +29,7 @@ public class PaladinsFriend {
 		this.player = player;
 	}
 	
-	public PaladinsPlayer getUser() {
+	public Player getUser() {
 		return player;
 	}
 	
@@ -51,6 +52,13 @@ public class PaladinsFriend {
 	public String getStatus() {
 		return status;
 	}
+
+	public String toString() {
+		return "PaladinsFriend [accoundId=" + accoundId + ", friendFlags=" + friendFlags + ", name=" + name
+				+ ", userId=" + userId + ", status=" + status + ", queue=" + queue + ", player=" + player + "]";
+	}
+	
+	
 	
 	
 }

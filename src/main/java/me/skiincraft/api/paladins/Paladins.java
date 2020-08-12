@@ -22,35 +22,19 @@ import com.google.gson.JsonParser;
 
 import me.skiincraft.api.paladins.entity.Session;
 import me.skiincraft.api.paladins.hirez.HirezStatus;
+import me.skiincraft.api.paladins.utils.AccessUtils;
 
 import java.security.MessageDigest;
 
 public class Paladins {
 
-	private String PATH = "http://api.paladins.com/paladinsapi.svc";
-	private int DEVID;
-	private String AUTHKEY;
+	private AccessUtils utils;
 
 	private Logger simplelog = Logger.getLogger("[Paladins-API]");
-	private SimpleDateFormat StampFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-
 	private List<Session> sessionsCache = new ArrayList<Session>();
 
-	public String getPATH() {
-		return PATH;
-	}
-
-	public int getDEVID() {
-		return DEVID;
-	}
-
-	public String getAUTHKEY() {
-		return AUTHKEY;
-	}
-
 	public Paladins(int devid, String token) {
-		this.DEVID = devid;
-		this.AUTHKEY = token;
+		utils = new AccessUtils(devid, token);
 
 		if (sessionsCache.size() == 0) {
 			try {
@@ -138,7 +122,17 @@ public class Paladins {
 			System.out.println("A sessão inserida não é valida.");
 			return false;
 		}
-
+		
+		if (body.contains("Error while comparing Server and Client timestamp")) {
+			System.out.println("Erro de timestamp: \nError while comparing Server and Client timestamp");
+			return false;
+		}
+		
+		if (body.contains("Exception - Timestamp")) {
+			System.out.println("Erro de timestamp: \nException - Timestamp");
+			return false;
+		}
+		
 		return true;
 	}
 	
@@ -169,6 +163,7 @@ public class Paladins {
 		map.put("Total_Requests_Today", object.get("Total_Requests_Today").getAsString());
 		map.put("Total_Sessions_Today", object.get("Total_Sessions_Today").getAsString());
 		map.put("ret_msg", object.get("ret_msg").toString());
+		map.put("json", object.toString());
 
 		return map;
 	}

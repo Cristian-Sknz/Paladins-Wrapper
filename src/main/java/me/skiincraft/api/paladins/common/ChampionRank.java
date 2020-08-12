@@ -73,7 +73,7 @@ public class ChampionRank {
 		return championId;
 	}
 	public String getChampionName() {
-		return championName;
+		return (championName != null) ? championName : champion.getChampionEnglishName();
 	}
 	@Override
 	public String toString() {

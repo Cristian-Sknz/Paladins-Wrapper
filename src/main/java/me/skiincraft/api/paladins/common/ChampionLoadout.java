@@ -2,20 +2,20 @@ package me.skiincraft.api.paladins.common;
 
 import java.util.List;
 
-import me.skiincraft.api.paladins.objects.LoadoutItems;
+import me.skiincraft.api.paladins.objects.LoadoutItem;
 
 public class ChampionLoadout {
 
 	private Champion champion;
 	private String deckname;
 	private int deckId;
-	private List<LoadoutItems> itens;
+	private List<LoadoutItem> itens;
 	private int championId;
 	private String championName;
 	private String deckOwner;
 	
 	
-	public ChampionLoadout(Champion champion, String deckname, int deckId, List<LoadoutItems> itens, int championId,
+	public ChampionLoadout(Champion champion, String deckname, int deckId, List<LoadoutItem> itens, int championId,
 			String championName, String deckOwner) {
 		this.champion = champion;
 		this.deckname = deckname;
@@ -46,7 +46,7 @@ public class ChampionLoadout {
 
 
 
-	public List<LoadoutItems> getItens() {
+	public List<LoadoutItem> getItens() {
 		return itens;
 	}
 

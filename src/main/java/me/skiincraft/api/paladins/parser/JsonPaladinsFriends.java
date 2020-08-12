@@ -9,7 +9,7 @@ import com.google.gson.JsonParser;
 
 import me.skiincraft.api.paladins.Queue;
 import me.skiincraft.api.paladins.entity.PaladinsFriend;
-import me.skiincraft.api.paladins.entity.PaladinsPlayer;
+import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.exceptions.PlayerNotFoundException;
 
 public class JsonPaladinsFriends {
@@ -41,7 +41,7 @@ public class JsonPaladinsFriends {
 		Integer[] id = new Integer[ids.size()];
 		ids.toArray(id);
 		
-		List<PaladinsPlayer> players = null;
+		List<Player> players = null;
 		try {
 			players = queue.getPlayerBatch(id);
 		} catch (PlayerNotFoundException e) {
@@ -54,13 +54,14 @@ public class JsonPaladinsFriends {
 			int accoundId = object.get("account_id").getAsInt();
 			if (accoundId == 0)continue;
 			
-			new PaladinsFriend(accoundId,
+			friends.add(new PaladinsFriend(accoundId,
 					object.get("friend_flags").getAsInt(),
 					object.get("name").getAsString(),
 					object.get("player_id").getAsInt(),
 					object.get("status").getAsString(),
 					players.get(i),
-					queue);
+					queue));
+			i++;
 		}
 		return friends;
 	}

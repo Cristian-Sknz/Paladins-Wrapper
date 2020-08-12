@@ -10,18 +10,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import me.skiincraft.api.paladins.common.Champion;
-import me.skiincraft.api.paladins.entity.PaladinsMatch;
 import me.skiincraft.api.paladins.entity.Session;
+import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.enums.Tier;
 import me.skiincraft.api.paladins.matches.MatchChampion;
 import me.skiincraft.api.paladins.matches.MatchPlayer;
-import me.skiincraft.api.paladins.objects.Card;
+import me.skiincraft.api.paladins.objects.ChampionSkin;
 import me.skiincraft.api.paladins.objects.Kills;
 import me.skiincraft.api.paladins.objects.LeagueSeason;
 import me.skiincraft.api.paladins.utils.JsonUtils;
 import me.skiincraft.api.paladins.utils.PaladinsUtils;
 
-public class PaladinsMatchBuilder implements PaladinsMatch {
+public class PaladinsMatchBuilder implements Match {
 
 	public JsonObject object;
 	public JsonArray array;
@@ -47,9 +47,9 @@ public class PaladinsMatchBuilder implements PaladinsMatch {
 				}
 			}
 			
-			List<Card> cardPurch = new ArrayList<Card>();
+			List<ChampionSkin> cardPurch = new ArrayList<ChampionSkin>();
 			
-			for (Card c : original.getCardsPT()) {
+			for (ChampionSkin c : original.getCardsPT()) {
 				for (int i = 1; i < 6;i++) {
 					if (c.getCardId2() == ob.get("ItemId" + i).getAsInt()) {
 						cardPurch.add(c);
@@ -187,7 +187,7 @@ public class PaladinsMatchBuilder implements PaladinsMatch {
 	}
 
 	@Override
-	public List<MatchPlayer> getTeam2Players() {
+	public List<MatchPlayer> getTeam2() {
 		List<MatchPlayer> players = new ArrayList<MatchPlayer>();
 		if (getTeam2Score() > getTeam1Score()) {
 			for (MatchPlayer player : getPlayers()) {

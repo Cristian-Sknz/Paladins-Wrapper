@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -16,16 +17,17 @@ import com.google.gson.JsonParser;
 import me.skiincraft.api.paladins.common.ChampionRank;
 import me.skiincraft.api.paladins.builder.PaladinsMatchBuilder;
 import me.skiincraft.api.paladins.builder.PaladinsPlayerBuilder;
+import me.skiincraft.api.paladins.builder.PaladinsPlayerImpl;
 import me.skiincraft.api.paladins.common.Champion;
 import me.skiincraft.api.paladins.common.ChampionLoadout;
 import me.skiincraft.api.paladins.common.ChampionSkin;
 import me.skiincraft.api.paladins.entity.LiveMatch;
 import me.skiincraft.api.paladins.entity.PaladinsFriend;
-import me.skiincraft.api.paladins.entity.PaladinsMatch;
-import me.skiincraft.api.paladins.entity.PaladinsPlayer;
 import me.skiincraft.api.paladins.entity.Session;
+import me.skiincraft.api.paladins.entity.match.Match;
+import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.enums.Language;
-import me.skiincraft.api.paladins.enums.PaladinsQueue;
+import me.skiincraft.api.paladins.enums.Queue;
 import me.skiincraft.api.paladins.enums.Platform;
 import me.skiincraft.api.paladins.enums.PlayerStatus;
 import me.skiincraft.api.paladins.enums.PlayerStatus.Status;
@@ -35,10 +37,10 @@ import me.skiincraft.api.paladins.exceptions.OfflinePlayerException;
 import me.skiincraft.api.paladins.exceptions.PlayerNotFoundException;
 import me.skiincraft.api.paladins.matches.LiveMatchChampion;
 import me.skiincraft.api.paladins.matches.LivePlayer;
-import me.skiincraft.api.paladins.objects.Card;
+import me.skiincraft.api.paladins.objects.ChampionSkin;
 import me.skiincraft.api.paladins.objects.ChampionQueue;
-import me.skiincraft.api.paladins.objects.LeaderboardPlaces;
-import me.skiincraft.api.paladins.objects.LeagueLeaderboard;
+import me.skiincraft.api.paladins.objects.Place;
+import me.skiincraft.api.paladins.objects.Leaderboard;
 import me.skiincraft.api.paladins.objects.LeagueSeason;
 import me.skiincraft.api.paladins.objects.SearchPlayer;
 import me.skiincraft.api.paladins.parser.JsonChampionCards;
@@ -51,6 +53,7 @@ public class Queue {
 	
 	private Paladins paladins;
 	private Session session;
+	
 	private List<Champion> loadedchampions = new ArrayList<Champion>();
 	
 	public Queue(Session session) {
@@ -89,14 +92,12 @@ public class Queue {
 			String bodyPT = request.body();
 			String bodyEN = request2.body();
 			
-			System.out.println(bodyPT);
-			
 			List<Champion> champions = new JsonChampions(bodyPT, bodyEN, this).refreshchampions();
 			loadedchampions = champions;
 		return champions;
 	}
 	
-	public List<Card> getChampionsCards(int championId, Language lang) {
+	public List<ChampionSkin> getChampionsCards(int championId, Language lang) {
 		// getchampioncards[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}/{championId}/{languageCode}
 		int language = (lang == null) ? Language.Portuguese.getLanguagecode() : lang.getLanguagecode();
 		String url = makeAUrl("getchampioncards", new String[] { championId + "", language + "" });
@@ -116,7 +117,7 @@ public class Queue {
 		return new JsonChampionSkins(body, this).skinJsonParser();
 	}
 	
-	public PaladinsPlayer getPlayer(String player, Platform platform) throws PlayerNotFoundException {
+	public Player getPlayer(String player, Platform platform) throws PlayerNotFoundException {
 		// getplayer[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}/{player}/{portalId}
 		String url = makeAUrl("getplayer", new String[] { player });
 
@@ -128,12 +129,10 @@ public class Queue {
 		if (body.equalsIgnoreCase("[]")) {
 			throw new PlayerNotFoundException("Não foi possivel encontrar o jogador solicitado.");
 		}
-		System.out.println(body);
-
 		return new PaladinsPlayerBuilder(body);
 	}
 	
-	public PaladinsPlayer getPlayerBySearch(String searchplayer, Platform platform) throws PlayerNotFoundException {
+	public Player getPlayerBySearch(String searchplayer, Platform platform) throws PlayerNotFoundException {
 		// getplayer[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}/{player}/{portalId}
 		List<SearchPlayer> searchlist = new ArrayList<SearchPlayer>();
 		if ((platform == null)) {
@@ -152,8 +151,6 @@ public class Queue {
 		HttpRequest requester = HttpRequest.get(url);
 		String body = requester.body();
 		
-		System.out.println(body);
-
 		if (searchlist.size() == 0 || body.equalsIgnoreCase("[]")) {
 			throw new PlayerNotFoundException("O Jogador solicitado não existe ou esta com perfil privado.");
 		}
@@ -161,7 +158,7 @@ public class Queue {
 		return new PaladinsPlayerBuilder(body);
 	}
 	
-	public List<PaladinsPlayer> getPlayerBatch(Integer...playersids) throws PlayerNotFoundException{
+	public List<Player> getPlayerBatch(Integer...playersids) throws PlayerNotFoundException{
 		///getplayerbatch[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}/{playerId,playerId,playerId,...playerId}
 		String method = "getplayerbatch";
 		StringBuffer ids = new StringBuffer();
@@ -179,17 +176,20 @@ public class Queue {
 		HttpRequest requester = HttpRequest.get(url);
 
 		String body = requester.body();
-		List<PaladinsPlayer> players = new ArrayList<PaladinsPlayer>();
 		if (body.equalsIgnoreCase("[]")) {
 			throw new PlayerNotFoundException("O Jogador solicitado não existe ou esta com perfil privado.");
 		}
 		
-		for (JsonElement ele : new JsonParser().parse(body).getAsJsonArray()) {
-			JsonObject object = ele.getAsJsonObject();
-			players.add(new PaladinsPlayerBuilder(object.toString()));
+		JsonArray array = new JsonParser().parse(body).getAsJsonArray();
+		
+		System.out.println(array.size());
+		
+		List<Player> player = Collections.synchronizedList(new ArrayList<Player>());;
+		for (int i = 0; i < array.size(); i++) {
+			player.add(PaladinsPlayerImpl.getPlayerFromArray(array.get(i).getAsJsonObject()).getPlayer());
 		}
 		
-		return players;
+		return player;
 	}
 	
 	public List<ChampionRank> getChampionRanks(int userId) {
@@ -219,7 +219,7 @@ public class Queue {
 		return new JsonPaladinsLoadouts(body, this).loadoutsJsonParser();		
 	}
 	
-	public PaladinsMatch getMatchDetails(int matchId) {
+	public Match getMatchDetails(int matchId) {
 		//getmatchdetails[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}/{match_id}
 		String url = makeAUrl("getmatchdetails", new String[] {matchId+""});
 		HttpRequest requester = HttpRequest.get(url);
@@ -227,7 +227,7 @@ public class Queue {
 		return new PaladinsMatchBuilder(body, getSession());
 	}
 	
-	public List<PaladinsMatch> getMatchDetailsBatch(Integer...matchids) {
+	public List<Match> getMatchDetailsBatch(Integer...matchids) {
 		//getmatchdetailsbatch[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}/{match_id,match_id,match_id,...match_id}
 		StringBuffer ids = new StringBuffer();
 		int ultimovalor = matchids[matchids.length-1];
@@ -240,7 +240,7 @@ public class Queue {
 		}
 		String url = makeAUrl("getmatchdetailsbatch", new String[] {ids.toString()});
 		
-		List<PaladinsMatch> matchs = new ArrayList<PaladinsMatch>();
+		List<Match> matchs = new ArrayList<Match>();
 		HttpRequest requester = HttpRequest.get(url);
 		String body = requester.body();
 		JsonArray arrays = new JsonParser().parse(body).getAsJsonArray();
@@ -270,7 +270,7 @@ public class Queue {
 		return matchs;
 	}
 	
-	public List<PaladinsMatch> getMatchHistory(int playerId) {
+	public List<Match> getMatchHistory(int playerId) {
 		//getmatchhistory[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}/{playerId}
 		String url = makeAUrl("getmatchhistory", new String[] {playerId+""});		
 		HttpRequest requester = HttpRequest.get(url);
@@ -290,16 +290,16 @@ public class Queue {
 		return getMatchDetailsBatch(id);
 	}
 	
-	public LeagueLeaderboard getLeagueLeaderboard(PaladinsQueue queue, Tier tier, int season) {
+	public Leaderboard getLeagueLeaderboard(Queue queue, Tier tier, int season) {
 		//getleagueleaderboard[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}/{queue}/{tier}/{round}
 		String url = makeAUrl("getLeagueLeaderboard", new String[] {queue.getQueueId()+"", tier.getRankId()+"", season+""});
 		HttpRequest requester = HttpRequest.get(url);
 		String body = requester.body();
-		List<LeaderboardPlaces> places = new ArrayList<LeaderboardPlaces>();
+		List<Place> places = new ArrayList<Place>();
 		JsonArray array = new JsonParser().parse(body).getAsJsonArray();
 		for (JsonElement ele : array) {
 			JsonObject object = ele.getAsJsonObject();
-			places.add(new LeaderboardPlaces(object.get("Name").getAsString(),
+			places.add(new Place(object.get("Name").getAsString(),
 					object.get("Wins").getAsInt(),
 					object.get("Losses").getAsInt(),
 					object.get("Leaves").getAsInt(),
@@ -313,7 +313,7 @@ public class Queue {
 			}
 		}
 		
-		return new LeagueLeaderboard(places, tier, queue);
+		return new Leaderboard(places, tier, queue);
 	}
 
 	public List<SearchPlayer> searchPlayer(String player, Platform platform) throws PlayerNotFoundException {
@@ -325,7 +325,6 @@ public class Queue {
 		if (body == "[]") {
 			throw new PlayerNotFoundException("Não foi possivel encontrar o jogador solicitado");
 		}
-		System.out.println(body);
 		List<SearchPlayer> search = new ArrayList<>();
 		for (JsonElement ele : array) {
 			JsonObject object = ele.getAsJsonObject();
@@ -369,10 +368,9 @@ public class Queue {
 		JsonObject object = new JsonParser().parse(body)
 				.getAsJsonArray().get(0).getAsJsonObject();
 		
-		System.out.println(object);
 		return new PlayerStatus(object.get("Match").getAsInt(),
 				Status.getStatusById(object.get("status").getAsInt()),
-				PaladinsQueue.getQueueById(object.get("match_queue_id").getAsInt()));	
+				Queue.getQueueById(object.get("match_queue_id").getAsInt()));	
 	}
 	
 	public PlayerStatus getPlayerStatusBySearch(String player, Platform platform) throws PlayerNotFoundException {
@@ -382,10 +380,9 @@ public class Queue {
 		JsonObject object = new JsonParser().parse(body)
 				.getAsJsonArray().get(0).getAsJsonObject();
 		
-		System.out.println(object);
 		return new PlayerStatus(object.get("Match").getAsInt(),
 				Status.getStatusById(object.get("status").getAsInt()),
-				PaladinsQueue.getQueueById(object.get("match_queue_id").getAsInt()));	
+				Queue.getQueueById(object.get("match_queue_id").getAsInt()));	
 	}
 	
 	public PlayerStatus getPlayerStatusBySearch(String player) throws PlayerNotFoundException {
@@ -394,8 +391,19 @@ public class Queue {
 	
 	//getmatchplayerdetails[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}/{match_id}
 	
+	public LiveMatch getLiveMatchDetails(String playername, Platform platform) throws NoMatchQueueException, PlayerNotFoundException, OfflinePlayerException {
+		PlayerStatus player = getPlayerStatusBySearch(playername, platform);
+		if (player.getStatus() == Status.Offline) {
+			throw new OfflinePlayerException("O Jogador" + "\"" + playername +"\"" +" está offline.");
+		}
+		if (player.getMatchId() == 0) {
+			throw new NoMatchQueueException("Este jogador solicitado não esta em uma partida");
+		}
+		return getLiveMatchDetails(player.getMatchId());
+	}
+	
 	public LiveMatch getLiveMatchDetails(String playername) throws NoMatchQueueException, PlayerNotFoundException, OfflinePlayerException {
-		PlayerStatus player = getPlayerStatusBySearch(playername, Platform.PC);
+		PlayerStatus player = getPlayerStatusBySearch(playername);
 		if (player.getStatus() == Status.Offline) {
 			throw new OfflinePlayerException("O Jogador" + "\"" + playername +"\"" +" está offline.");
 		}
@@ -453,18 +461,17 @@ public class Queue {
 			}
 		}
 		
-		return new LiveMatch(players, matchId, PaladinsQueue.getQueueById(inicialobj.get("Queue").getAsInt()),
+		return new LiveMatch(players, matchId, Queue.getQueueById(inicialobj.get("Queue").getAsInt()),
 				inicialobj.get("mapGame").getAsString());
 	}
 	
-	public List<ChampionQueue> getQueueStats(int playerId, PaladinsQueue queue) {
+	public List<ChampionQueue> getQueueStats(int playerId, Queue queue) {
 		//getqueuestats[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}/{playerId}/{queue}
 		List<ChampionQueue> championQueues = new ArrayList<>();
 		String url = makeAUrl("getqueuestats", new String[] {""+playerId, ""+queue.getQueueId()});
 		HttpRequest requester = HttpRequest.get(url);
 		String body = requester.body();
 		JsonArray array = new JsonParser().parse(body).getAsJsonArray();
-		
 		for (JsonElement element : array) {
 			JsonObject object = element.getAsJsonObject();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
