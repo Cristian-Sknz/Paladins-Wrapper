@@ -2,7 +2,7 @@ package me.skiincraft.api.paladins.entity.player;
 
 import java.util.List;
 
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.enums.Language;
 import me.skiincraft.api.paladins.objects.LoadoutItem;

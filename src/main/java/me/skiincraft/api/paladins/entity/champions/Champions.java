@@ -12,7 +12,6 @@ import me.skiincraft.api.paladins.enums.Language;
 public class Champions implements CustomList<Champion> {
 
 	private Champion[] champions;
-	private long championId;
 	private Language language;
 	
 	public Champions(List<Champion> champs, Language language) {
@@ -42,9 +41,4 @@ public class Champions implements CustomList<Champion> {
 	public Language getLanguage() {
 		return language;
 	}
-	
-	public long getChampionCardId() {
-		return championId;
-	}
-
 }

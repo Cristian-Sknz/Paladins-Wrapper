@@ -1,11 +1,12 @@
 package me.skiincraft.api.paladins.entity.player;
 
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
+import me.skiincraft.api.paladins.enums.Language;
 
 public interface PlayerChampion {
 	
-	Request<Champion> getChampion();
+	Request<Champion> getChampion(Language language);
 	Request<Player> getPlayer();
 	
 	int getChampionLevel();

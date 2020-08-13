@@ -6,12 +6,12 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import me.skiincraft.api.paladins.EndPoint;
-import me.skiincraft.api.paladins.builder.Paladins;
+import me.skiincraft.api.paladins.Paladins;
 import me.skiincraft.api.paladins.cache.PaladinsCache;
 import me.skiincraft.api.paladins.cache.PaladinsCacheImpl;
-import me.skiincraft.api.paladins.entity.Request;
-import me.skiincraft.api.paladins.entity.Session;
+import me.skiincraft.api.paladins.common.EndPoint;
+import me.skiincraft.api.paladins.common.Request;
+import me.skiincraft.api.paladins.common.Session;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.champions.Champions;
 import me.skiincraft.api.paladins.entity.champions.objects.Cards;
@@ -82,7 +82,6 @@ public class EndpointImpl implements EndPoint {
 				return play != null;
 			}
 			
-			// getplayer[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}/{player}/{portalId};
 			public Player get() {
 				if (!wasRequested()) {
 					String url = makeUrl("getplayer", new String[] { player });
@@ -91,6 +90,8 @@ public class EndpointImpl implements EndPoint {
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
 
 					play = new PlayerImpl(array.get(0).getAsJsonObject(), api);
+					
+					cacheImpl.addPlayer(play);
 				}
 				return this.play;
 			}
@@ -184,7 +185,7 @@ public class EndpointImpl implements EndPoint {
 			private String json;
 			
 			public boolean wasRequested() {
-				return champions != null || champions.size() != 0;
+				return champions != null;
 			}
 			
 			private boolean existsOnCache() {
@@ -216,6 +217,7 @@ public class EndpointImpl implements EndPoint {
 						champions.add(new ChampionImpl(element.getAsJsonObject(), language, api));
 					}
 					this.champions = new Champions(champions, language);
+					cacheImpl.addChampion(this.champions);
 				}
 				return champions;
 			}
@@ -231,27 +233,92 @@ public class EndpointImpl implements EndPoint {
 			
 			private Champion champion;
 			private String json;
+			
+			private boolean existsOnCache() {
+				int size = paladinsCache.getChampionsCache().size();
+				if (size == 0) {
+					return false;
+				}
+				
+				Stream<Champions> stream = paladins.getCache().getChampionsCache().getAsList().stream();
+				Champions championscheck = stream.filter(o -> o.getLanguage() == language).findAny().orElse(null);
+				
+				if (championscheck != null) champion = championscheck.getById(championId);
+				return (championscheck != null);
+			}
 
 			public boolean wasRequested() {
 				return champion != null;
 			}
 			
 			public Champion get() {
+				if (existsOnCache()) {
+					json = "";
+					return champion;
+				}
+				if (!wasRequested()) {
+					getChampions(language).getWithJson((c, j)->{
+						champion = c.getById(championId);
+						json = j;
+					});
+					return champion; 
+				}
 				
-				
-				return null;
+				return champion;
 			}
 
 			public void getWithJson(BiConsumer<Champion, String> biConsumer) {
-				// TODO Auto-generated method stub
-				
+				biConsumer.accept(get(), json);
 			}
 		};
 	}
 
 	public Request<Champion> getChampion(String championName, Language language) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Request<Champion>() {
+			
+			private Champion champion;
+			private String json;
+			
+			private boolean existsOnCache() {
+				int size = paladinsCache.getChampionsCache().size();
+				if (size == 0) {
+					return false;
+				}
+				
+				Stream<Champions> stream = paladins.getCache().getChampionsCache().getAsList().stream();
+				Champions championscheck = stream.filter(o -> o.getLanguage() == language).findAny().orElse(null);
+				
+				if (championscheck != null)
+					champion = championscheck.getAsStream().filter(o -> o.getName().equalsIgnoreCase(championName))
+							.findAny().orElse(null);
+				return (championscheck != null);
+			}
+
+			public boolean wasRequested() {
+				return champion != null;
+			}
+			
+			public Champion get() {
+				if (existsOnCache()) {
+					json = "";
+					return champion;
+				}
+				if (!wasRequested()) {
+					getChampions(language).getWithJson((c, j)->{
+						champion = c.getAsStream().filter(o -> o.getName().equalsIgnoreCase(championName))
+								.findAny().orElse(null);
+						json = j;
+					});
+					return champion; 
+				}
+				
+				return champion;
+			}
+
+			public void getWithJson(BiConsumer<Champion, String> biConsumer) {
+				biConsumer.accept(get(), json);
+			}
+		};
 	}
 
 	public Request<Cards> getChampionCards(long championsId, Language language) {

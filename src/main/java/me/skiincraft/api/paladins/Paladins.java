@@ -1,254 +1,198 @@
 package me.skiincraft.api.paladins;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.logging.Logger;
+import java.util.function.BiConsumer;
+
+import me.skiincraft.api.paladins.cache.PaladinsCache;
+import me.skiincraft.api.paladins.cache.PaladinsCacheImpl;
+import me.skiincraft.api.paladins.cache.RuntimeMemoryImpl;
+import me.skiincraft.api.paladins.common.Request;
+import me.skiincraft.api.paladins.common.Session;
+import me.skiincraft.api.paladins.entity.champions.Champions;
+import me.skiincraft.api.paladins.entity.match.Match;
+import me.skiincraft.api.paladins.entity.player.Player;
+import me.skiincraft.api.paladins.exceptions.RequestException;
+import me.skiincraft.api.paladins.utils.AccessUtils;
+import me.skiincraft.api.paladins.entity.champions.objects.Cards;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
-import me.skiincraft.api.paladins.entity.Session;
-import me.skiincraft.api.paladins.hirez.HirezStatus;
-import me.skiincraft.api.paladins.utils.AccessUtils;
-
-import java.security.MessageDigest;
-
 public class Paladins {
+	
+	private AccessUtils accessUtils;
+	private PaladinsCache cache;
+	private final Paladins api = this;
+	
+	private List<Session> sessions;
+	
+	public Paladins(int devId, String authkey) {
+		accessUtils = new AccessUtils(devId, authkey);
+		sessions = new ArrayList<>();
+		cache = new PaladinsCacheImpl(
+				new RuntimeMemoryImpl<Champions>(new Champions[0]) {
 
-	private AccessUtils utils;
+					public Champions getById(long id) {
+						return getAsList().stream().filter(i -> i.getLanguage().getLanguagecode() == id).findAny().orElse(null);
+					}
+				},
+				new RuntimeMemoryImpl<Player>(new Player[0]) {
 
-	private Logger simplelog = Logger.getLogger("[Paladins-API]");
-	private List<Session> sessionsCache = new ArrayList<Session>();
+					public Player getById(long id) {
+						return getAsList().stream().filter(i -> i.getId() == id).findAny().orElse(null);
+					}
+				},
+				new RuntimeMemoryImpl<Match>(new Match[0]) {
 
-	public Paladins(int devid, String token) {
-		utils = new AccessUtils(devid, token);
+					public Match getById(long id) {
+						return getAsList().stream().filter(i -> i.getMatchId() == id).findAny().orElse(null);
+					}
+				},
+				new RuntimeMemoryImpl<Cards>(new Cards[0]) {
 
-		if (sessionsCache.size() == 0) {
-			try {
-				simplelog.config("Criando nova session");
-				
-				Session session = createSession();
-				
-				simplelog.info("Uma nova sessão foi criada: " + session.getSessionId());
-				System.out.println(session.getSessionId());
-			} catch (HttpRequestException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public Paladins(int devid, String token, String sessionid) {
-		DEVID = devid;
-		AUTHKEY = token;
-
-		System.out.println("Tentando assumir a ultima sessão.");
-		boolean exists = false;
-
-		for (Session sessions : sessionsCache) {
-			if (sessions.getSessionId() == sessionid) {
-				if (!hasValidSession(sessionid)) {
-					sessionsCache.remove(sessions);
-					System.out.println("Sessão reassumida esta invalida, criando nova sessão.");
-					exists = false;
-				} else {
-					exists = true;
-				}
-				break;
-			}
-		}
-		
-		if (!exists) {
-			if (!hasValidSession(sessionid)) {
-				System.out.println("Sessão reassumida esta invalida, criando nova sessão.");
-				createSession();
-			} else {
-				sessionsCache.add(new Session(sessionid, null, null, "", this));
-				System.out.println("A sessão foi assumida com sucesso!");
-			}
-		}
-	}
-
-	public synchronized Session createSession() {
-		String method = "createsession";
-		String responseFormat = "Json";
-		String developerId = String.valueOf(getDEVID());
-		String signature = getSignature(method);
-		String timeStamp = getTimeStamp();
-		String url = getPATH() + "/" + complete(method + responseFormat, developerId, signature, timeStamp);
-
-		HttpRequest request = HttpRequest.get(url);
-
-		String body = request.body();
-
-		System.out.println(body);
-
-		JsonObject jo = new JsonParser().parse(body).getAsJsonObject();
-		String sessionId = jo.get("session_id").getAsString();
-
-		Session session = new Session(sessionId, signature, timeStamp, body, this);
-		sessionsCache.add(session);
-		return session;
+					public Cards getById(long id) {
+						return getAsList().stream().filter(i -> i.getChampionCardId() == id).findAny().orElse(null);
+					}
+				});
 	}
 	
-	public boolean hasValidSession(String sessionId) {
-		// testsession[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}
-		String method = "testsession";
-		String responseFormat = "Json";
-		String developerId = String.valueOf(getDEVID());
-		String signature = getSignature(method);
-		String timeStamp = getTimeStamp();
+	public synchronized Request<Session> createSession() throws RequestException {
+		return new Request<Session>() {
+			private Session session;
+			private String json;
+			
+			public boolean wasRequested() {
+				return session != null;
+			}
+			
+			public Session get() {
+				String url = accessUtils.makeUrl("createsession", null);
+				HttpRequest request = HttpRequest.get(url);
+				json = request.body();
+				
+				try {
+					JsonElement ele = new JsonParser().parse(json);
+					JsonObject object = ele.getAsJsonObject();
 
-		String url = getPATH() + "/" + complete(method + responseFormat, developerId, signature, sessionId, timeStamp);
+					String retMsg = object.get("ret_msg").isJsonNull() ? "" : object.get("ret_msg").getAsString();
+					
+					if (retMsg.equalsIgnoreCase("Approved")) {
+						session = new Session(object.get("session_id").getAsString(), retMsg,
+								object.get("timestamp").getAsString(), api);
+						return session;
+					}
+					
+					throw new RequestException(retMsg, retMsg);
+				} catch (JsonParseException e) {
+					throw new RequestException("Not is Json - " + json, null);
+				}
+			}
 
-		HttpRequest request;
-		request = HttpRequest.get(url);
+			public void getWithJson(BiConsumer<Session, String> biConsumer) {
+				biConsumer.accept(get(), json);
+			}
+		};
+	}
+	
+	public synchronized Request<Boolean> testSession(String sessionId){
+		return new Request<Boolean>() {
+			
+			private boolean bool;
+			private String json;
 
-		String body = request.body();
+			public Boolean get() {
+				String url = accessUtils.makeUrl("testsession", sessionId, new String[] {});
+				HttpRequest request = HttpRequest.get(url);
+				String body = request.body();
+				json = body;
+				bool = checkResponse(body);
+				if (!checkResponse(body)) {
+					throw new RequestException(body, body);
+				}
+				
+				return bool;
+			}
 
+			public void getWithJson(BiConsumer<Boolean, String> biConsumer) {
+				biConsumer.accept(get(), json);
+			}
+		};
+	}
+	
+	public synchronized Request<Session> resumeSession(String sessionId){
+		return new Request<Session>() {
+			
+			private String json = "";
+			private Session session;
+			private boolean test;
+			
+			public boolean wasRequested() {
+				return session != null;
+			}
+
+			public Session get() {
+				Session s = sessions.stream()
+						.filter(bb -> bb.getSessionId().equalsIgnoreCase(sessionId))
+						.findAny()
+						.orElse(null);
+				
+				sessions.remove(s);
+				
+				testSession(sessionId).getWithJson((b, j)-> {
+					test = b; json = j;
+				});
+				
+				if (!test) {
+					session = null;
+					throw new RequestException("You tried to resume an invalid session.", json);
+				}
+				
+				return new Session(sessionId, "", json, api);
+			}
+
+			public void getWithJson(BiConsumer<Session, String> biConsumer) {
+				biConsumer.accept(get(), json);
+			}
+		};
+	}
+	
+	public PaladinsCache getCache() {
+		return cache;
+	}
+	
+	public AccessUtils getAccessUtils() {
+		return accessUtils;
+	}
+	
+	public List<Session> getSessions(){
+		return sessions;
+	}
+	
+	public boolean checkResponse(String body) {
+		if (body.contains("Invalid Developer Id")) {
+			return false;
+		}
+		
 		if (body.contains("Invalid session id")) {
-			System.out.println("A sessão inserida não é valida.");
+			return false;
+		}
+		
+		if (body.contains("Exception while validating developer access.")) {
 			return false;
 		}
 		
 		if (body.contains("Error while comparing Server and Client timestamp")) {
-			System.out.println("Erro de timestamp: \nError while comparing Server and Client timestamp");
 			return false;
 		}
 		
 		if (body.contains("Exception - Timestamp")) {
-			System.out.println("Erro de timestamp: \nException - Timestamp");
 			return false;
 		}
-		
 		return true;
 	}
-	
-	public boolean hasValidSession(Session session) {
-		return hasValidSession(session.getSessionId());
-	}
 
-	public synchronized Map<String, String> getDataUsed(String sessionId) {
-		// getdataused[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}
-		String method = "getdataused";
-		String responseFormat = "Json";
-		String developerId = String.valueOf(getDEVID());
-		String signature = getSignature(method);
-		String timeStamp = getTimeStamp();
-
-		String url = getPATH() + "/" + complete(method + responseFormat, developerId, signature, sessionId, timeStamp);
-
-		HttpRequest requester = HttpRequest.get(url);
-		JsonElement json = new JsonParser().parse(requester.body());
-		JsonObject object = json.getAsJsonArray().get(0).getAsJsonObject();
-		Map<String, String> map = new HashMap<>();
-
-		map.put("Active_Sessions", object.get("Active_Sessions").getAsString());
-		map.put("Concurrent_Sessions", object.get("Concurrent_Sessions").getAsString());
-		map.put("Request_Limit_Daily", object.get("Request_Limit_Daily").getAsString());
-		map.put("Session_Cap", object.get("Session_Cap").getAsString());
-		map.put("Session_Time_Limit", object.get("Session_Time_Limit").getAsString());
-		map.put("Total_Requests_Today", object.get("Total_Requests_Today").getAsString());
-		map.put("Total_Sessions_Today", object.get("Total_Sessions_Today").getAsString());
-		map.put("ret_msg", object.get("ret_msg").toString());
-		map.put("json", object.toString());
-
-		return map;
-	}
-
-	public synchronized Map<String, String> getDataUsed(Session session) {
-		return getDataUsed(session.getSessionId());
-	}
-
-	public synchronized List<HirezStatus> getHirezServerStatus(String sessionId) {
-		// gethirezserverstatus[ResponseFormat]/{developerId}/{signature}/{session}/{timestamp}
-		String method = "gethirezserverstatus";
-		String responseFormat = "Json";
-		String developerId = String.valueOf(getDEVID());
-		String signature = getSignature(method);
-		String timeStamp = getTimeStamp();
-
-		String url = getPATH() + "/" + complete(method + responseFormat, developerId, signature, timeStamp);
-
-		HttpRequest requester = HttpRequest.get(url);
-		JsonElement json = new JsonParser().parse(requester.body());
-		JsonArray array = json.getAsJsonArray();
-		List<HirezStatus> list = new ArrayList<HirezStatus>();
-
-		for (JsonElement ele : array) {
-			JsonObject object = ele.getAsJsonObject();
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date = null;
-			try {
-				date = df.parse(object.get("entry_datetime").getAsString());
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-
-			list.add(new HirezStatus(date, object.get("environment").getAsString(),
-					object.get("limited_access").getAsBoolean(), object.get("platform").getAsString(),
-					object.get("status").getAsString(), object.get("version").getAsString(),
-					object.get("ret_msg").getAsString()));
-		}
-
-		return list;
-	}
-
-	public String getTimeStamp() {
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT-03:00"));
-		calendar.setTimeInMillis(timestamp.getTime());
-		calendar.add(Calendar.HOUR, 3);
-		timestamp = new Timestamp(calendar.getTime().getTime());
-		return StampFormat.format(timestamp);
-	}
-
-	public String getSignature(String metodo) {
-		try {
-			String signature = DEVID + metodo + AUTHKEY + getTimeStamp();
-			MessageDigest digest = MessageDigest.getInstance("MD5");
-			digest.update(signature.getBytes());
-			byte[] bytedigest = digest.digest();
-
-			StringBuffer buffer = new StringBuffer();
-			for (byte b : bytedigest) {
-				buffer.append(String.format("%02x", b & 0xff));
-			}
-
-			return buffer.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public String complete(String... strings) {
-		StringBuffer buffer = new StringBuffer();
-		int lenght = strings.length;
-		for (String s : strings) {
-			if (s != strings[lenght - 1]) {
-				buffer.append(s.replace(" ", "_") + (s.contains("/") ? "" : "/"));
-			} else {
-				buffer.append(s.replace(" ", "_"));
-			}
-		}
-
-		return buffer.toString();
-	}
-
-	public List<Session> getSessionsCache() {
-		return sessionsCache;
-	}
 }

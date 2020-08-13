@@ -8,11 +8,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import me.skiincraft.api.paladins.EndPoint;
-import me.skiincraft.api.paladins.entity.Request;
-import me.skiincraft.api.paladins.entity.match.Ban;
+import me.skiincraft.api.paladins.common.EndPoint;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.entity.match.MatchPlayer;
+import me.skiincraft.api.paladins.entity.match.objects.Ban;
 
 public class MatchImpl implements Match {
 

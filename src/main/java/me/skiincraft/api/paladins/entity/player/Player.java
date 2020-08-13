@@ -3,7 +3,7 @@ package me.skiincraft.api.paladins.entity.player;
 import java.util.Date;
 import java.util.List;
 
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.entity.other.Friends;
 import me.skiincraft.api.paladins.entity.player.objects.PlayerChampions;

@@ -1,7 +1,7 @@
 package me.skiincraft.api.paladins.enums;
 
-import me.skiincraft.api.paladins.EndPoint;
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.EndPoint;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.player.Player;
 
 public class PlayerStatus {

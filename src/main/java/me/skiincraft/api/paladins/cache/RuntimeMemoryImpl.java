@@ -28,6 +28,10 @@ public abstract class RuntimeMemoryImpl<T> implements RuntimeMemory<T>{
 	public Set<T> getAsSet() {
 		return Arrays.stream(item).collect(Collectors.toSet());
 	}
+	
+	public int size() {
+		return item.length;
+	}
 
 	public long lastUpdate() {
 		return new Long(lastupdate);

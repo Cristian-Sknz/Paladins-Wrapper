@@ -7,8 +7,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import me.skiincraft.api.paladins.EndPoint;
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.EndPoint;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.player.Loadout;
 import me.skiincraft.api.paladins.entity.player.Player;
@@ -32,7 +32,7 @@ public class LoadoutImpl implements Loadout {
 	}
 
 	public Request<Champion> getChampion() {
-		return endPoint.getChampion(getChampionId());
+		return endPoint.getChampion(getChampionId(), getLanguage());
 	}
 
 	public String getDeckname() {

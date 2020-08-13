@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import me.skiincraft.api.paladins.EndPoint;
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.EndPoint;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.entity.other.Friends;
 import me.skiincraft.api.paladins.entity.player.Player;

@@ -2,7 +2,8 @@ package me.skiincraft.api.paladins.entity.match;
 
 import java.util.List;
 
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.Request;
+import me.skiincraft.api.paladins.entity.match.objects.Ban;
 
 public interface Match {
 	

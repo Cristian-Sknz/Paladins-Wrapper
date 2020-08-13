@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import me.skiincraft.api.paladins.EndPoint;
+import me.skiincraft.api.paladins.common.EndPoint;
 import me.skiincraft.api.paladins.entity.leaderboard.LeaderBoard;
 import me.skiincraft.api.paladins.enums.Tier;
 import me.skiincraft.api.paladins.objects.Place;

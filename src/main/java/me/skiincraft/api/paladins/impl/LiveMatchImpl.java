@@ -3,7 +3,7 @@ package me.skiincraft.api.paladins.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.skiincraft.api.paladins.EndPoint;
+import me.skiincraft.api.paladins.common.EndPoint;
 import me.skiincraft.api.paladins.entity.match.LiveMatch;
 import me.skiincraft.api.paladins.entity.match.LivePlayer;
 

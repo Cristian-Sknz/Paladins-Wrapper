@@ -2,7 +2,7 @@ package me.skiincraft.api.paladins.entity.player;
 
 import java.util.Date;
 
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 
 public interface QueueChampion {

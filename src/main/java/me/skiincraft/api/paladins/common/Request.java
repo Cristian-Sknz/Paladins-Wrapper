@@ -1,4 +1,4 @@
-package me.skiincraft.api.paladins.entity;
+package me.skiincraft.api.paladins.common;
 
 import java.util.function.BiConsumer;
 

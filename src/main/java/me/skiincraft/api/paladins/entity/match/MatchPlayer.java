@@ -1,6 +1,6 @@
 package me.skiincraft.api.paladins.entity.match;
 
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.match.objects.ActiveItems;
 import me.skiincraft.api.paladins.entity.match.objects.Damage;
 import me.skiincraft.api.paladins.entity.player.Player;

@@ -5,11 +5,12 @@ import java.util.concurrent.TimeUnit;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import me.skiincraft.api.paladins.EndPoint;
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.EndPoint;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.entity.player.PlayerChampion;
+import me.skiincraft.api.paladins.enums.Language;
 
 public class PlayerChampionImpl implements PlayerChampion {
 
@@ -25,8 +26,8 @@ public class PlayerChampionImpl implements PlayerChampion {
 		return object.get(key);
 	}
 	
-	public Request<Champion> getChampion() {
-		return endPoint.getChampion(getChampionId());
+	public Request<Champion> getChampion(Language language) {
+		return endPoint.getChampion(getChampionId(), language);
 	}
 
 	public int getChampionLevel() {

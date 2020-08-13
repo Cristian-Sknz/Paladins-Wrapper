@@ -2,15 +2,15 @@ package me.skiincraft.api.paladins.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.SimpleTimeZone;
 
 public class AccessUtils {
 
 	private Integer devId;
 	private String authKey;
 	private static final String ENDPOINT = "http://api.paladins.com/paladinsapi.svc";
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 	
 	public AccessUtils(int devId, String authkey) {
 		this.devId = devId;
@@ -89,8 +89,9 @@ public class AccessUtils {
 	}
 	
 	public String getTimeStamp() {
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		return dateFormat.format(timestamp);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+		return sdf.format(new Date());
 	}
 	
 	public String getSignature(String method) {

@@ -1,10 +1,11 @@
 package me.skiincraft.api.paladins.impl;
 
-import me.skiincraft.api.paladins.EndPoint;
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.EndPoint;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.match.LivePlayer;
 import me.skiincraft.api.paladins.entity.player.Player;
+import me.skiincraft.api.paladins.enums.Language;
 import me.skiincraft.api.paladins.enums.Tier;
 import me.skiincraft.api.paladins.objects.LeagueSeason;
 
@@ -20,8 +21,8 @@ public class LivePlayerImpl implements LivePlayer{
 		this.endPoint = endPoint;
 	}
 
-	public Request<Champion> getChampion() {
-		return endPoint.getChampion(object.get("ChampionId").getAsLong());
+	public Request<Champion> getChampion(Language language) {
+		return endPoint.getChampion(object.get("ChampionId").getAsLong(), language);
 	}
 
 	public int getChampionLevel() {

@@ -3,8 +3,8 @@ package me.skiincraft.api.paladins.impl;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import me.skiincraft.api.paladins.EndPoint;
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.EndPoint;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.other.Friend;
 import me.skiincraft.api.paladins.entity.player.Player;
 

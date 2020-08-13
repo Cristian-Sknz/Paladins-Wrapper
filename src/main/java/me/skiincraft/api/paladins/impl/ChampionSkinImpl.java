@@ -3,10 +3,11 @@ package me.skiincraft.api.paladins.impl;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import me.skiincraft.api.paladins.EndPoint;
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.EndPoint;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.champions.objects.ChampionSkin;
+import me.skiincraft.api.paladins.enums.Language;
 import me.skiincraft.api.paladins.enums.Rarity;
 
 public class ChampionSkinImpl implements ChampionSkin {
@@ -23,8 +24,8 @@ public class ChampionSkinImpl implements ChampionSkin {
 		return object.get(key);
 	}
 	
-	public Request<Champion> getChampion() {
-		return endPoint.getChampion(get("champion_id").getAsLong());
+	public Request<Champion> getChampion(Language language) {
+		return endPoint.getChampion(get("champion_id").getAsLong(), language);
 	}
 
 	public String getChampionname() {

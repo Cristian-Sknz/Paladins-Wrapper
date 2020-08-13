@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import me.skiincraft.api.paladins.common.CustomList;
-import me.skiincraft.api.paladins.entity.Request;
+import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.player.objects.PlayerBatch;
 
 public class Friends implements CustomList<Friend> {
