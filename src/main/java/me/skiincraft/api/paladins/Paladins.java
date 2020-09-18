@@ -172,7 +172,7 @@ public class Paladins {
 		return sessions;
 	}
 	
-	public boolean checkResponse(String body) {
+	private boolean checkResponse(String body) {
 		if (body.contains("Invalid Developer Id")) {
 			return false;
 		}
