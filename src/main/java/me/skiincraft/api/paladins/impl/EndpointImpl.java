@@ -72,7 +72,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Player> getPlayer(String player) {
-		return new Request<>() {
+		return new Request<Player>() {
 			private String json;
 			private Player play;
 			
@@ -99,7 +99,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<SearchResults> searchPlayer(String queue, Platform platform) {
-		return new Request<>() {
+		return new Request<SearchResults>() {
 			
 			private SearchResults searchResults;
 			private String json;
@@ -139,7 +139,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<PlayerStatus> getPlayerStatus(String player) {
-		return new Request<>() {
+		return new Request<PlayerStatus>() {
 			
 			private PlayerStatus playerStatus;
 			private String json;
@@ -170,7 +170,7 @@ public class EndpointImpl implements EndPoint {
 	}
 	
 	public Request<Champions> getChampions(Language language) {
-		return new Request<>() {
+		return new Request<Champions>() {
 
 			private Champions champions;
 			private String json;
@@ -220,7 +220,7 @@ public class EndpointImpl implements EndPoint {
 	}
 	
 	public Request<Champion> getChampion(long championId, Language language) {
-		return new Request<>() {
+		return new Request<Champion>() {
 			
 			private Champion champion;
 			private String json;
@@ -265,7 +265,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Champion> getChampion(String championName, Language language) {
-		return new Request<>() {
+		return new Request<Champion>() {
 			
 			private Champion champion;
 			private String json;
@@ -313,7 +313,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Cards> getChampionCards(long championsId, Language language) {
-		return new Request<>() {
+		return new Request<Cards>() {
 
 			private Cards cards;
 			private String json;
@@ -367,7 +367,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Skins> getChampionSkin(long championsId, Language language) {
-		return new Request<>() {
+		return new Request<Skins>() {
 
 			private Skins skins;
 			private String json;
@@ -402,7 +402,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<PlayerBatch> getPlayerBatch(List<Long> id) {
-		return new Request<>() {
+		return new Request<PlayerBatch>() {
 			
 			private PlayerBatch playerBatch;
 			private String json;
@@ -449,7 +449,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<PlayerChampions> getPlayerChampions(long user_id) {
-		return new Request<>() {
+		return new Request<PlayerChampions>() {
 			
 			private PlayerChampions playerChampions;
 			private String json;
@@ -483,7 +483,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Friends> getFriends(long userId) {
-		return new Request<>() {
+		return new Request<Friends>() {
 			
 			private Friends friends;
 			private String json;
@@ -516,7 +516,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Loadouts> getLoadouts(long userId, Language language) {
-		return new Request<>() {
+		return new Request<Loadouts>() {
 			
 			private Loadouts loadouts;
 			private String json;
@@ -550,7 +550,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Match> getMatchDetails(long matchId) {
-		return new Request<>() {
+		return new Request<Match>() {
 
 			private Match match;
 			private String json;
@@ -578,7 +578,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<List<Match>> getMatchDetails(List<Long> matchbatch) {
-		return new Request<>() {
+		return new Request<List<Match>>() {
 
 			private String json;
 			private List<Match> matchs;
@@ -629,7 +629,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<List<Match>> getMatchHistory(long playerId) {
-		return new Request<>() {
+		return new Request<List<Match>>() {
 			private List<Match> matchs;
 			private String json;
 			
@@ -661,7 +661,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<LeaderBoard> getLeaderboard(Tier tier, int season) {
-		return new Request<>() {
+		return new Request<LeaderBoard>() {
 
 			private LeaderBoard leaderboard;
 			private String json;
@@ -704,7 +704,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<LiveMatch> getMatchPlayerDetails(long matchId) {
-		return new Request<>() {
+		return new Request<LiveMatch>() {
 			
 			private LiveMatch liveMatch;
 			private String json;

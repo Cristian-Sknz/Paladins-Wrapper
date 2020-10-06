@@ -32,17 +32,17 @@ public class Paladins {
 	public Paladins(int devId, String authkey) {
 		accessUtils = new AccessUtils(devId, authkey);
 		sessions = new ArrayList<>();
-		cache = new PaladinsCacheImpl(new RuntimeMemoryImpl<>(new Champions[0]) {
+		cache = new PaladinsCacheImpl(new RuntimeMemoryImpl<Champions>(new Champions[0]) {
 
 			public Champions getById(long id) {
 				return getAsList().stream().filter(i -> i.getLanguage().getLanguagecode() == id).findAny().orElse(null);
 			}
-		}, new RuntimeMemoryImpl<>(new Match[0]) {
+		}, new RuntimeMemoryImpl<Match>(new Match[0]) {
 
 			public Match getById(long id) {
 				return getAsList().stream().filter(i -> i.getMatchId() == id).findAny().orElse(null);
 			}
-		}, new RuntimeMemoryImpl<>(new Cards[0]) {
+		}, new RuntimeMemoryImpl<Cards>(new Cards[0]) {
 
 			public Cards getById(long id) {
 				return getAsList().stream().filter(i -> i.getChampionCardId() == id).findAny().orElse(null);
@@ -51,7 +51,7 @@ public class Paladins {
 	}
 	
 	public synchronized Request<Session> createSession() throws RequestException {
-		return new Request<>() {
+		return new Request<Session>() {
 			private Session session;
 			private String json;
 			
@@ -90,7 +90,7 @@ public class Paladins {
 	}
 	
 	public synchronized Request<Boolean> testSession(String sessionId){
-		return new Request<>() {
+		return new Request<Boolean>() {
 
 			private boolean bool;
 			private String json;
@@ -115,7 +115,7 @@ public class Paladins {
 	}
 	
 	public synchronized Request<Session> resumeSession(String sessionId){
-		return new Request<>() {
+		return new Request<Session>() {
 			
 			private String json = "";
 			private Session session;
