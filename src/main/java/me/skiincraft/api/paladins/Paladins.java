@@ -11,7 +11,6 @@ import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.common.Session;
 import me.skiincraft.api.paladins.entity.champions.Champions;
 import me.skiincraft.api.paladins.entity.match.Match;
-import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.exceptions.RequestException;
 import me.skiincraft.api.paladins.utils.AccessUtils;
 import me.skiincraft.api.paladins.entity.champions.objects.Cards;
@@ -24,44 +23,35 @@ import com.google.gson.JsonParser;
 
 public class Paladins {
 	
-	private AccessUtils accessUtils;
-	private PaladinsCache cache;
+	private final AccessUtils accessUtils;
+	private final PaladinsCache cache;
 	private final Paladins api = this;
 	
-	private List<Session> sessions;
+	private final List<Session> sessions;
 	
 	public Paladins(int devId, String authkey) {
 		accessUtils = new AccessUtils(devId, authkey);
 		sessions = new ArrayList<>();
-		cache = new PaladinsCacheImpl(
-				new RuntimeMemoryImpl<Champions>(new Champions[0]) {
+		cache = new PaladinsCacheImpl(new RuntimeMemoryImpl<>(new Champions[0]) {
 
-					public Champions getById(long id) {
-						return getAsList().stream().filter(i -> i.getLanguage().getLanguagecode() == id).findAny().orElse(null);
-					}
-				},
-				new RuntimeMemoryImpl<Player>(new Player[0]) {
+			public Champions getById(long id) {
+				return getAsList().stream().filter(i -> i.getLanguage().getLanguagecode() == id).findAny().orElse(null);
+			}
+		}, new RuntimeMemoryImpl<>(new Match[0]) {
 
-					public Player getById(long id) {
-						return getAsList().stream().filter(i -> i.getId() == id).findAny().orElse(null);
-					}
-				},
-				new RuntimeMemoryImpl<Match>(new Match[0]) {
+			public Match getById(long id) {
+				return getAsList().stream().filter(i -> i.getMatchId() == id).findAny().orElse(null);
+			}
+		}, new RuntimeMemoryImpl<>(new Cards[0]) {
 
-					public Match getById(long id) {
-						return getAsList().stream().filter(i -> i.getMatchId() == id).findAny().orElse(null);
-					}
-				},
-				new RuntimeMemoryImpl<Cards>(new Cards[0]) {
-
-					public Cards getById(long id) {
-						return getAsList().stream().filter(i -> i.getChampionCardId() == id).findAny().orElse(null);
-					}
-				});
+			public Cards getById(long id) {
+				return getAsList().stream().filter(i -> i.getChampionCardId() == id).findAny().orElse(null);
+			}
+		});
 	}
 	
 	public synchronized Request<Session> createSession() throws RequestException {
-		return new Request<Session>() {
+		return new Request<>() {
 			private Session session;
 			private String json;
 			
@@ -83,6 +73,7 @@ public class Paladins {
 					if (retMsg.equalsIgnoreCase("Approved")) {
 						session = new Session(object.get("session_id").getAsString(), retMsg,
 								object.get("timestamp").getAsString(), api);
+						sessions.add(session);
 						return session;
 					}
 					
@@ -99,8 +90,8 @@ public class Paladins {
 	}
 	
 	public synchronized Request<Boolean> testSession(String sessionId){
-		return new Request<Boolean>() {
-			
+		return new Request<>() {
+
 			private boolean bool;
 			private String json;
 
@@ -110,10 +101,10 @@ public class Paladins {
 				String body = request.body();
 				json = body;
 				bool = checkResponse(body);
-				if (!checkResponse(body)) {
+				if (!bool) {
 					throw new RequestException(body, body);
 				}
-				
+
 				return bool;
 			}
 
@@ -124,7 +115,7 @@ public class Paladins {
 	}
 	
 	public synchronized Request<Session> resumeSession(String sessionId){
-		return new Request<Session>() {
+		return new Request<>() {
 			
 			private String json = "";
 			private Session session;
@@ -188,11 +179,8 @@ public class Paladins {
 		if (body.contains("Error while comparing Server and Client timestamp")) {
 			return false;
 		}
-		
-		if (body.contains("Exception - Timestamp")) {
-			return false;
-		}
-		return true;
+
+		return !body.contains("Exception - Timestamp");
 	}
 
 }

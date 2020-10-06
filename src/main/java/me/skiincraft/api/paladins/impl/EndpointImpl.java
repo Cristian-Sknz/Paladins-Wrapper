@@ -46,15 +46,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import javax.annotation.Nonnull;
+
 
 public class EndpointImpl implements EndPoint {
 	
-	private Session session;
-	private Paladins paladins;
-	private PaladinsCache paladinsCache;
+	private final Session session;
+	private final Paladins paladins;
+	private final PaladinsCache paladinsCache;
 	private final EndPoint api;
 	
-	private PaladinsCacheImpl cacheImpl;
+	private final PaladinsCacheImpl cacheImpl;
 	
 
 	public EndpointImpl(Session session) {
@@ -69,12 +71,8 @@ public class EndpointImpl implements EndPoint {
 		return paladins.getAccessUtils().makeUrl(method, session.getSessionId(), args);
 	}
 
-	public Request<Player> getPlayer(long userId) {
-		return getPlayer(String.valueOf(userId));
-	}
-
 	public Request<Player> getPlayer(String player) {
-		return new Request<Player>() {
+		return new Request<>() {
 			private String json;
 			private Player play;
 			
@@ -90,8 +88,6 @@ public class EndpointImpl implements EndPoint {
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
 
 					play = new PlayerImpl(array.get(0).getAsJsonObject(), api);
-					
-					cacheImpl.addPlayer(play);
 				}
 				return this.play;
 			}
@@ -103,7 +99,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<SearchResults> searchPlayer(String queue, Platform platform) {
-		return new Request<SearchResults>() {
+		return new Request<>() {
 			
 			private SearchResults searchResults;
 			private String json;
@@ -131,16 +127,11 @@ public class EndpointImpl implements EndPoint {
 								(object.get("hz_player_name").isJsonNull()) ? ""
 										: object.get("hz_player_name").getAsString(),
 								object.get("portal_id").getAsInt(),
-								(object.get("privacy_flag").getAsString().equalsIgnoreCase("y")) ? true : false));
+								object.get("privacy_flag").getAsString().equalsIgnoreCase("y")));
 					}
-
-					if (platform != null) {
-						searchResults = new SearchResults(searchPlayers.stream()
-								.filter(s -> Platform.getPlatformByPortalId(s.getPortalId()) == platform)
-								.collect(Collectors.toList()));
-					} else {
-						searchResults = new SearchResults(searchPlayers);
-					}
+					searchResults = (platform != null) ?new SearchResults(searchPlayers.stream()
+							.filter(s -> Platform.getPlatformByPortalId(s.getPortalId()) == platform)
+							.collect(Collectors.toList())) : new SearchResults(searchPlayers);
 				}
 				return searchResults;
 			}
@@ -148,7 +139,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<PlayerStatus> getPlayerStatus(String player) {
-		return new Request<PlayerStatus>() {
+		return new Request<>() {
 			
 			private PlayerStatus playerStatus;
 			private String json;
@@ -179,7 +170,7 @@ public class EndpointImpl implements EndPoint {
 	}
 	
 	public Request<Champions> getChampions(Language language) {
-		return new Request<Champions>() {
+		return new Request<>() {
 
 			private Champions champions;
 			private String json;
@@ -229,7 +220,7 @@ public class EndpointImpl implements EndPoint {
 	}
 	
 	public Request<Champion> getChampion(long championId, Language language) {
-		return new Request<Champion>() {
+		return new Request<>() {
 			
 			private Champion champion;
 			private String json;
@@ -274,7 +265,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Champion> getChampion(String championName, Language language) {
-		return new Request<Champion>() {
+		return new Request<>() {
 			
 			private Champion champion;
 			private String json;
@@ -322,7 +313,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Cards> getChampionCards(long championsId, Language language) {
-		return new Request<Cards>() {
+		return new Request<>() {
 
 			private Cards cards;
 			private String json;
@@ -346,7 +337,7 @@ public class EndpointImpl implements EndPoint {
 			public Cards get() {
 				if (existsOnCache()) {
 					Stream<Cards> cardstream = paladinsCache.getCardCache().getAsList().stream();
-					cards = cardstream.filter(o -> o.getChampionCardId() == championsId && o.getCardsLanguage() == language).findAny().get();
+					cards = cardstream.filter(o -> championsId == o.getChampionCardId() && o.getCardsLanguage() == language).findAny().orElse(null);
 					return cards;
 				}
 				
@@ -376,7 +367,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Skins> getChampionSkin(long championsId, Language language) {
-		return new Request<Skins>() {
+		return new Request<>() {
 
 			private Skins skins;
 			private String json;
@@ -411,7 +402,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<PlayerBatch> getPlayerBatch(List<Long> id) {
-		return new Request<PlayerBatch>() {
+		return new Request<>() {
 			
 			private PlayerBatch playerBatch;
 			private String json;
@@ -424,7 +415,7 @@ public class EndpointImpl implements EndPoint {
 				if (!wasRequested()) {
 					final long ultimovalor = id.get(id.size() -1);
 					
-					StringBuffer buffer = new StringBuffer();
+					StringBuilder buffer = new StringBuilder();
 					List<String> string = id.stream().map(o -> {
 						if (ultimovalor != o) {
 							return o + ",";
@@ -434,7 +425,7 @@ public class EndpointImpl implements EndPoint {
 					}).collect(Collectors.toList());
 					
 					
-					string.forEach(i -> buffer.append(i));
+					string.forEach(buffer::append);
 					String url = makeUrl("getplayerbatch", new String[] { buffer.toString() });
 					HttpRequest request = HttpRequest.get(url);
 					
@@ -458,7 +449,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<PlayerChampions> getPlayerChampions(long user_id) {
-		return new Request<PlayerChampions>() {
+		return new Request<>() {
 			
 			private PlayerChampions playerChampions;
 			private String json;
@@ -492,7 +483,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Friends> getFriends(long userId) {
-		return new Request<Friends>() {
+		return new Request<>() {
 			
 			private Friends friends;
 			private String json;
@@ -525,7 +516,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Loadouts> getLoadouts(long userId, Language language) {
-		return new Request<Loadouts>() {
+		return new Request<>() {
 			
 			private Loadouts loadouts;
 			private String json;
@@ -559,7 +550,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<Match> getMatchDetails(long matchId) {
-		return new Request<Match>() {
+		return new Request<>() {
 
 			private Match match;
 			private String json;
@@ -587,7 +578,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<List<Match>> getMatchDetails(List<Long> matchbatch) {
-		return new Request<List<Match>>() {
+		return new Request<>() {
 
 			private String json;
 			private List<Match> matchs;
@@ -599,7 +590,7 @@ public class EndpointImpl implements EndPoint {
 			public List<Match> get() {
 				final long ultimovalor = matchbatch.get(matchbatch.size() -1);
 				
-				StringBuffer buffer = new StringBuffer();
+				StringBuilder buffer = new StringBuilder();
 				List<String> string = matchbatch.stream().map(o -> {
 					if (ultimovalor != o) {
 						return o + ",";
@@ -609,7 +600,7 @@ public class EndpointImpl implements EndPoint {
 				}).collect(Collectors.toList());
 				
 				
-				string.forEach(i -> buffer.append(i));
+				string.forEach(buffer::append);
 				String url = makeUrl("getmatchdetailsbatch", new String[] { buffer.toString() });
 				HttpRequest request = HttpRequest.get(url);
 				
@@ -638,7 +629,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<List<Match>> getMatchHistory(long playerId) {
-		return new Request<List<Match>>() {
+		return new Request<>() {
 			private List<Match> matchs;
 			private String json;
 			
@@ -670,7 +661,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<LeaderBoard> getLeaderboard(Tier tier, int season) {
-		return new Request<LeaderBoard>() {
+		return new Request<>() {
 
 			private LeaderBoard leaderboard;
 			private String json;
@@ -713,7 +704,7 @@ public class EndpointImpl implements EndPoint {
 	}
 
 	public Request<LiveMatch> getMatchPlayerDetails(long matchId) {
-		return new Request<LiveMatch>() {
+		return new Request<>() {
 			
 			private LiveMatch liveMatch;
 			private String json;

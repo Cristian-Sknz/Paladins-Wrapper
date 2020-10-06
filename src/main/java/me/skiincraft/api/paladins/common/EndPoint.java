@@ -24,24 +24,26 @@ import me.skiincraft.api.paladins.enums.Tier;
 
 public interface EndPoint {
 	
-	Request<Player> getPlayer(@Nonnull long userId);
-	Request<Player> getPlayer(@Nonnull String player);
-	Request<SearchResults> searchPlayer(@Nonnull String queue, @Nonnull Platform platform);
-	Request<PlayerStatus> getPlayerStatus(@Nonnull String player);
-	Request<Champions> getChampions(@Nonnull Language language);
- 	Request<Champion> getChampion(@Nonnull long championId, @Nonnull Language language);
-	Request<Champion> getChampion(@Nonnull String championName, @Nonnull Language language);
-	Request<Cards> getChampionCards(@Nonnull long championsId, @Nonnull Language language);
-	Request<Skins> getChampionSkin(@Nonnull long championsId, @Nonnull Language language);
-	Request<PlayerBatch> getPlayerBatch(@Nonnull List<Long> id);
-	Request<PlayerChampions> getPlayerChampions(@Nonnull long user_id);
-	Request<Friends> getFriends(@Nonnull long userId);
-	Request<Loadouts> getLoadouts(@Nonnull long userId, @Nonnull Language language);
-	Request<Match> getMatchDetails(@Nonnull long matchId);
-	Request<List<Match>> getMatchDetails(@Nonnull List<Long> matchbatch);
-	Request<List<Match>> getMatchHistory(@Nonnull long playerId);
-	Request<LeaderBoard> getLeaderboard(@Nonnull Tier tier, @Nonnull int season);
-	Request<LiveMatch> getMatchPlayerDetails(@Nonnull long matchId);
+	default Request<Player> getPlayer(long userId) {
+		return getPlayer(String.valueOf(userId));
+	}
+	Request<Player> getPlayer(String player);
+	Request<SearchResults> searchPlayer(String queue, Platform platform);
+	Request<PlayerStatus> getPlayerStatus(String player);
+	Request<Champions> getChampions(Language language);
+ 	Request<Champion> getChampion(long championId, Language language);
+	Request<Champion> getChampion(String championName, Language language);
+	Request<Cards> getChampionCards(long championsId, Language language);
+	Request<Skins> getChampionSkin(long championsId, Language language);
+	Request<PlayerBatch> getPlayerBatch(List<Long> id);
+	Request<PlayerChampions> getPlayerChampions(long user_id);
+	Request<Friends> getFriends(long userId);
+	Request<Loadouts> getLoadouts(long userId, Language language);
+	Request<Match> getMatchDetails(long matchId);
+	Request<List<Match>> getMatchDetails(List<Long> matchbatch);
+	Request<List<Match>> getMatchHistory(long playerId);
+	Request<LeaderBoard> getLeaderboard(Tier tier, int season);
+	Request<LiveMatch> getMatchPlayerDetails(long matchId);
 	
 	Session getSession();
 }

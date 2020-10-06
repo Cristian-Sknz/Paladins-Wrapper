@@ -8,29 +8,22 @@ import java.util.stream.Collectors;
 import me.skiincraft.api.paladins.entity.champions.Champions;
 import me.skiincraft.api.paladins.entity.champions.objects.Cards;
 import me.skiincraft.api.paladins.entity.match.Match;
-import me.skiincraft.api.paladins.entity.player.Player;
 
 public class PaladinsCacheImpl implements PaladinsCache {
 
-	private RuntimeMemory<Champions> championMemory;
-	private RuntimeMemory<Player> playerMemory;
-	private RuntimeMemory<Match> matchMemory;
-	private RuntimeMemory<Cards> cardsMemory;
+	private final RuntimeMemory<Champions> championMemory;
+	private final RuntimeMemory<Match> matchMemory;
+	private final RuntimeMemory<Cards> cardsMemory;
 
-	public PaladinsCacheImpl(RuntimeMemory<Champions> champ, RuntimeMemory<Player> player, RuntimeMemory<Match> match,
+	public PaladinsCacheImpl(RuntimeMemory<Champions> champ, RuntimeMemory<Match> match,
 			RuntimeMemory<Cards> cards) {
 		this.championMemory = champ;
 		this.matchMemory = match;
-		this.playerMemory = player;
 		this.cardsMemory = cards;
 	}
 
 	public RuntimeMemory<Champions> getChampionsCache() {
 		return championMemory;
-	}
-
-	public RuntimeMemory<Player> getPlayerCache() {
-		return playerMemory;
 	}
 
 	public RuntimeMemory<Match> getMatchCache() {
@@ -44,7 +37,7 @@ public class PaladinsCacheImpl implements PaladinsCache {
 	public synchronized void addChampion(Champions champion) {
 		RuntimeMemoryImpl<Champions> impl = (RuntimeMemoryImpl<Champions>) championMemory;
 		Champions[] c = impl.item;
-		List<Champions> cc = new ArrayList<Champions>(Arrays.asList(c));
+		List<Champions> cc = new ArrayList<>(Arrays.asList(c));
 
 		// Remove the last element
 		List<Champions> r = cc.stream().filter(cham -> cham.getLanguage() == champion.getLanguage()).collect(Collectors.toList());
@@ -54,20 +47,8 @@ public class PaladinsCacheImpl implements PaladinsCache {
 		cc.add(champion);
 
 		impl.lastupdate = System.currentTimeMillis();
-		
-		impl.item = cc.toArray(new Champions[cc.size()]);
-	}
 
-	public synchronized void addPlayer(Player player) {
-		RuntimeMemoryImpl<Player> impl = (RuntimeMemoryImpl<Player>) playerMemory;
-		Player[] c = impl.item;
-		List<Player> cc = Arrays.asList(c);
-		// Remove the last element
-		cc.removeAll(cc.stream().filter(cham -> cham.getId() == player.getId()).collect(Collectors.toList()));
-		cc.add(player);
-
-		impl.lastupdate = System.currentTimeMillis();
-		impl.item = cc.toArray(new Player[cc.size()]);
+		impl.item = cc.toArray(new Champions[0]);
 	}
 
 	public synchronized void addMatch(Match match) {
@@ -79,7 +60,7 @@ public class PaladinsCacheImpl implements PaladinsCache {
 		cc.removeAll(cc.stream().filter(cham -> cham.getMatchId() == cham.getMatchId()).collect(Collectors.toList()));
 
 		impl.lastupdate = System.currentTimeMillis();
-		impl.item = cc.toArray(new Match[cc.size()]);
+		impl.item = cc.toArray(new Match[0]);
 	}
 
 	public synchronized void addCard(Cards cards) {
@@ -99,6 +80,6 @@ public class PaladinsCacheImpl implements PaladinsCache {
 		cc.add(cards);
 
 		impl.lastupdate = System.currentTimeMillis();
-		impl.item = cc.toArray(new Cards[cc.size()]);
+		impl.item = cc.toArray(new Cards[0]);
 	}
 }

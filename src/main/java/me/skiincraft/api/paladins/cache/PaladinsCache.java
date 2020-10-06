@@ -8,7 +8,6 @@ import me.skiincraft.api.paladins.entity.player.Player;
 public interface PaladinsCache {
 	
 	RuntimeMemory<Champions> getChampionsCache();
-	RuntimeMemory<Player> getPlayerCache();
 	RuntimeMemory<Match> getMatchCache();
 	RuntimeMemory<Cards> getCardCache();
 
