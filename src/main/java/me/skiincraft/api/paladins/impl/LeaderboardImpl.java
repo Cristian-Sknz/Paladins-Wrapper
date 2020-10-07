@@ -42,7 +42,9 @@ public class LeaderboardImpl implements LeaderBoard {
 					object.get("Season").getAsInt(),
 					tier,
 					object.get("player_id").getAsInt(),
-					object.get("Trend").getAsInt(), endPoint);
+					object.get("Trend").getAsInt(),
+					i+1,
+					endPoint);
 		}
 		this.tier = tier;
 	}

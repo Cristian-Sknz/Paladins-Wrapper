@@ -47,9 +47,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import javax.annotation.Nonnull;
-
-
 public class EndpointImpl implements EndPoint {
 	
 	private final Session session;
@@ -794,6 +791,7 @@ public class EndpointImpl implements EndPoint {
 					}
 
 					List<Place> place = new ArrayList<>();
+					int i = 1;
 					for (JsonElement element : array) {
 						JsonObject object = element.getAsJsonObject();
 						place.add(new Place(
@@ -806,7 +804,9 @@ public class EndpointImpl implements EndPoint {
 								tier,
 								object.get("player_id").getAsInt(),
 								object.get("Trend").getAsInt(),
+								i,
 								api));
+						i++;
 					}
 					leaderboard = new LeaderboardImpl(place, tier);
 				}

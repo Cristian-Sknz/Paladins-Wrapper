@@ -116,7 +116,7 @@ public class PlayerImpl implements Player {
 	}
 
 	public RankedKBM getRankedKBM() {
-		JsonObject ranked = get("RankedController").getAsJsonObject();
+		JsonObject ranked = get("RankedKBM").getAsJsonObject();
 		
 		LeagueSeason l = new LeagueSeason(ranked.get("Wins").getAsInt(), ranked.get("Losses").getAsInt(), ranked.get("Points").getAsInt(), Tier.getTierById(ranked.get("Tier").getAsInt()));
 		return new RankedKBM(l,

@@ -16,13 +16,14 @@ public class Place {
 	private int points;
 	private int season;
 	private int trend;
+	private int position;
 	
 	private EndPoint endPoint;
 	
 	private Tier tier;
 
 	public Place(String username, int wins, int losses, int leaves, int points, int season, Tier tier,
-			long userId, int trend, EndPoint endPoint) {
+			long userId, int trend,int position, EndPoint endPoint) {
 		this.username = (username != "") ?username: "???";
 		this.wins = wins;
 		this.losses = losses;
@@ -32,6 +33,7 @@ public class Place {
 		this.tier = tier;
 		this.userId = userId;
 		this.trend = trend;
+		this.position = position;
 		this.endPoint = endPoint;
 	}
 
@@ -70,18 +72,24 @@ public class Place {
 	public int getTrend() {
 		return trend;
 	}
-	
+
+	public int getPosition() { return position;	}
+
 	public Request<Player> getPlayer(){
 		return endPoint.getPlayer(getUserId());
 	}
 
 	@Override
 	public String toString() {
-		return "LeaderboardPlaces [username=" + username + ", wins=" + wins + ", losses=" + losses + ", leaves="
-				+ leaves + ", points=" + points + ", season=" + season + ", tier=" + tier + ", userId=" + userId
-				+ ", trend=" + trend + "]";
+		return "Place{" +
+				"username='" + username + '\'' +
+				", userId=" + userId +
+				", wins=" + wins +
+				", losses=" + losses +
+				", points=" + points +
+				", season=" + season +
+				", position=" + position +
+				", tier=" + tier +
+				'}';
 	}
-
-	
-
 }
