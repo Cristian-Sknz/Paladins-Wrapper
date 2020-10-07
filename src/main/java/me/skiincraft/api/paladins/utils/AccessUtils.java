@@ -16,6 +16,26 @@ public class AccessUtils {
 		this.devId = devId;
 		this.authKey = authkey;
 	}
+
+	public boolean checkResponse(String body) {
+		if (body.contains("Invalid Developer Id")) {
+			return false;
+		}
+
+		if (body.contains("Invalid session id")) {
+			return false;
+		}
+
+		if (body.contains("Exception while validating developer access.")) {
+			return false;
+		}
+
+		if (body.contains("Error while comparing Server and Client timestamp")) {
+			return false;
+		}
+
+		return !body.contains("Exception - Timestamp");
+	}
 	
 	public String getAuthKey() {
 		return authKey;

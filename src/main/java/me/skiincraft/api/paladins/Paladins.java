@@ -100,7 +100,7 @@ public class Paladins {
 				HttpRequest request = HttpRequest.get(url);
 				String body = request.body();
 				json = body;
-				bool = checkResponse(body);
+				bool = accessUtils.checkResponse(body);
 				if (!bool) {
 					throw new RequestException(body, body);
 				}
@@ -167,26 +167,6 @@ public class Paladins {
 	
 	public List<Session> getSessions(){
 		return sessions;
-	}
-	
-	private boolean checkResponse(String body) {
-		if (body.contains("Invalid Developer Id")) {
-			return false;
-		}
-		
-		if (body.contains("Invalid session id")) {
-			return false;
-		}
-		
-		if (body.contains("Exception while validating developer access.")) {
-			return false;
-		}
-		
-		if (body.contains("Error while comparing Server and Client timestamp")) {
-			return false;
-		}
-
-		return !body.contains("Exception - Timestamp");
 	}
 
 }

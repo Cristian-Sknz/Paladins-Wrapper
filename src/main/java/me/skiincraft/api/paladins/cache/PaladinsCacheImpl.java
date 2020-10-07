@@ -54,7 +54,7 @@ public class PaladinsCacheImpl implements PaladinsCache {
 	public synchronized void addMatch(Match match) {
 		RuntimeMemoryImpl<Match> impl = (RuntimeMemoryImpl<Match>) matchMemory;
 		Match[] c = impl.item;
-		List<Match> cc = Arrays.asList(c);
+		List<Match> cc = new ArrayList<>(Arrays.asList(c));
 		cc.add(match);
 		// Remove the last element
 		cc.removeAll(cc.stream().filter(cham -> cham.getMatchId() == cham.getMatchId()).collect(Collectors.toList()));
@@ -70,7 +70,7 @@ public class PaladinsCacheImpl implements PaladinsCache {
 		}
 		
 		Cards[] c = impl.item;
-		List<Cards> cc = Arrays.asList(c);
+		List<Cards> cc = new ArrayList<>(Arrays.asList(c));
 		// Remove the last element
 		cc.removeAll(
 				cc.stream()

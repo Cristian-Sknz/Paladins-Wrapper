@@ -35,6 +35,7 @@ import me.skiincraft.api.paladins.enums.PlayerStatus;
 import me.skiincraft.api.paladins.enums.PlayerStatus.Status;
 import me.skiincraft.api.paladins.enums.Queue;
 import me.skiincraft.api.paladins.enums.Tier;
+import me.skiincraft.api.paladins.exceptions.*;
 import me.skiincraft.api.paladins.objects.Card;
 import me.skiincraft.api.paladins.objects.Place;
 import me.skiincraft.api.paladins.objects.SearchPlayer;
@@ -87,6 +88,14 @@ public class EndpointImpl implements EndPoint {
 					json = request.body();
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
 
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new PlayerException("The requested Player does not exist, or has a private profile");
+					}
+
 					play = new PlayerImpl(array.get(0).getAsJsonObject(), api);
 				}
 				return this.play;
@@ -118,6 +127,14 @@ public class EndpointImpl implements EndPoint {
 					HttpRequest request = HttpRequest.get(url);
 					json = request.body();
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new SearchException("No player was found.");
+					}
 
 					List<SearchPlayer> searchPlayers = new ArrayList<>();
 					for (JsonElement element : array) {
@@ -155,7 +172,17 @@ public class EndpointImpl implements EndPoint {
 
 					json = request.body();
 
-					JsonObject object = new JsonParser().parse(json).getAsJsonArray().get(0).getAsJsonObject();
+					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new PlayerException("The requested Player does not exist, or has a private profile");
+					}
+
+					JsonObject object = array.get(0).getAsJsonObject();
 
 					playerStatus = new PlayerStatus(player, object.get("Match").getAsLong(),
 							Status.getStatusById(object.get("status").getAsInt()), api);
@@ -202,6 +229,14 @@ public class EndpointImpl implements EndPoint {
 					HttpRequest request = HttpRequest.get(url);
 					json = request.body();
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new ChampionException("The requested champions could not be found");
+					}
 					
 					List<Champion> champions = new ArrayList<>();
 					for (JsonElement element : array) {
@@ -250,6 +285,9 @@ public class EndpointImpl implements EndPoint {
 				if (!wasRequested()) {
 					getChampions(language).getWithJson((c, j)->{
 						champion = c.getById(championId);
+						if (champion == null){
+							throw new ChampionException("This requested champion does not exist.");
+						}
 						json = j;
 					});
 					return champion; 
@@ -298,6 +336,11 @@ public class EndpointImpl implements EndPoint {
 					getChampions(language).getWithJson((c, j)->{
 						champion = c.getAsStream().filter(o -> o.getName().equalsIgnoreCase(championName))
 								.findAny().orElse(null);
+
+						if (champion == null){
+							throw new ChampionException("This requested champion does not exist.");
+						}
+
 						json = j;
 					});
 					return champion; 
@@ -349,6 +392,14 @@ public class EndpointImpl implements EndPoint {
 					json = request.body();
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
 
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new ChampionException("This requested champion does not exist.");
+					}
+
 					List<Card> cartas = new ArrayList<>();
 					for (JsonElement element : array) {
 						JsonObject object = element.getAsJsonObject();
@@ -384,6 +435,15 @@ public class EndpointImpl implements EndPoint {
 
 					json = request.body();
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new ChampionException("This requested champion does not exist.");
+					}
+
 					List<ChampionSkin> skin = new ArrayList<>();
 					for (JsonElement element : array) {
 						JsonObject object = element.getAsJsonObject();
@@ -424,13 +484,17 @@ public class EndpointImpl implements EndPoint {
 						}
 					}).collect(Collectors.toList());
 					
-					
 					string.forEach(buffer::append);
 					String url = makeUrl("getplayerbatch", new String[] { buffer.toString() });
 					HttpRequest request = HttpRequest.get(url);
 					
 					json = request.body();
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
 					List<Player> players = new ArrayList<>();
 					for (JsonElement element : array) {
 						JsonObject object = element.getAsJsonObject();
@@ -448,7 +512,7 @@ public class EndpointImpl implements EndPoint {
 		};
 	}
 
-	public Request<PlayerChampions> getPlayerChampions(long user_id) {
+	public Request<PlayerChampions> getPlayerChampions(long userId) {
 		return new Request<PlayerChampions>() {
 			
 			private PlayerChampions playerChampions;
@@ -464,12 +528,20 @@ public class EndpointImpl implements EndPoint {
 			
 			public PlayerChampions get() {
 				if (!wasRequested()) {
-					String url = makeUrl("getchampionranks", new String[] { String.valueOf(user_id) });
+					String url = makeUrl("getchampionranks", new String[] { String.valueOf(userId) });
 					HttpRequest request = HttpRequest.get(url);
 					
 					json = request.body();
 					
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new PlayerException("The requested Player does not exist, or has a private profile");
+					}
+
 					List<PlayerChampion> heeychamps = new ArrayList<>();
 					for (JsonElement element : array) {
 						JsonObject object = element.getAsJsonObject();
@@ -499,6 +571,14 @@ public class EndpointImpl implements EndPoint {
 					json = request.body();
 					
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new SearchException("It was not possible to find the friends of the requested user, or he does not exist.");
+					}
+
 					List<Friend> friendslist = new ArrayList<>();
 					for (JsonElement element : array) {
 						JsonObject object = element.getAsJsonObject();
@@ -536,6 +616,13 @@ public class EndpointImpl implements EndPoint {
 					json = request.body();
 					
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new SearchException("It was not possible to find the loadouts of the requested user, or he does not exist.");
+					}
 					
 					List<Loadout> load = new ArrayList<>();
 					for (JsonElement element : array) {
@@ -566,6 +653,14 @@ public class EndpointImpl implements EndPoint {
 					json = request.body();
 					
 					JsonArray array = new JsonArray();
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new MatchException("It was not possible to find this match.");
+					}
+
 					this.match = new MatchImpl(api, array);
 				}
 				return match;
@@ -592,11 +687,8 @@ public class EndpointImpl implements EndPoint {
 				
 				StringBuilder buffer = new StringBuilder();
 				List<String> string = matchbatch.stream().map(o -> {
-					if (ultimovalor != o) {
-						return o + ",";
-					} else {
+					if (ultimovalor != o) return o + ",";
 						return o + "";
-					}
 				}).collect(Collectors.toList());
 				
 				
@@ -606,6 +698,14 @@ public class EndpointImpl implements EndPoint {
 				
 				json = request.body();
 				JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+
+				if (!paladins.getAccessUtils().checkResponse(json)){
+					throw new RequestException("Possibly the session is invalid. Check the session.");
+				}
+
+				if (array.size() == 0){
+					throw new MatchException("It was not possible to find this match.");
+				}
 				
 				int num = 0;
 				List<Match> partidas = new ArrayList<>();
@@ -643,6 +743,14 @@ public class EndpointImpl implements EndPoint {
 					HttpRequest request = HttpRequest.get(url);
 					json = request.body();
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new MatchException("It was not possible to find this match.");
+					}
 					
 					List<Match> partidas = new ArrayList<>();
 					for (JsonElement element : array) {
@@ -677,6 +785,14 @@ public class EndpointImpl implements EndPoint {
 					json = request.body();
 					
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new SearchException("It was not possible to find this leaderboard.");
+					}
+
 					List<Place> place = new ArrayList<>();
 					for (JsonElement element : array) {
 						JsonObject object = element.getAsJsonObject();
@@ -720,6 +836,14 @@ public class EndpointImpl implements EndPoint {
 					json = request.body();
 					
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new MatchException("It was not possible to find this match.");
+					}
+
 					liveMatch = new LiveMatchImpl(array, api);
 				}
 				return liveMatch;
