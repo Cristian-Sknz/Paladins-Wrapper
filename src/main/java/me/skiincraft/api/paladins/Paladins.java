@@ -126,6 +126,10 @@ public class Paladins {
 			}
 
 			public Session get() {
+				if (wasRequested()){
+					return session;
+				}
+
 				Session s = sessions.stream()
 						.filter(bb -> bb.getSessionId().equalsIgnoreCase(sessionId))
 						.findAny()
@@ -141,8 +145,10 @@ public class Paladins {
 					session = null;
 					throw new RequestException("You tried to resume an invalid session.", json);
 				}
-				
-				return new Session(sessionId, "", json, api);
+				this.session = new Session(sessionId, "", json, api);
+				sessions.add(session);
+
+				return session;
 			}
 
 			public void getWithJson(BiConsumer<Session, String> biConsumer) {
