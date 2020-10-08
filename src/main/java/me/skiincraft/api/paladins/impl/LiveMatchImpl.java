@@ -17,8 +17,8 @@ public class LiveMatchImpl implements LiveMatch{
 	private JsonObject object;
 	private EndPoint endPoint;
 	
-	List<LivePlayer> team1 = new ArrayList<>();
-	List<LivePlayer> team2 = new ArrayList<>();
+	private List<LivePlayer> team1 = new ArrayList<>();
+	private List<LivePlayer> team2 = new ArrayList<>();
 	
 	public LiveMatchImpl(JsonArray array, EndPoint endPoint) {
 		this.endPoint = endPoint;
@@ -40,7 +40,7 @@ public class LiveMatchImpl implements LiveMatch{
 		}
 		for (JsonElement ele : array) {
 			JsonObject blue = ele.getAsJsonObject();
-			if (blue.get("taskForce").getAsInt() != 1) {
+			if (blue.get("taskForce").getAsInt() == 1) {
 				continue;
 			}
 			team1.add(new LivePlayerImpl(blue, endPoint));

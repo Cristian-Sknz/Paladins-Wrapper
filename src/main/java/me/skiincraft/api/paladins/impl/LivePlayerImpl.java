@@ -50,7 +50,7 @@ public class LivePlayerImpl implements LivePlayer{
 	}
 
 	public String getPlayerName() {
-		return object.get("Rando0544").getAsString();
+		return object.get("playerName").getAsString();
 	}
 
 	public String getRegion() {
