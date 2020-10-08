@@ -40,7 +40,7 @@ public class LiveMatchImpl implements LiveMatch{
 		}
 		for (JsonElement ele : array) {
 			JsonObject blue = ele.getAsJsonObject();
-			if (blue.get("taskForce").getAsInt() == 1) {
+			if (blue.get("taskForce").getAsInt() != 1) {
 				continue;
 			}
 			team1.add(new LivePlayerImpl(blue, endPoint));
@@ -54,11 +54,11 @@ public class LiveMatchImpl implements LiveMatch{
 			return team2;
 		}
 		for (JsonElement ele : array) {
-			JsonObject blue = ele.getAsJsonObject();
-			if (blue.get("taskForce").getAsInt() != 1) {
+			JsonObject red = ele.getAsJsonObject();
+			if (red.get("taskForce").getAsInt() != 2) {
 				continue;
 			}
-			team1.add(new LivePlayerImpl(blue, endPoint));
+			team2.add(new LivePlayerImpl(red, endPoint));
 		}
 		
 		return team2;
