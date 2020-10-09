@@ -1,6 +1,5 @@
 package me.skiincraft.api.paladins.objects;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.skiincraft.api.paladins.enums.Queue;
@@ -8,10 +7,10 @@ import me.skiincraft.api.paladins.enums.Tier;
 
 public class Leaderboard {
 
-	private List<Place> places = new ArrayList<Place>();
+	private final List<Place> places;
 
-	private Tier tier;
-	private Queue queue;
+	private final Tier tier;
+	private final Queue queue;
 
 	public Leaderboard(List<Place> places, Tier tier, Queue queue) {
 		this.places = places;

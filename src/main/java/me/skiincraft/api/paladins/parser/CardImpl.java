@@ -11,7 +11,7 @@ public class CardImpl {
 	
 	public static Card parseCard(JsonObject object, long championId, Language language) {
 		Rarity rarity = Arrays.stream(Rarity.values())
-				.filter(r -> r.name().equalsIgnoreCase(object.get("rarity").getAsString())).findAny().get();
+				.filter(r -> r.name().equalsIgnoreCase(object.get("rarity").getAsString())).findAny().orElse(null);
 		String description = object.get("card_description").getAsString();
 		float multiply = cardValueMultiplicator(description);
 
@@ -25,12 +25,10 @@ public class CardImpl {
 			e.printStackTrace();
 		}
 
-		Card c = new Card(object.get("card_name").getAsString(), object.get("card_name_english").getAsString(),
+		return new Card(object.get("card_name").getAsString(), object.get("card_name_english").getAsString(),
 				object.get("card_id1").getAsLong(), object.get("card_id2").getAsLong(), championId, description,
 				object.get("exclusive").getAsString().contains("y"), object.get("rank").getAsInt(), rarity, language,
 				object.get("recharge_seconds").getAsInt(), multiply, object.get("championCard_URL").getAsString());
-
-		return c;
 	}
 	
 	private static float cardValueMultiplicator(String cardDescription) {
@@ -59,7 +57,7 @@ public class CardImpl {
 			}
 			middle++;
 		}
-		return Float.valueOf(splited.substring(0, middle));
+		return Float.parseFloat(splited.substring(0, middle));
 	}
 
 }

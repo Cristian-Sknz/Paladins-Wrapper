@@ -1,9 +1,9 @@
 package me.skiincraft.api.paladins.objects;
 
 public class LoadoutItem {
-	private long itemId;
-	private String itemName;
-	private int points;
+	private final long itemId;
+	private final String itemName;
+	private final int points;
 
 	public LoadoutItem(long itemId, String itemName, int points) {
 		this.itemId = itemId;

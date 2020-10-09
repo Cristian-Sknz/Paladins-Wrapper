@@ -4,6 +4,7 @@ import java.util.List;
 
 import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.match.objects.Ban;
+import me.skiincraft.api.paladins.enums.Queue;
 
 public interface Match {
 	
@@ -15,6 +16,7 @@ public interface Match {
 	long getMatchMinutes();
 	int getTeam1Score();
 	int getTeam2Score();
+	Queue getQueue();
 	
 	List<MatchPlayer> getPlayers();
 	List<MatchPlayer> getTeam1();

@@ -23,7 +23,7 @@ public interface CustomList<T> extends Iterable<T> {
 	 */
 	default int size() {
 		return getAsList().size();
-	};
-	
-	
+	}
+
+
 }

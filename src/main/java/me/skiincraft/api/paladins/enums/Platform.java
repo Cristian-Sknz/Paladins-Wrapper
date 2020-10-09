@@ -1,10 +1,10 @@
 package me.skiincraft.api.paladins.enums;
 
 public enum Platform {
-	PC(1, 5, 25, 28, 22),
-	PS4(9), Xbox(10), Switch(22);
+	PC(1, 5, 25, 28), PS4(9), Xbox(10), Switch(22),
+	Discord(25), EpicGames(28), HiRez(1);
 
-	private int[] portalid;
+	private final int[] portalid;
 	Platform(int... portalid){
 		this.portalid = portalid;
 	}

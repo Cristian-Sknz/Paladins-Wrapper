@@ -12,8 +12,8 @@ import me.skiincraft.api.paladins.enums.Rarity;
 
 public class ChampionSkinImpl implements ChampionSkin {
 
-	private EndPoint endPoint;
-	private JsonObject object;
+	private final EndPoint endPoint;
+	private final JsonObject object;
 	
 	public ChampionSkinImpl(EndPoint endPoint, JsonObject object) {
 		this.endPoint = endPoint;

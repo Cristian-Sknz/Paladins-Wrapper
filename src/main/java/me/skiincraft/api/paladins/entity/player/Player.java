@@ -4,12 +4,12 @@ import java.util.Date;
 import java.util.List;
 
 import me.skiincraft.api.paladins.common.Request;
-import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.entity.other.Friends;
 import me.skiincraft.api.paladins.entity.player.objects.PlayerChampions;
 import me.skiincraft.api.paladins.enums.Platform;
 import me.skiincraft.api.paladins.enums.PlayerStatus;
 import me.skiincraft.api.paladins.enums.Tier;
+import me.skiincraft.api.paladins.impl.HistoryMatch;
 import me.skiincraft.api.paladins.objects.Place;
 import me.skiincraft.api.paladins.objects.Team;
 import me.skiincraft.api.paladins.ranked.RankedKBM;
@@ -49,9 +49,8 @@ public interface Player {
 	
 	Request<PlayerStatus> getStatus();
 	Request<PlayerChampions> getChampions();
-	Request<PlayerChampion> getChampion(long championId);
 	Request<Friends> getFriends();
-	Request<List<Match>> getMatchHistory();
+	Request<List<HistoryMatch>> getMatchHistory();
 	Request<Place> searchOnLeaderboard(int season);
 	
 	default Player getPlayer() {

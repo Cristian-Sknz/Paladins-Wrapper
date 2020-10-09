@@ -9,7 +9,7 @@ public class PlayerStatus {
 	public enum Status {
 		Offline(0), In_Lobby(1), God_Selection(2), In_Game(3), Online(4), Unknown(5);
 
-		private int id;
+		private final int id;
 
 		Status(int id) {
 			this.id = id;
@@ -28,10 +28,10 @@ public class PlayerStatus {
 		}
 	}
 
-	private long matchId;
-	private Status status;
-	private EndPoint endPoint;
-	private String player;
+	private final long matchId;
+	private final Status status;
+	private final EndPoint endPoint;
+	private final String player;
 	
 	public PlayerStatus(String player, long matchId, Status status, EndPoint endPoint) {
 		this.player = player;

@@ -2,11 +2,11 @@ package me.skiincraft.api.paladins.objects;
 
 public class SearchPlayer {
 
-	private String name;
-	private int userId;
-	private String hirezName;
-	private int portalId;
-	private boolean privacyFlag;
+	private final String name;
+	private final int userId;
+	private final String hirezName;
+	private final int portalId;
+	private final boolean privacyFlag;
 
 	public SearchPlayer(String name, int userId, String hirezName, int portalId, boolean privacyFlag) {
 		this.name = name;
@@ -25,7 +25,7 @@ public class SearchPlayer {
 	}
 	
 	public String getInGameName() {
-		return (getHirezName() != "") ? getHirezName() : getName();
+		return (!getHirezName().equals("")) ? getHirezName() : getName();
 	}
 
 

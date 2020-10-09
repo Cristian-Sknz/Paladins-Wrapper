@@ -9,9 +9,11 @@ import java.util.stream.Stream;
 import me.skiincraft.api.paladins.common.CustomList;
 import me.skiincraft.api.paladins.entity.player.Loadout;
 
+import javax.annotation.Nonnull;
+
 public class Loadouts implements CustomList<Loadout> {
 
-	private Loadout[] items;
+	private final Loadout[] items;
 	
 	public Loadouts(List<Loadout> players) {
 		items = new Loadout[players.size()];
@@ -21,7 +23,8 @@ public class Loadouts implements CustomList<Loadout> {
 		}
 	}
 	
-	public Iterator<Loadout> iterator() {
+	@Nonnull
+    public Iterator<Loadout> iterator() {
 		return Arrays.stream(items).iterator();
 	}
 

@@ -5,22 +5,22 @@ import me.skiincraft.api.paladins.enums.Rarity;
 
 public class Card {
 	
-	private String name;
-	private String nameEnglish;
-	private String description;
-	private String icon;
+	private final String name;
+	private final String nameEnglish;
+	private final String description;
+	private final String icon;
 	
-	private long cardId1;
-	private long cardId2;
+	private final long cardId1;
+	private final long cardId2;
 	private long championId;
 	
-	private int rank;
-	private int rechargeSeconds;
+	private final int rank;
+	private final int rechargeSeconds;
 	
-	private float multiplicator;
+	private final float multiplicator;
 	
-	private boolean exclusive;
-	private Rarity rarity;
+	private final boolean exclusive;
+	private final Rarity rarity;
 	private Language language;
 
 	public Card(String name, String nameEnglish, long cardId1, long cardId2, long championId, String description, boolean exclusive,

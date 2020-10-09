@@ -13,8 +13,8 @@ import com.google.gson.JsonObject;
 
 public class LivePlayerImpl implements LivePlayer{
 	
-	private JsonObject object;
-	private EndPoint endPoint;
+	private final JsonObject object;
+	private final EndPoint endPoint;
 	
 	public LivePlayerImpl(JsonObject object, EndPoint endPoint) {
 		this.object = object;

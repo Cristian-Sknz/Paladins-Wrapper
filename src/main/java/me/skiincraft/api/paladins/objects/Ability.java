@@ -4,13 +4,13 @@ import me.skiincraft.api.paladins.enums.DamageType;
 
 public class Ability {
 	
-	private String name;
-	private String description;
-	private long id;
-	private String avatarUrl;
-	private DamageType damagetype;
-	private int cooldown;
-	private boolean hasCooldown;
+	private final String name;
+	private final String description;
+	private final long id;
+	private final String avatarUrl;
+	private final DamageType damagetype;
+	private final int cooldown;
+	private final boolean hasCooldown;
 	
 	public Ability(String name, String description, long id, String url,
 			DamageType damagetype, int cooldown, boolean hasCooldown) {

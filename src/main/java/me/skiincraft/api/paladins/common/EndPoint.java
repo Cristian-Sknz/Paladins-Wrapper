@@ -2,8 +2,6 @@ package me.skiincraft.api.paladins.common;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.champions.Champions;
 import me.skiincraft.api.paladins.entity.champions.objects.Cards;
@@ -21,6 +19,7 @@ import me.skiincraft.api.paladins.enums.Language;
 import me.skiincraft.api.paladins.enums.Platform;
 import me.skiincraft.api.paladins.enums.PlayerStatus;
 import me.skiincraft.api.paladins.enums.Tier;
+import me.skiincraft.api.paladins.impl.HistoryMatch;
 
 public interface EndPoint {
 	
@@ -41,7 +40,7 @@ public interface EndPoint {
 	Request<Loadouts> getLoadouts(long userId, Language language);
 	Request<Match> getMatchDetails(long matchId);
 	Request<List<Match>> getMatchDetails(List<Long> matchbatch);
-	Request<List<Match>> getMatchHistory(long playerId);
+	Request<List<HistoryMatch>> getMatchHistory(long playerId);
 	Request<LeaderBoard> getLeaderboard(Tier tier, int season);
 	Request<LiveMatch> getMatchPlayerDetails(long matchId);
 	

@@ -7,11 +7,11 @@ import me.skiincraft.api.paladins.enums.Language;
 
 public class Ban {
 
-	private long championId;
-	private String championName;
+	private final long championId;
+	private final String championName;
 	private Request<Champion> champion;
 	
-	private EndPoint endPoint;
+	private final EndPoint endPoint;
 	
 	public Ban(long banId, String banName, EndPoint endPoint) {
 		this.championId =banId;

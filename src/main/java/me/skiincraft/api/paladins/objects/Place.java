@@ -7,24 +7,24 @@ import me.skiincraft.api.paladins.enums.Tier;
 
 public class Place {
 	
-	private String username;
-	private long userId;
+	private final String username;
+	private final long userId;
 	
-	private int wins;
-	private int losses;
-	private int leaves;
-	private int points;
-	private int season;
-	private int trend;
-	private int position;
+	private final int wins;
+	private final int losses;
+	private final int leaves;
+	private final int points;
+	private final int season;
+	private final int trend;
+	private final int position;
 	
-	private EndPoint endPoint;
+	private final EndPoint endPoint;
 	
-	private Tier tier;
+	private final Tier tier;
 
 	public Place(String username, int wins, int losses, int leaves, int points, int season, Tier tier,
 			long userId, int trend,int position, EndPoint endPoint) {
-		this.username = (username != "") ?username: "???";
+		this.username = (!username.equals("")) ?username: "???";
 		this.wins = wins;
 		this.losses = losses;
 		this.leaves = leaves;

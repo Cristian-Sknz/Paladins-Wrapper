@@ -10,9 +10,11 @@ import me.skiincraft.api.paladins.common.CustomList;
 import me.skiincraft.api.paladins.enums.Language;
 import me.skiincraft.api.paladins.objects.Card;
 
+import javax.annotation.Nonnull;
+
 public class Cards implements CustomList<Card> {
 
-	private Card[] cards;
+	private final Card[] cards;
 	private long championId;
 	private Language language;
 	
@@ -24,6 +26,7 @@ public class Cards implements CustomList<Card> {
 		}
 	}
 	
+	@Nonnull
 	public Iterator<Card> iterator() {
 		return Arrays.stream(cards).iterator();
 	}

@@ -14,8 +14,8 @@ import me.skiincraft.api.paladins.enums.Language;
 
 public class PlayerChampionImpl implements PlayerChampion {
 
-	private EndPoint endPoint;
-	private JsonObject object;
+	private final EndPoint endPoint;
+	private final JsonObject object;
 	
 	public PlayerChampionImpl(EndPoint endPoint, JsonObject object) {
 		this.endPoint = endPoint;

@@ -8,9 +8,11 @@ import java.util.stream.Stream;
 
 import me.skiincraft.api.paladins.common.CustomList;
 
+import javax.annotation.Nonnull;
+
 public class Skins implements CustomList<ChampionSkin> {
 
-	private ChampionSkin[] ChampionSkins;
+	private final ChampionSkin[] ChampionSkins;
 	
 	public Skins(List<ChampionSkin> ChampionSkin) {
 		ChampionSkins = new ChampionSkin[ChampionSkin.size()];
@@ -20,7 +22,8 @@ public class Skins implements CustomList<ChampionSkin> {
 		}
 	}
 	
-	public Iterator<ChampionSkin> iterator() {
+	@Nonnull
+    public Iterator<ChampionSkin> iterator() {
 		return Arrays.stream(ChampionSkins).iterator();
 	}
 

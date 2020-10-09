@@ -2,8 +2,8 @@ package me.skiincraft.api.paladins.objects;
 
 public class Team {
 
-	private int teamId;
-	private String teamName;
+	private final int teamId;
+	private final String teamName;
 	
 	public Team(int teamId, String teamName) {
 		this.teamId = teamId;

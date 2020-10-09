@@ -1,5 +1,6 @@
 package me.skiincraft.api.paladins.cache;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,7 @@ public abstract class RuntimeMemoryImpl<T> implements RuntimeMemory<T>{
 		
 	}
 
+	@Nonnull
 	public Iterator<T> iterator() {
 		return Arrays.stream(item).iterator();
 	}
@@ -34,7 +36,7 @@ public abstract class RuntimeMemoryImpl<T> implements RuntimeMemory<T>{
 	}
 
 	public long lastUpdate() {
-		return new Long(lastupdate);
+		return lastupdate;
 	}
 
 	public abstract T getById(long id);

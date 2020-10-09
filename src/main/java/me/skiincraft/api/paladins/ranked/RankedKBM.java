@@ -4,12 +4,12 @@ import me.skiincraft.api.paladins.objects.LeagueSeason;
 
 public class RankedKBM extends LeagueSeason {
 
-	private int leaves;
-	private int prevrank;
-	private int rank;
-	private int season;
-	private int trend;
-	private long playerId;
+	private final int leaves;
+	private final int prevrank;
+	private final int rank;
+	private final int season;
+	private final int trend;
+	private final long playerId;
 	
 	public RankedKBM(LeagueSeason l, int leaves, int prevrank, int rank, int season,
 			int trend, long playerId) {

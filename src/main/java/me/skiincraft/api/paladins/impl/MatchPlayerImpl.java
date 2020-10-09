@@ -7,12 +7,14 @@ import java.util.stream.Collectors;
 
 import me.skiincraft.api.paladins.common.EndPoint;
 import me.skiincraft.api.paladins.common.Request;
+import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.entity.match.MatchPlayer;
 import me.skiincraft.api.paladins.entity.match.objects.ActiveItems;
 import me.skiincraft.api.paladins.entity.match.objects.Damage;
 import me.skiincraft.api.paladins.entity.match.objects.Item;
 import me.skiincraft.api.paladins.entity.player.Player;
+import me.skiincraft.api.paladins.enums.Language;
 import me.skiincraft.api.paladins.objects.Kills;
 
 import com.google.gson.JsonElement;
@@ -20,9 +22,9 @@ import com.google.gson.JsonObject;
 
 public class MatchPlayerImpl implements MatchPlayer {
 	
-	private EndPoint endPoint;
-	private JsonObject object;
-	private Match match;
+	private final EndPoint endPoint;
+	private final JsonObject object;
+	private final Match match;
 	
 	private ActiveItems activeItems;
 	
@@ -42,6 +44,22 @@ public class MatchPlayerImpl implements MatchPlayer {
 	public String getRegion() {
 		return get("Region").getAsString();
 	}
+
+	@Override
+	public String getChampionName() {
+		return has("Reference_Name") ? get("Reference_Name").getAsString() : get("Champion").getAsString();
+	}
+
+	@Override
+	public long getChampionId() {
+		return get("ChampionId").getAsLong();
+	}
+
+	@Override
+	public Request<Champion> getChampion(Language language) {
+		return endPoint.getChampion(getChampionId(), language);
+	}
+
 	public long getId() {
 		return get("playerId").getAsLong();
 	}
@@ -80,7 +98,8 @@ public class MatchPlayerImpl implements MatchPlayer {
 	
 	public Kills getKills() {
 		try {
-			Kills kill = new Kills(
+
+			return new Kills(
 					get("Multi_kill_Max").getAsInt(),
 					get("Kills_First_Blood").getAsInt(),
 					get("Kills_Single").getAsInt(),
@@ -92,12 +111,9 @@ public class MatchPlayerImpl implements MatchPlayer {
 					get("Kills_Phoenix").getAsInt(),
 					get("Kills_Siege_Juggernaut").getAsInt(),
 					get("Kills_Wild_Juggernaut").getAsInt());
-			
-			return kill;
 		} catch (Exception e) {
-			Kills kill = new Kills(get("Multi_kill_Max").getAsInt(),
+			return new Kills(get("Multi_kill_Max").getAsInt(),
 					0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-			return kill;
 					
 		}
 	}
@@ -144,14 +160,14 @@ public class MatchPlayerImpl implements MatchPlayer {
 			return activeItems;
 		}
 		List<Item> items = new ArrayList<>();
-		items.addAll(Arrays.stream(Item.values()).filter(item -> {
+		Arrays.stream(Item.values()).filter(item -> {
 			for (int i = 1; i <= 4; i++) {
 				if (get("ActiveId" + i).getAsLong() == item.getItemId()) {
 					return true;
 				}
 			}
 			return false;
-		}).collect(Collectors.toList()));
+		}).collect(Collectors.toList()).addAll(items);
 		
 		return activeItems = new ActiveItems(items);
 	}

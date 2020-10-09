@@ -15,10 +15,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import javax.annotation.Nonnull;
+
 public class LeaderboardImpl implements LeaderBoard {
 	
-	private Place[] places;
-	private Tier tier;
+	private final Place[] places;
+	private final Tier tier;
 	
 	public LeaderboardImpl(List<Place> place, Tier tier) {
 		this.places = new Place[place.size()];
@@ -61,7 +63,8 @@ public class LeaderboardImpl implements LeaderBoard {
 		return Arrays.stream(places).filter(place -> place.getUserId() == itemId).findFirst().orElse(null);
 	}
 
-	public Iterator<Place> iterator() {
+	@Nonnull
+    public Iterator<Place> iterator() {
 		return Arrays.stream(places).iterator();
 	}
 

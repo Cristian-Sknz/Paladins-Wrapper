@@ -17,9 +17,9 @@ import me.skiincraft.api.paladins.objects.Ability;
 
 public class ChampionImpl implements Champion {
 
-	private EndPoint endpoint;
-	private JsonObject object;
-	private Language language;
+	private final EndPoint endpoint;
+	private final JsonObject object;
+	private final Language language;
 	
 	public ChampionImpl(JsonObject object, Language language, EndPoint endPoint) {
 		this.endpoint = endPoint;
@@ -79,7 +79,7 @@ public class ChampionImpl implements Champion {
 			int rechargeSeconds = ab.get("rechargeSeconds").getAsInt();
 			
 			abilities.add(new Ability(name, description, id, url, DamageType.getByOriginal(damageType), rechargeSeconds,
-					(rechargeSeconds != 0) ? true : false));
+					rechargeSeconds != 0));
 		}
 		objects.clear();
 		return abilities;

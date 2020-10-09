@@ -17,9 +17,9 @@ import me.skiincraft.api.paladins.objects.LoadoutItem;
 
 public class LoadoutImpl implements Loadout {
 	
-	private EndPoint endPoint;
-	private JsonObject object;
-	private Language language;
+	private final EndPoint endPoint;
+	private final JsonObject object;
+	private final Language language;
 	
 	public LoadoutImpl(EndPoint endPoint, JsonObject object, Language lang) {
 		this.endPoint = endPoint;

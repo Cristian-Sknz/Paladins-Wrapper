@@ -4,13 +4,13 @@ import java.util.Date;
 
 public class HirezStatus {
 
-	private Date entryDateTime;
-	private String environment;
-	private boolean limitedAccess;
-	private String platform;
-	private String status;
-	private String version;
-	private String ret_msg;
+	private final Date entryDateTime;
+	private final String environment;
+	private final boolean limitedAccess;
+	private final String platform;
+	private final String status;
+	private final String version;
+	private final String ret_msg;
 	public HirezStatus(Date entryDateTime, String environment, boolean limitedAccess, String platform, String status,
 			String version, String ret_msg) {
 		this.entryDateTime = entryDateTime;

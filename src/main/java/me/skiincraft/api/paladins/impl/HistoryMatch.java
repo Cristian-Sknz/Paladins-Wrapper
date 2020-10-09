@@ -2,6 +2,7 @@ package me.skiincraft.api.paladins.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -12,10 +13,11 @@ import me.skiincraft.api.paladins.entity.match.MatchPlayer;
 import me.skiincraft.api.paladins.entity.match.objects.Ban;
 
 import com.google.gson.JsonObject;
+import me.skiincraft.api.paladins.enums.Queue;
 
 public class HistoryMatch implements Match {
 
-	private JsonObject object;
+	private final JsonObject object;
 	private EndPoint endPoint;
 	
 	public HistoryMatch(JsonObject object, EndPoint endPoint) {
@@ -27,7 +29,7 @@ public class HistoryMatch implements Match {
 	}
 
 	public List<Ban> getBans() {
-		return new ArrayList<Ban>();
+		return null;
 	}
 
 	public long getMatchId() {
@@ -52,6 +54,11 @@ public class HistoryMatch implements Match {
 
 	public int getTeam2Score() {
 		return object.get("Team2Score").getAsInt();
+	}
+
+	@Override
+	public Queue getQueue() {
+		return Queue.getQueueById(object.get("Match_Queue_Id").getAsInt());
 	}
 
 	public List<MatchPlayer> getTeam1() {
@@ -91,7 +98,7 @@ public class HistoryMatch implements Match {
 	}
 
 	public List<MatchPlayer> getPlayers() {
-		return Arrays.asList(new MatchPlayerImpl(endPoint, object, this));
+		return Collections.singletonList(new MatchPlayerImpl(endPoint, object, this));
 	}
 
 }

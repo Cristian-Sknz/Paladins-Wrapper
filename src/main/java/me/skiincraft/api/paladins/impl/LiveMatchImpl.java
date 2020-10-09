@@ -14,12 +14,12 @@ import me.skiincraft.api.paladins.enums.Queue;
 
 public class LiveMatchImpl implements LiveMatch{
 
-	private JsonArray array;
-	private JsonObject object;
-	private EndPoint endPoint;
+	private final JsonArray array;
+	private final JsonObject object;
+	private final EndPoint endPoint;
 	
-	private List<LivePlayer> team1 = new ArrayList<>();
-	private List<LivePlayer> team2 = new ArrayList<>();
+	private final List<LivePlayer> team1 = new ArrayList<>();
+	private final List<LivePlayer> team2 = new ArrayList<>();
 	
 	public LiveMatchImpl(JsonArray array, EndPoint endPoint) {
 		this.endPoint = endPoint;

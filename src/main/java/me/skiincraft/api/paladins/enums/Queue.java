@@ -22,7 +22,7 @@ public enum Queue {
 	Live_Competitive_Keyboard(486), Custom_Siege_Shattered_Desert(487), Live_Event_End_Times(488),
 	Custom_Event_End_Times(489), Multi_Queue(999);
 
-	private int queueId;
+	private final int queueId;
 	//424, 428, 437, 452, 465, 469, 486
 	Queue(int queueId) {
 		this.queueId = queueId;

@@ -9,9 +9,11 @@ import java.util.stream.Stream;
 import me.skiincraft.api.paladins.common.CustomList;
 import me.skiincraft.api.paladins.enums.Language;
 
+import javax.annotation.Nonnull;
+
 public class Champions implements CustomList<Champion> {
 
-	private Champion[] champions;
+	private final Champion[] champions;
 	private Language language;
 	
 	public Champions(List<Champion> champs, Language language) {
@@ -22,7 +24,8 @@ public class Champions implements CustomList<Champion> {
 		}
 	}
 	
-	public Iterator<Champion> iterator() {
+	@Nonnull
+    public Iterator<Champion> iterator() {
 		return Arrays.stream(champions).iterator();
 	}
 

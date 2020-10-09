@@ -2,18 +2,18 @@ package me.skiincraft.api.paladins.objects;
 
 public class Kills {
 	
-	private int multikills;
-	private int firstblood;
-	private int solokills;
-	private int doublekills;
-	private int triplekills;
-	private int quadrakills;
-	private int pentakills;
+	private final int multikills;
+	private final int firstblood;
+	private final int solokills;
+	private final int doublekills;
+	private final int triplekills;
+	private final int quadrakills;
+	private final int pentakills;
 	
-	private int goldfury;
-	private int pheonix;
-	private int siege_juggernaut;
-	private int wild_juggernaut;
+	private final int goldfury;
+	private final int pheonix;
+	private final int siege_juggernaut;
+	private final int wild_juggernaut;
 	
 
 	public Kills(int multikills, int firstblood, int solokills, int doublekills, int triplekills, int quadrakills,

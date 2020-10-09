@@ -8,9 +8,11 @@ import java.util.stream.Stream;
 
 import me.skiincraft.api.paladins.common.CustomList;
 
+import javax.annotation.Nonnull;
+
 public class ActiveItems implements CustomList<Item>{
 
-	private Item[] items;
+	private final Item[] items;
 	
 	public ActiveItems(List<Item> itens) {
 		items = new Item[itens.size()];
@@ -20,6 +22,7 @@ public class ActiveItems implements CustomList<Item>{
 		}
 	}
 	
+	@Nonnull
 	public Iterator<Item> iterator() {
 		return Arrays.stream(items).iterator();
 	}

@@ -581,7 +581,7 @@ public class EndpointImpl implements EndPoint {
 						JsonObject object = element.getAsJsonObject();
 						friendslist.add(new FriendImpl(object, api));
 					}
-					friends = new Friends(friendslist);
+					friends = new Friends(friendslist, api);
 				}
 				return friends;
 			}
@@ -725,16 +725,16 @@ public class EndpointImpl implements EndPoint {
 		};
 	}
 
-	public Request<List<Match>> getMatchHistory(long playerId) {
-		return new Request<List<Match>>() {
-			private List<Match> matchs;
+	public Request<List<HistoryMatch>> getMatchHistory(long playerId) {
+		return new Request<List<HistoryMatch>>() {
+			private List<HistoryMatch> matchs;
 			private String json;
 			
 			public boolean wasRequested() {
 				return matchs != null; 
 			}
 			
-			public List<Match> get() {
+			public List<HistoryMatch> get() {
 				if (!wasRequested()) {
 					String url = makeUrl("getmatchhistory", new String[] { String.valueOf(playerId) });
 					HttpRequest request = HttpRequest.get(url);
@@ -749,7 +749,7 @@ public class EndpointImpl implements EndPoint {
 						throw new MatchException("It was not possible to find this match.");
 					}
 					
-					List<Match> partidas = new ArrayList<>();
+					List<HistoryMatch> partidas = new ArrayList<>();
 					for (JsonElement element : array) {
 						JsonObject object = element.getAsJsonObject();
 						partidas.add(new HistoryMatch(object, api));
@@ -759,7 +759,7 @@ public class EndpointImpl implements EndPoint {
 				return matchs;
 			}
 
-			public void getWithJson(BiConsumer<List<Match>, String> biConsumer) {
+			public void getWithJson(BiConsumer<List<HistoryMatch>, String> biConsumer) {
 				biConsumer.accept(get(), json);
 			}
 		};

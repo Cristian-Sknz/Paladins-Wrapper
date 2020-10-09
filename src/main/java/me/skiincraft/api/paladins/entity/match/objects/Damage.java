@@ -2,15 +2,15 @@ package me.skiincraft.api.paladins.entity.match.objects;
 
 public class Damage {
 	
-	private long damageBot;
-	private long damageUsingWeapon;
-	private long damageUsingMagical;
-	private long damageUsingPhysical;
-	private long damageMitigated;
-	private long damage;
-	private long damageTaken;
-	private long damageTakenUsingMagical;
-	private long damageTakenUsingPhysical;
+	private final long damageBot;
+	private final long damageUsingWeapon;
+	private final long damageUsingMagical;
+	private final long damageUsingPhysical;
+	private final long damageMitigated;
+	private final long damage;
+	private final long damageTaken;
+	private final long damageTakenUsingMagical;
+	private final long damageTakenUsingPhysical;
 	
 	public Damage(long damageBot, long damageUsingWeapon, long damageUsingMagical, long damageUsingPhysical,
 			long damageMitigated, long damage, long damageTaken, long damageTakenUsingMagical,

@@ -10,8 +10,8 @@ import me.skiincraft.api.paladins.entity.player.Player;
 
 public class FriendImpl implements Friend{
 
-	private JsonObject object;
-	private EndPoint endPoint;
+	private final JsonObject object;
+	private final EndPoint endPoint;
 	
 	public FriendImpl(JsonObject object, EndPoint endPoint) {
 		this.object = object;

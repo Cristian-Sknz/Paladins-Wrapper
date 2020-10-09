@@ -13,16 +13,17 @@ import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.entity.match.MatchPlayer;
 import me.skiincraft.api.paladins.entity.match.objects.Ban;
+import me.skiincraft.api.paladins.enums.Queue;
 
 public class MatchImpl implements Match {
 
-	private EndPoint endPoint;
-	private JsonArray array;
-	private JsonObject object;
+	private final EndPoint endPoint;
+	private final JsonArray array;
+	private final JsonObject object;
 	
-	private List<MatchPlayer> team1 = new ArrayList<>();
-	private List<MatchPlayer> team2 = new ArrayList<>();
-	private List<Ban> bans = new ArrayList<>();
+	private final List<MatchPlayer> team1 = new ArrayList<>();
+	private final List<MatchPlayer> team2 = new ArrayList<>();
+	private final List<Ban> bans = new ArrayList<>();
 	
 	public MatchImpl(EndPoint endPoint, JsonArray array) {
 		this.endPoint = endPoint;
@@ -75,6 +76,11 @@ public class MatchImpl implements Match {
 		return get("Team2Score").getAsInt();
 	}
 
+	@Override
+	public Queue getQueue() {
+		return Queue.getQueueById(object.get("match_queue_id").getAsInt());
+	}
+
 	public List<MatchPlayer> getTeam1() {
 		if (team1.size() != 0) {
 			return team1;
@@ -110,7 +116,7 @@ public class MatchImpl implements Match {
 	}
 
 	public boolean hasReplay() {
-		return get("hasReplay").getAsString() == "y";
+		return get("hasReplay").getAsString().equals("y");
 	}
 
 	public int getMatchQueueId() {

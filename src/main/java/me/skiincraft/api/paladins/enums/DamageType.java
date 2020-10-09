@@ -4,8 +4,8 @@ public enum DamageType {
 
 	Direct_Damage(0, "Direct"), Area_Damage(1, "AoE"), Complete(2, "True");
 	
-	private int id;
-	private String original;
+	private final int id;
+	private final String original;
 	
 	DamageType(int id, String original) {
 		this.id = id;

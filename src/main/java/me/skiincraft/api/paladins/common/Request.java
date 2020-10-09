@@ -16,7 +16,7 @@ public interface Request<T> {
 	 * <br>In case of failure, you can trigger exceptions</br></p>
 	 * <p>If you have this class instantiated, and did not call the "get() or getWithJson()" method, the request is not made<p>
 	 */
-	public T get();
+    T get();
 	
 	/**<h1>Get a Request</h1>
 	 * <p>Here, the moment this method is called, it makes a request and returns the {@link T} and its Json.
@@ -24,14 +24,14 @@ public interface Request<T> {
 	 * <p>If you have this class instantiated, and did not call the "get() or getWithJson()" method, the request is not made<p>
 	 * 	@param biConsumer You can receive the 2 methods from a BiConsumer 
 	 */
-	public void getWithJson(BiConsumer<T, String> biConsumer);
+    void getWithJson(BiConsumer<T, String> biConsumer);
 	
 	/** <h1>Get a Sample</h1>
 	 * <p>Get an example of your requested object.
 	 * <br>Caution is not always available and may return {@code null}</br>
 	 * <br>This will not make a request.</br></p>
 	 */
-	public default boolean wasRequested() {
+	default boolean wasRequested() {
 		return false;
 	}
 

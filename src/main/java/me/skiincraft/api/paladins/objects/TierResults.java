@@ -4,9 +4,9 @@ import me.skiincraft.api.paladins.enums.Tier;
 
 public class TierResults {
 	
-	private Tier tierConquest;
-	private Tier tierRankedController;
-	private Tier tierRankedKBM;
+	private final Tier tierConquest;
+	private final Tier tierRankedController;
+	private final Tier tierRankedKBM;
 	
 	public TierResults(int tierConquest, int tierRankedController, int tierRankedKBM) {
 		this.tierConquest = Tier.getTierById(tierConquest);

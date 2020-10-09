@@ -7,10 +7,10 @@ public enum Item {
 	Rejuvenate(14633), Veteran(13224), Kill_to_Heal(11797), Life_Rip(12010),
 	Bulldozer(13079), Cauterize(13075), Deft_Hands(13235), Wrecker(13071);
 	
-	private long itemId;
-	private String iconUrl;
+	private final long itemId;
+	private final String iconUrl;
 	
-	private Item(long itemId) {
+	Item(long itemId) {
 		this.itemId = itemId;
 		this.iconUrl = "https://web2.hirez.com/paladins/champion-items/" + this.name().replace("_", "-").toLowerCase().concat(".jpg");
 	}

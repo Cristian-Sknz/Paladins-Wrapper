@@ -8,8 +8,8 @@ import java.util.SimpleTimeZone;
 
 public class AccessUtils {
 
-	private Integer devId;
-	private String authKey;
+	private final Integer devId;
+	private final String authKey;
 	private static final String ENDPOINT = "http://api.paladins.com/paladinsapi.svc";
 	
 	public AccessUtils(int devId, String authkey) {
@@ -46,11 +46,11 @@ public class AccessUtils {
 	}
 	
 	private String complete(String... strings) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		int lenght = strings.length;
 		for (String s : strings) {
-			if (s != strings[lenght - 1]) {
-				buffer.append(s.replace(" ", "_") + (s.contains("/") ? "" : "/"));
+			if (!s.equals(strings[lenght - 1])) {
+				buffer.append(s.replace(" ", "_")).append(s.contains("/") ? "" : "/");
 			} else {
 				buffer.append(s.replace(" ", "_"));
 			}
@@ -71,12 +71,12 @@ public class AccessUtils {
 				complete(devId, signature, timeStamp) +
 				((args == null || args.length == 0) ? "" : "/");
 		
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		
 		if (args != null) {
 			if (args.length != 0) {
 				for (String string : args) {
-					buffer.append((string != args[args.length - 1]) ? string + "/" : string);
+					buffer.append((!string.equals(args[args.length - 1])) ? string + "/" : string);
 				}
 			}
 		}
@@ -96,16 +96,17 @@ public class AccessUtils {
 				complete(devId, signature, sessionId, timeStamp) +
 				((args == null || args.length == 0) ? "" : "/");
 		
-		StringBuffer buffer = new StringBuffer();
-		
-		int i = args.length -1;
-		if (args.length != 0) {
-			for (String string : args) {
-				buffer.append((string != args[i]) ? string + "/" : string);
+		StringBuilder buffer = new StringBuilder();
+		if (args != null) {
+			int i = args.length - 1;
+			if (args.length != 0) {
+				for (String string : args) {
+					buffer.append((!string.equals(args[i])) ? string + "/" : string);
+				}
 			}
+			return url + buffer.toString();
 		}
-		
-		return url + buffer.toString();
+		return null;
 	}
 	
 	public String getTimeStamp() {
@@ -121,7 +122,7 @@ public class AccessUtils {
 			digestor.update(signature.getBytes());
 			byte[] bytes = digestor.digest();
 			
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			for (byte b : bytes) {
 				buffer.append(String.format("%02x", b & 0xff));
 			}

@@ -9,9 +9,11 @@ import java.util.stream.Stream;
 import me.skiincraft.api.paladins.common.CustomList;
 import me.skiincraft.api.paladins.entity.player.PlayerChampion;
 
+import javax.annotation.Nonnull;
+
 public class PlayerChampions implements CustomList<PlayerChampion> {
 
-	private PlayerChampion[] items;
+	private final PlayerChampion[] items;
 	
 	public PlayerChampions(List<PlayerChampion> players) {
 		items = new PlayerChampion[players.size()];
@@ -21,7 +23,8 @@ public class PlayerChampions implements CustomList<PlayerChampion> {
 		}
 	}
 	
-	public Iterator<PlayerChampion> iterator() {
+	@Nonnull
+    public Iterator<PlayerChampion> iterator() {
 		return Arrays.stream(items).iterator();
 	}
 

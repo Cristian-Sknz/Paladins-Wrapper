@@ -11,7 +11,7 @@ public class DateUtils {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa");
 		DateFormat outputformat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 		Date date = null;
-		String output = null;
+		String output;
 		try {
 			date = df.parse(data);
 			output = outputformat.format(date);

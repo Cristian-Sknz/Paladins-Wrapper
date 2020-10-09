@@ -9,7 +9,7 @@ public enum Tier {
 	Diamond_V(21), Diamond_IV(22), Diamond_III(23), Diamond_II(24), Diamond_I(25), 
 	Master(26), Grandmaster(27);
 
-	private int rankId;
+	private final int rankId;
 	
 	Tier(int rankId) {
 		this.rankId = rankId;

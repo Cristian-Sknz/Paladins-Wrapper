@@ -4,12 +4,12 @@ import me.skiincraft.api.paladins.objects.LeagueSeason;
 
 public class RankedConquest extends LeagueSeason {
 
-	private int leaves;
-	private int prevrank;
-	private int rank;
-	private int season;
-	private int trend;
-	private int playerId;
+	private final int leaves;
+	private final int prevrank;
+	private final int rank;
+	private final int season;
+	private final int trend;
+	private final int playerId;
 	
 	public RankedConquest(LeagueSeason l, int leaves, int prevrank, int rank, int season,
 			int trend, int playerId, String ret_msg) {
@@ -23,7 +23,7 @@ public class RankedConquest extends LeagueSeason {
 		this.ret_msg = ret_msg;
 	}
 
-	private String ret_msg;
+	private final String ret_msg;
 
 	public int getLeaves() {
 		return leaves;

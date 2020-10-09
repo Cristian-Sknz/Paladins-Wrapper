@@ -9,9 +9,11 @@ import java.util.stream.Stream;
 import me.skiincraft.api.paladins.common.CustomList;
 import me.skiincraft.api.paladins.objects.SearchPlayer;
 
+import javax.annotation.Nonnull;
+
 public class SearchResults implements CustomList<SearchPlayer> {
 
-	private SearchPlayer[] items;
+	private final SearchPlayer[] items;
 	
 	public SearchResults(List<SearchPlayer> players) {
 		items = new SearchPlayer[players.size()];
@@ -21,7 +23,8 @@ public class SearchResults implements CustomList<SearchPlayer> {
 		}
 	}
 	
-	public Iterator<SearchPlayer> iterator() {
+	@Nonnull
+    public Iterator<SearchPlayer> iterator() {
 		return Arrays.stream(items).iterator();
 	}
 
@@ -34,7 +37,7 @@ public class SearchResults implements CustomList<SearchPlayer> {
 	}
 	
 	public List<SearchPlayer> getFromSpecific(String name) {
-		return Arrays.stream(items).filter(o -> o.getInGameName() == name).collect(Collectors.toList());
+		return Arrays.stream(items).filter(o -> o.getInGameName().equals(name)).collect(Collectors.toList());
 	}
 
 	public SearchPlayer getById(long id) {

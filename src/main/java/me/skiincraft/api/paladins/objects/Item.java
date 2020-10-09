@@ -2,15 +2,15 @@ package me.skiincraft.api.paladins.objects;
 
 public class Item {
 	
-	private String itemname;
-	private String itemNameEnglish;
-	private String description;
-	private int iconId;
-	private int itemId;
-	private int price;
-	private String iconUrl;
-	private String iconFilePath;
-	private int level;
+	private final String itemname;
+	private final String itemNameEnglish;
+	private final String description;
+	private final int iconId;
+	private final int itemId;
+	private final int price;
+	private final String iconUrl;
+	private final String iconFilePath;
+	private final int level;
 	
 	public Item(String itemname, String itemNameEnglish, String description, int iconId, int itemId, int price,
 			String iconUrl, String iconFilePath, int level) {

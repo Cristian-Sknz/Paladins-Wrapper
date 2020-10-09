@@ -4,10 +4,10 @@ import me.skiincraft.api.paladins.enums.Tier;
 
 public class LeagueSeason {
 	
-	private int wins;
-	private int losses;
-	private int points;
-	private Tier tier;
+	private final int wins;
+	private final int losses;
+	private final int points;
+	private final Tier tier;
 	
 	public LeagueSeason(int wins, int losses, int points, Tier tier) {
 		super();

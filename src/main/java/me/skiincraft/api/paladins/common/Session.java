@@ -9,12 +9,12 @@ import me.skiincraft.api.paladins.impl.EndpointImpl;
 
 public class Session {
 	
-	private String sessionId;
-	private String timeStamp;
-	private String requestMessage;
+	private final String sessionId;
+	private final String timeStamp;
+	private final String requestMessage;
 	
-	private EndPoint endPoint;
-	private Paladins paladins;
+	private final EndPoint endPoint;
+	private final Paladins paladins;
 	 
 	private Timer timer;
 	

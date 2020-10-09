@@ -27,8 +27,8 @@ import me.skiincraft.api.paladins.ranked.RankedKBM;
 
 public class PlayerImpl implements Player {
 
-	private JsonObject object;
-	private EndPoint queue;
+	private final JsonObject object;
+	private final EndPoint queue;
 	
 	public PlayerImpl(JsonObject object, EndPoint queue) {
 		this.object = object;
@@ -114,7 +114,7 @@ public class PlayerImpl implements Player {
 	}
 
 	public Platform getPlatform() {
-		return null;
+		return Platform.getPlatformByName(get("Platform").getAsString());
 	}
 
 	public RankedKBM getRankedKBM() {
@@ -185,15 +185,11 @@ public class PlayerImpl implements Player {
 		return queue.getPlayerChampions(getId());
 	}
 
-	public Request<PlayerChampion> getChampion(long championId) {
-		return null;
-	}
-
 	public Request<Friends> getFriends() {
 		return queue.getFriends(getId());
 	}
 
-	public Request<List<Match>> getMatchHistory() {
+	public Request<List<HistoryMatch>> getMatchHistory() {
 		return queue.getMatchHistory(getId());
 	}
 
