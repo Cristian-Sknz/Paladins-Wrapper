@@ -10,6 +10,7 @@ import me.skiincraft.api.paladins.entity.match.LivePlayer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import me.skiincraft.api.paladins.enums.Queue;
 
 public class LiveMatchImpl implements LiveMatch{
 
@@ -25,12 +26,20 @@ public class LiveMatchImpl implements LiveMatch{
 		this.array = array;
 		this.object = array.get(0).getAsJsonObject();
 	}
+
+	public Queue getQueue() {
+		return Queue.getQueueById(object.get("Queue").getAsInt());
+	}
 	
 	public long getMatchId() {
 		return object.get("Match").getAsLong();
 	}
 
 	public String getMapName() {
+		if (object.has("mapGame") || object.get("mapGame").isJsonNull()){
+			return null;
+		}
+
 		return object.get("mapGame").getAsString();
 	}
 
