@@ -10,6 +10,7 @@ import me.skiincraft.api.paladins.entity.player.objects.PlayerChampions;
 import me.skiincraft.api.paladins.enums.Platform;
 import me.skiincraft.api.paladins.enums.PlayerStatus;
 import me.skiincraft.api.paladins.enums.Tier;
+import me.skiincraft.api.paladins.objects.Place;
 import me.skiincraft.api.paladins.objects.Team;
 import me.skiincraft.api.paladins.ranked.RankedKBM;
 
@@ -51,6 +52,7 @@ public interface Player {
 	Request<PlayerChampion> getChampion(long championId);
 	Request<Friends> getFriends();
 	Request<List<Match>> getMatchHistory();
+	Request<Place> searchOnLeaderboard(int season);
 	
 	default Player getPlayer() {
 		return this;

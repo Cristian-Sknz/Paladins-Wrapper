@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,6 +21,7 @@ import me.skiincraft.api.paladins.enums.Platform;
 import me.skiincraft.api.paladins.enums.PlayerStatus;
 import me.skiincraft.api.paladins.enums.Tier;
 import me.skiincraft.api.paladins.objects.LeagueSeason;
+import me.skiincraft.api.paladins.objects.Place;
 import me.skiincraft.api.paladins.objects.Team;
 import me.skiincraft.api.paladins.ranked.RankedKBM;
 
@@ -163,7 +165,7 @@ public class PlayerImpl implements Player {
 
 	@Override
 	public String getInGameName() {
-		return (getPlatform() == Platform.PC) ? (getHirezName() != "")? getHirezName() : getName()
+		return (getPlatform() == Platform.PC) ? (!getHirezName().equals(""))? getHirezName() : getName()
 				: getName();
 	}
 
@@ -193,6 +195,35 @@ public class PlayerImpl implements Player {
 
 	public Request<List<Match>> getMatchHistory() {
 		return queue.getMatchHistory(getId());
+	}
+
+	public Request<Place> searchOnLeaderboard(int season) {
+		if (getTier() == Tier.Unranked){
+			return null;
+		}
+		return new Request<Place>() {
+			private Place place;
+			private String json;
+
+			@Override
+			public boolean wasRequested() {
+				return place != null;
+			}
+
+			@Override
+			public Place get() {
+				if (wasRequested()) {
+					return place;
+				}
+
+				return place = queue.getLeaderboard(getTier(), season).get().getById(getId());
+			}
+
+			@Override
+			public void getWithJson(BiConsumer<Place, String> biConsumer) {
+				biConsumer.accept(get(), "");
+			}
+		};
 	}
 
 }
