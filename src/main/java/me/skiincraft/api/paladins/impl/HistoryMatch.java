@@ -1,7 +1,5 @@
 package me.skiincraft.api.paladins.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -14,14 +12,17 @@ import me.skiincraft.api.paladins.entity.match.objects.Ban;
 
 import com.google.gson.JsonObject;
 import me.skiincraft.api.paladins.enums.Queue;
+import me.skiincraft.api.paladins.exceptions.ContextException;
 
 public class HistoryMatch implements Match {
 
 	private final JsonObject object;
+	private final MatchPlayer player;
 	private EndPoint endPoint;
 	
 	public HistoryMatch(JsonObject object, EndPoint endPoint) {
 		this.object = object;
+		this.player = new MatchPlayerImpl(endPoint, object,this) ;
 	}
 	
 	public String getWinner() {
@@ -29,7 +30,7 @@ public class HistoryMatch implements Match {
 	}
 
 	public List<Ban> getBans() {
-		return null;
+		throw new ContextException("This implementation of Match is not a detailed Match. Is a " + this.getClass().getSimpleName());
 	}
 
 	public long getMatchId() {
@@ -62,11 +63,15 @@ public class HistoryMatch implements Match {
 	}
 
 	public List<MatchPlayer> getTeam1() {
-		return new ArrayList<>();
+		throw new ContextException("This implementation of Match is not a detailed Match. Is a " + this.getClass().getSimpleName());
 	}
 
 	public List<MatchPlayer> getTeam2() {
-		return new ArrayList<>();
+		throw new ContextException("This implementation of Match is not a detailed Match. Is a " + this.getClass().getSimpleName());
+	}
+
+	public MatchPlayer getMatchPlayer(){
+		return player;
 	}
 
 	public int getWinnerTeam() {
