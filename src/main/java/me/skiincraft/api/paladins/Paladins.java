@@ -92,7 +92,6 @@ public class Paladins {
 	public synchronized Request<Boolean> testSession(String sessionId){
 		return new Request<Boolean>() {
 
-			private boolean bool;
 			private String json;
 
 			public Boolean get() {
@@ -100,12 +99,12 @@ public class Paladins {
 				HttpRequest request = HttpRequest.get(url);
 				String body = request.body();
 				json = body;
-				bool = accessUtils.checkResponse(body);
+				boolean bool = accessUtils.checkResponse(body);
 				if (!bool) {
 					throw new RequestException(body, body);
 				}
 
-				return bool;
+				return true;
 			}
 
 			public void getWithJson(BiConsumer<Boolean, String> biConsumer) {
