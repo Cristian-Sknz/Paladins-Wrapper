@@ -18,6 +18,7 @@ import me.skiincraft.api.paladins.entity.champions.objects.Cards;
 import me.skiincraft.api.paladins.entity.champions.objects.ChampionSkin;
 import me.skiincraft.api.paladins.entity.champions.objects.Skins;
 import me.skiincraft.api.paladins.entity.leaderboard.LeaderBoard;
+import me.skiincraft.api.paladins.entity.match.HistoryMatch;
 import me.skiincraft.api.paladins.entity.match.LiveMatch;
 import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.entity.other.Friend;
@@ -93,7 +94,14 @@ public class EndpointImpl implements EndPoint {
 						throw new PlayerException("The requested Player does not exist, or has a private profile");
 					}
 
-					play = new PlayerImpl(array.get(0).getAsJsonObject(), api);
+					JsonObject object = array.get(0).getAsJsonObject();
+					if (!object.isJsonNull()){
+						if (object.get("ret_msg").getAsString().contains("Player Privacy Flag set for")){
+							throw new PlayerException("This player has a private profile");
+						}
+					}
+
+					play = new PlayerImpl(object, api);
 				}
 				return this.play;
 			}
@@ -130,7 +138,7 @@ public class EndpointImpl implements EndPoint {
 					}
 
 					if (array.size() == 0){
-						throw new SearchException("No player was found.");
+						throw new SearchException("No players found");
 					}
 
 					List<SearchPlayer> searchPlayers = new ArrayList<>();

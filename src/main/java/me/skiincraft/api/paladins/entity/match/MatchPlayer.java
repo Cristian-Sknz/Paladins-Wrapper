@@ -24,6 +24,7 @@ public interface MatchPlayer {
 	long getDamageRaw();
 	Kills getKills();
 	long getKillsRaw();
+	long getDeaths();
 	
 	int getHealing();
 	int getHealingBot();

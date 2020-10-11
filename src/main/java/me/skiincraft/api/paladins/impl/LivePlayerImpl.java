@@ -11,7 +11,7 @@ import me.skiincraft.api.paladins.objects.LeagueSeason;
 
 import com.google.gson.JsonObject;
 
-public class LivePlayerImpl implements LivePlayer{
+public class LivePlayerImpl implements LivePlayer {
 	
 	private final JsonObject object;
 	private final EndPoint endPoint;

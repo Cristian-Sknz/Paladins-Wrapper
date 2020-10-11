@@ -12,10 +12,9 @@ import com.google.gson.JsonObject;
 
 import me.skiincraft.api.paladins.common.EndPoint;
 import me.skiincraft.api.paladins.common.Request;
-import me.skiincraft.api.paladins.entity.match.Match;
+import me.skiincraft.api.paladins.entity.match.HistoryMatch;
 import me.skiincraft.api.paladins.entity.other.Friends;
 import me.skiincraft.api.paladins.entity.player.Player;
-import me.skiincraft.api.paladins.entity.player.PlayerChampion;
 import me.skiincraft.api.paladins.entity.player.objects.PlayerChampions;
 import me.skiincraft.api.paladins.enums.Platform;
 import me.skiincraft.api.paladins.enums.PlayerStatus;

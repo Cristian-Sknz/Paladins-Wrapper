@@ -125,6 +125,12 @@ public class MatchPlayerImpl implements MatchPlayer {
 			return get("Kills").getAsLong();
 		}
 	}
+
+	@Override
+	public long getDeaths() {
+		return get("Deaths").getAsInt();
+	}
+
 	public int getHealing() {
 		return get("Healing").getAsInt();
 	}

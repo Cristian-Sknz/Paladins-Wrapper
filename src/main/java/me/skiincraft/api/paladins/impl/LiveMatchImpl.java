@@ -36,7 +36,7 @@ public class LiveMatchImpl implements LiveMatch{
 	}
 
 	public String getMapName() {
-		if (object.has("mapGame") || object.get("mapGame").isJsonNull()){
+		if (!object.has("mapGame") || object.get("mapGame").isJsonNull()){
 			return null;
 		}
 

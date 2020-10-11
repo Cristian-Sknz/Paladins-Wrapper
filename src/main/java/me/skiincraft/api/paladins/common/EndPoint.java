@@ -19,7 +19,7 @@ import me.skiincraft.api.paladins.enums.Language;
 import me.skiincraft.api.paladins.enums.Platform;
 import me.skiincraft.api.paladins.enums.PlayerStatus;
 import me.skiincraft.api.paladins.enums.Tier;
-import me.skiincraft.api.paladins.impl.HistoryMatch;
+import me.skiincraft.api.paladins.entity.match.HistoryMatch;
 
 public interface EndPoint {
 	
