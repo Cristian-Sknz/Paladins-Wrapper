@@ -6,6 +6,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.gson.*;
 import me.skiincraft.api.paladins.cache.PaladinsCache;
 import me.skiincraft.api.paladins.cache.PaladinsCacheImpl;
 import me.skiincraft.api.paladins.cache.CacheMemoryImpl;
@@ -15,14 +16,11 @@ import me.skiincraft.api.paladins.entity.champions.Champions;
 import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.exceptions.ContextException;
 import me.skiincraft.api.paladins.exceptions.RequestException;
+import me.skiincraft.api.paladins.hirez.DataUsed;
 import me.skiincraft.api.paladins.utils.AccessUtils;
 import me.skiincraft.api.paladins.entity.champions.objects.Cards;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 
 
 /**
@@ -204,6 +202,64 @@ public class Paladins {
 				biConsumer.accept(get(), json);
 			}
 		};
+	}
+
+	/**
+	 * <h1>DataUsed</h1>
+	 * <p>This method is used to check how much has been consumed from the API</p>
+	 *
+	 * @param sessionId The active session
+	 * @throws RequestException Will throw an exception if the session is invalid.
+	 */
+	public synchronized Request<DataUsed> getDataUsed(String sessionId){
+		return new Request<DataUsed>() {
+
+			private DataUsed dataUsed;
+			private String json;
+
+			@Override
+			public boolean wasRequested() {
+				return dataUsed != null;
+			}
+
+			@Override
+			public DataUsed get() {
+				if (!wasRequested()){
+					String url = accessUtils.makeUrl("getdataused", sessionId, new String[] {});
+					HttpRequest request = HttpRequest.get(url);
+					json = request.body();
+
+					if (!accessUtils.checkResponse(json)){
+						throw new RequestException(json);
+					}
+
+					Gson gson = new Gson();
+					DataUsed datas = gson.fromJson(new JsonParser()
+							.parse(json.replace("_", ""))
+							.getAsJsonArray()
+							.get(0), DataUsed.class);
+
+					return dataUsed = datas;
+				}
+				return dataUsed;
+			}
+
+			@Override
+			public void getWithJson(BiConsumer<DataUsed, String> biConsumer) {
+				biConsumer.accept(get(), json);
+			}
+		};
+	}
+
+	/**
+	 * <h1>DataUsed</h1>
+	 * <p>This method is used to check how much has been consumed from the API</p>
+	 *
+	 * @param session The active session
+	 * @throws RequestException Will throw an exception if the session is invalid.
+	 */
+	public synchronized Request<DataUsed> getDataUsed(Session session){
+		return getDataUsed(session.getSessionId());
 	}
 
 	/**
