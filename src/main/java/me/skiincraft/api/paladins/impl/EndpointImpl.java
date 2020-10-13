@@ -94,7 +94,7 @@ public class EndpointImpl implements EndPoint {
 					}
 
 					JsonObject object = array.get(0).getAsJsonObject();
-					if (!object.isJsonNull()){
+					if (!object.get("ret_msg").isJsonNull()){
 						if (object.get("ret_msg").getAsString().contains("Player Privacy Flag set for")){
 							throw new PlayerException("This player has a private profile");
 						}
