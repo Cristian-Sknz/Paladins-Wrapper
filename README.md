@@ -85,7 +85,7 @@ This method will make a request to see if the session is valid
 If not valid, it will throw an exception
 */
 Session session = paladins.resumeSession("SESSIONID").get();
-});
+
 ```
 
 #### Test Session
@@ -95,7 +95,7 @@ Session session = paladins.resumeSession("SESSIONID").get();
 * If not valid, it will throw an exception
 */
 boolean isValid = paladins.testSession("SESSIONID").get();
-});
+
 ```
 
 ### Using a Session
@@ -115,6 +115,7 @@ Champion champion = champions.get(0);
 // Printing the information obtained
 System.out.println(champion.getName());
 champion.getAbilities().forEach(System.out::println);
+
 ```
 This project is not complete, I intend to update whenever I can.
 Thanks for reading me :D
