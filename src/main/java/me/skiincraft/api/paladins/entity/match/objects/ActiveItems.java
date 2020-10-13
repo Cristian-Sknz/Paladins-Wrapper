@@ -7,35 +7,36 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import me.skiincraft.api.paladins.common.CustomList;
+import me.skiincraft.api.paladins.enums.ShopItem;
 
 import javax.annotation.Nonnull;
 
-public class ActiveItems implements CustomList<Item>{
+public class ActiveItems implements CustomList<ShopItem>{
 
-	private final Item[] items;
+	private final ShopItem[] shopItems;
 	
-	public ActiveItems(List<Item> itens) {
-		items = new Item[itens.size()];
+	public ActiveItems(List<ShopItem> itens) {
+		shopItems = new ShopItem[itens.size()];
 		int i = 0;
-		for (Item item :itens) {
-			items[i] = item; i++;
+		for (ShopItem shopItem :itens) {
+			shopItems[i] = shopItem; i++;
 		}
 	}
 	
 	@Nonnull
-	public Iterator<Item> iterator() {
-		return Arrays.stream(items).iterator();
+	public Iterator<ShopItem> iterator() {
+		return Arrays.stream(shopItems).iterator();
 	}
 
-	public List<Item> getAsList() {
-		return Arrays.stream(items).collect(Collectors.toList());
+	public List<ShopItem> getAsList() {
+		return Arrays.stream(shopItems).collect(Collectors.toList());
 	}
 
-	public Stream<Item> getAsStream() {
-		return Arrays.stream(items);
+	public Stream<ShopItem> getAsStream() {
+		return Arrays.stream(shopItems);
 	}
 
-	public Item getById(long id) {
+	public ShopItem getById(long id) {
 		return getAsStream().filter(o -> o.getItemId() == id).findFirst().orElse(null);
 	}
 

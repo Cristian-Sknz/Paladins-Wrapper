@@ -7,6 +7,7 @@ import me.skiincraft.api.paladins.entity.match.LivePlayer;
 import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.enums.Language;
 import me.skiincraft.api.paladins.enums.Tier;
+import me.skiincraft.api.paladins.exceptions.PlayerException;
 import me.skiincraft.api.paladins.objects.LeagueSeason;
 
 import com.google.gson.JsonObject;
@@ -23,6 +24,11 @@ public class LivePlayerImpl implements LivePlayer {
 
 	public Request<Champion> getChampion(Language language) {
 		return endPoint.getChampion(object.get("ChampionId").getAsLong(), language);
+	}
+
+	@Override
+	public long getChampionId() {
+		return object.get("ChampionId").getAsLong();
 	}
 
 	public int getChampionLevel() {
@@ -46,6 +52,9 @@ public class LivePlayerImpl implements LivePlayer {
 	}
 
 	public Request<Player> getPlayer() {
+		if (isPrivateProfile()){
+			throw new PlayerException("The requested player has a private profile");
+		}
 		return endPoint.getPlayer(getPlayerId());
 	}
 

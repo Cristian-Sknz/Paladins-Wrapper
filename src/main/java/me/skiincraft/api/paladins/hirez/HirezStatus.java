@@ -11,6 +11,7 @@ public class HirezStatus {
 	private final String status;
 	private final String version;
 	private final String ret_msg;
+
 	public HirezStatus(Date entryDateTime, String environment, boolean limitedAccess, String platform, String status,
 			String version, String ret_msg) {
 		this.entryDateTime = entryDateTime;

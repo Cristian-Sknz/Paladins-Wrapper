@@ -12,9 +12,10 @@ import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.entity.match.MatchPlayer;
 import me.skiincraft.api.paladins.entity.match.objects.ActiveItems;
 import me.skiincraft.api.paladins.entity.match.objects.Damage;
-import me.skiincraft.api.paladins.entity.match.objects.Item;
+import me.skiincraft.api.paladins.enums.ShopItem;
 import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.enums.Language;
+import me.skiincraft.api.paladins.exceptions.PlayerException;
 import me.skiincraft.api.paladins.objects.Kills;
 
 import com.google.gson.JsonElement;
@@ -165,17 +166,17 @@ public class MatchPlayerImpl implements MatchPlayer {
 		if (activeItems != null) {
 			return activeItems;
 		}
-		List<Item> items = new ArrayList<>();
-		Arrays.stream(Item.values()).filter(item -> {
+		List<ShopItem> shopItems = new ArrayList<>();
+		Arrays.stream(ShopItem.values()).filter(shopItem -> {
 			for (int i = 1; i <= 4; i++) {
-				if (get("ActiveId" + i).getAsLong() == item.getItemId()) {
+				if (get("ActiveId" + i).getAsLong() == shopItem.getItemId()) {
 					return true;
 				}
 			}
 			return false;
-		}).collect(Collectors.toList()).addAll(items);
+		}).collect(Collectors.toList()).addAll(shopItems);
 		
-		return activeItems = new ActiveItems(items);
+		return activeItems = new ActiveItems(shopItems);
 	}
 	public boolean hasWon() {
 		return !get("Win_Status").getAsString().contains("Los");
@@ -185,6 +186,9 @@ public class MatchPlayerImpl implements MatchPlayer {
 	}
 
 	public Request<Player> getPlayer() {
+		if (isPrivateProfile()){
+			throw new PlayerException("The requested player has a private profile");
+		}
 		return endPoint.getPlayer(getId());
 	}
 }

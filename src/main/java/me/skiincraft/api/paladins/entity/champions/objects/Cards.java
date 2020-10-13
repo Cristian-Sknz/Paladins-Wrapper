@@ -12,6 +12,13 @@ import me.skiincraft.api.paladins.objects.Card;
 
 import javax.annotation.Nonnull;
 
+/**
+ * <h1>Cards</h1>
+ * <p>
+ *     <p>Class that will hold all the cards of any champion</p>
+ *     <p>No items can be removed from this class</p>
+ * </p>
+ */
 public class Cards implements CustomList<Card> {
 
 	private final Card[] cards;

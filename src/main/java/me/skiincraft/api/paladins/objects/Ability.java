@@ -47,7 +47,7 @@ public class Ability {
 		return cooldown;
 	}
 
-	public boolean isHasCooldown() {
+	public boolean hasCooldown() {
 		return hasCooldown;
 	}
 	

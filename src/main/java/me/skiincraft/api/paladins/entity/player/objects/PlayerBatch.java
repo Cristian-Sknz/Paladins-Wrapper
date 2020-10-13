@@ -11,6 +11,13 @@ import me.skiincraft.api.paladins.entity.player.Player;
 
 import javax.annotation.Nonnull;
 
+/**
+ * <h1>PlayerBatch</h1>
+ * <p>
+ *     <p>Class that will contain champions requested in batch</p>
+ *     <p>No items can be removed from this class</p>
+ * </p>
+ */
 public class PlayerBatch implements CustomList<Player> {
 
 	private final Player[] items;

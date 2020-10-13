@@ -14,10 +14,12 @@ public class ChampionSkinImpl implements ChampionSkin {
 
 	private final EndPoint endPoint;
 	private final JsonObject object;
+	private final Language language;
 	
-	public ChampionSkinImpl(EndPoint endPoint, JsonObject object) {
+	public ChampionSkinImpl(EndPoint endPoint, JsonObject object, Language language) {
 		this.endPoint = endPoint;
 		this.object = object;
+		this.language = language;
 	}
 
 	protected JsonElement get(String key) {
@@ -52,4 +54,7 @@ public class ChampionSkinImpl implements ChampionSkin {
 		return get("skin_name_english").getAsString();
 	}
 
+	public Language getLanguage() {
+		return language;
+	}
 }

@@ -10,6 +10,13 @@ import me.skiincraft.api.paladins.common.CustomList;
 
 import javax.annotation.Nonnull;
 
+/**
+ * <h1>Skins</h1>
+ * <p>
+ *     <p>Class that will contain all the skins of any champion</p>
+ *     <p>No items can be removed from this class</p>
+ * </p>
+ */
 public class Skins implements CustomList<ChampionSkin> {
 
 	private final ChampionSkin[] ChampionSkins;

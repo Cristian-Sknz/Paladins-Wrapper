@@ -18,18 +18,34 @@ public class Ban {
 		this.championName = banName;
 		this.endPoint = endPoint;
 	}
-	
+	/**
+	 * <p>Is the Champion Id</p>
+	 */
 	public long getChampionId() {
 		return championId;
 	}
-	
+
+	/**
+	 * <p>Make an API request to return the banned champion of this class</p>
+	 * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
+	 *
+	 * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
+	 * @throws me.skiincraft.api.paladins.exceptions.ChampionException In case the champion Id is wrong.
+	 *
+	 * @param language the language you want to receive the champions;
+	 *
+	 * @return Champion
+	 */
 	public Request<Champion> getChampion(Language language) {
 		if (champion == null) {
 			champion = endPoint.getChampion(getChampionId(), language);
 		}
 		return champion;
 	}
-	
+
+	/**
+	 * <p>Is the Champion name</p>
+	 */
 	public String getChampionName() {
 		return championName;
 	}

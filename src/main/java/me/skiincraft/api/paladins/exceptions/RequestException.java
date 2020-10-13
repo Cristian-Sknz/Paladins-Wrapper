@@ -1,8 +1,12 @@
 package me.skiincraft.api.paladins.exceptions;
 
+/**
+ * <h1>Request Exception</h1>
+ * <p>
+ *     <p>This exception will be thrown when there is a problem related to requests made by the API</p>
+ * </p>
+ */
 public class RequestException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-	
 	private String requestMessage;
 
 	public RequestException(String message) {

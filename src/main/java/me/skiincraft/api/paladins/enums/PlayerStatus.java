@@ -2,12 +2,54 @@ package me.skiincraft.api.paladins.enums;
 
 import me.skiincraft.api.paladins.common.EndPoint;
 import me.skiincraft.api.paladins.common.Request;
+import me.skiincraft.api.paladins.entity.match.LiveMatch;
 import me.skiincraft.api.paladins.entity.player.Player;
+import me.skiincraft.api.paladins.exceptions.ContextException;
+import me.skiincraft.api.paladins.exceptions.MatchException;
 
+/**
+ * <h1>PlayerStatus</h1>
+ * <p>
+ *     <p>It's little information about the player, at this point.</p>
+ * </p>
+ */
 public class PlayerStatus {
 
+	/**
+	 * <h1>Status</h1>
+	 * <p>
+	 *     <p>These are ingame statuses, such as offline, online, in game, and selection menu</p>
+	 * </p>
+	 */
 	public enum Status {
-		Offline(0), In_Lobby(1), God_Selection(2), In_Game(3), Online(4), Unknown(5);
+		/**
+		 * <p>If the player is offline</p>
+		 */
+		Offline(0),
+
+		/**
+		 * <p>If the player is in the game lobby</p>
+		 */
+		In_Lobby(1),
+
+		/**
+		 * <p>If the player is in the match selection menu</p>
+		 */
+		God_Selection(2),
+
+		/**
+		 * <p>If the player is in a match</p>
+		 */
+		In_Game(3),
+
+		/**
+		 * <p>If the player is only online</p>
+		 */
+		Online(4),
+		/**
+		 * <p>Unknown, in case there are none of the other enums</p>
+		 */
+		Unknown(5);
 
 		private final int id;
 
@@ -40,20 +82,53 @@ public class PlayerStatus {
 		this.endPoint = endPoint;
 	}
 
+	/**
+	 * <p>If the player is in a match, he will return the match Id.
+	 *  otherwise, it will return 0.</p>
+	 */
 	public long getMatchId() {
 		return matchId;
 	}
-	
-	public boolean isLiveMatch() {
+
+	/**
+	 * <p>Checks whether the player is in a match.</p>
+	 * <p>
+	 *    <p>Is the same thing as: getMatchId() != 0</p>
+	 * </p>
+	 */
+	public boolean isInMatch() {
 		return (getMatchId() != 0);
 	}
 
+	/**
+	 * <p>Are the status in game, this player</p>
+	 */
 	public Status getStatus() {
 		return status;
 	}
-	
+
+	/**
+	 * <p>Make an api request to return a Player</p>
+	 * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
+	 *
+	 * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
+	 * @throws me.skiincraft.api.paladins.exceptions.PlayerException If the player has a private profile or does not exist.
+	 *
+	 * @return Player
+	 */
 	public Request<Player> getPlayer(){
 		return endPoint.getPlayer(player);
+	}
+
+	/**
+	 * <p>Get information about this player's current match</p>
+	 * @throws MatchException If the player is not in a match.
+	 */
+	public Request<LiveMatch> getLiveMatch(){
+		if (!isInMatch() || getStatus() == Status.Offline) {
+			throw new MatchException("This player is not in a match");
+		}
+		return endPoint.getMatchPlayerDetails(getMatchId());
 	}
 
 	public String toString() {

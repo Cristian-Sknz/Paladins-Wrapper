@@ -40,7 +40,6 @@ import me.skiincraft.api.paladins.exceptions.*;
 import me.skiincraft.api.paladins.objects.Card;
 import me.skiincraft.api.paladins.objects.Place;
 import me.skiincraft.api.paladins.objects.SearchPlayer;
-import me.skiincraft.api.paladins.parser.CardImpl;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.JsonArray;
@@ -151,7 +150,7 @@ public class EndpointImpl implements EndPoint {
 								object.get("portal_id").getAsInt(),
 								object.get("privacy_flag").getAsString().equalsIgnoreCase("y")));
 					}
-					searchResults = (platform != null) ?new SearchResults(searchPlayers.stream()
+					searchResults = (platform != null) ? new SearchResults(searchPlayers.stream()
 							.filter(s -> Platform.getPlatformByPortalId(s.getPortalId()) == platform)
 							.collect(Collectors.toList())) : new SearchResults(searchPlayers);
 				}
@@ -237,10 +236,6 @@ public class EndpointImpl implements EndPoint {
 
 					if (!paladins.getAccessUtils().checkResponse(json)){
 						throw new RequestException("Possibly the session is invalid. Check the session.");
-					}
-
-					if (array.size() == 0){
-						throw new ChampionException("The requested champions could not be found");
 					}
 					
 					List<Champion> champions = new ArrayList<>();
@@ -452,7 +447,7 @@ public class EndpointImpl implements EndPoint {
 					List<ChampionSkin> skin = new ArrayList<>();
 					for (JsonElement element : array) {
 						JsonObject object = element.getAsJsonObject();
-						skin.add(new ChampionSkinImpl(api, object));
+						skin.add(new ChampionSkinImpl(api, object, language));
 					}
 					this.skins = new Skins(skin);
 				}
@@ -478,6 +473,11 @@ public class EndpointImpl implements EndPoint {
 			
 			public PlayerBatch get() {
 				if (!wasRequested()) {
+					if (id.size() <= 1){
+						throw new ContextException("There are only 1 or less players being requested, use the getPlayer() method!");
+					}
+
+
 					final long ultimovalor = id.get(id.size() -1);
 					
 					StringBuilder buffer = new StringBuilder();
@@ -503,6 +503,14 @@ public class EndpointImpl implements EndPoint {
 					List<Player> players = new ArrayList<>();
 					for (JsonElement element : array) {
 						JsonObject object = element.getAsJsonObject();
+
+						if (object.has("ret_msg")) if (!object.get("ret_msg").isJsonNull()) {
+							if (object.get("ret_msg").getAsString().contains("Player Privacy Flag set for")){
+								System.err.println(object.get("ret_msg").getAsString());
+								continue;
+							}
+						}
+
 						players.add(new PlayerImpl(object, api));
 					}
 					
@@ -688,42 +696,47 @@ public class EndpointImpl implements EndPoint {
 			}
 			
 			public List<Match> get() {
-				final long ultimovalor = matchbatch.get(matchbatch.size() -1);
-				
-				StringBuilder buffer = new StringBuilder();
-				List<String> string = matchbatch.stream().map(o -> {
-					if (ultimovalor != o) return o + ",";
-						return o + "";
-				}).collect(Collectors.toList());
-				
-				
-				string.forEach(buffer::append);
-				String url = makeUrl("getmatchdetailsbatch", new String[] { buffer.toString() });
-				HttpRequest request = HttpRequest.get(url);
-				
-				json = request.body();
-				JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-
-				if (!paladins.getAccessUtils().checkResponse(json)){
-					throw new RequestException("Possibly the session is invalid. Check the session.");
-				}
-
-				if (array.size() == 0){
-					throw new MatchException("It was not possible to find this match.");
-				}
-				
-				int num = 0;
-				List<Match> partidas = new ArrayList<>();
-				for (int i = 0; i < array.size() / 10; i++) {
-					JsonArray jsonarray = new JsonArray();
-					for (int o = num; o < num + 10; o++) {
-						jsonarray.add(array.get(o).getAsJsonObject());
+				if (!wasRequested()) {
+					if (matchbatch.size() <= 1){
+						throw new ContextException("There are only 1 or less matchid being requested, use the getMatchDetails(long) method!");
 					}
-					partidas.add(new MatchImpl(api, jsonarray));
-					num += 10;
+					final long ultimovalor = matchbatch.get(matchbatch.size() - 1);
+
+					StringBuilder builder = new StringBuilder();
+					List<String> string = matchbatch.stream().map(o -> {
+						if (ultimovalor != o) return o + ",";
+						return o + "";
+					}).collect(Collectors.toList());
+
+
+					string.forEach(builder::append);
+					String url = makeUrl("getmatchdetailsbatch", new String[]{builder.toString()});
+					HttpRequest request = HttpRequest.get(url);
+
+					json = request.body();
+					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+
+					if (!paladins.getAccessUtils().checkResponse(json)) {
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+					List<Match> partidas = new ArrayList<>();
+					if (array.size() == 0) {
+						return matchs = partidas;
+					}
+
+					int num = 0;
+
+					for (int i = 0; i < array.size() / 10; i++) {
+						JsonArray jsonarray = new JsonArray();
+						for (int o = num; o < num + 10; o++) {
+							jsonarray.add(array.get(o).getAsJsonObject());
+						}
+						partidas.add(new MatchImpl(api, jsonarray));
+						num += 10;
+					}
+
+					return matchs = partidas;
 				}
-				matchs = partidas;
-				
 				return matchs;
 			}
 
@@ -733,7 +746,7 @@ public class EndpointImpl implements EndPoint {
 		};
 	}
 
-	public Request<List<HistoryMatch>> getMatchHistory(long playerId) {
+	public Request<List<HistoryMatch>> getMatchHistory(long userId) {
 		return new Request<List<HistoryMatch>>() {
 			private List<HistoryMatch> matchs;
 			private String json;
@@ -744,7 +757,7 @@ public class EndpointImpl implements EndPoint {
 			
 			public List<HistoryMatch> get() {
 				if (!wasRequested()) {
-					String url = makeUrl("getmatchhistory", new String[] { String.valueOf(playerId) });
+					String url = makeUrl("getmatchhistory", new String[] { String.valueOf(userId) });
 					HttpRequest request = HttpRequest.get(url);
 					json = request.body();
 					JsonArray array = new JsonParser().parse(json).getAsJsonArray();

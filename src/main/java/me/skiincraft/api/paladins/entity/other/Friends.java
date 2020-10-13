@@ -13,6 +13,13 @@ import me.skiincraft.api.paladins.entity.player.objects.PlayerBatch;
 
 import javax.annotation.Nonnull;
 
+/**
+ * <h1>PlayerChampions</h1>
+ * <p>
+ *     <p>This class will have friends of a player</p>
+ *     <p>No items can be removed from this class</p>
+ * </p>
+ */
 public class Friends implements CustomList<Friend> {
 
 	private final Friend[] items;

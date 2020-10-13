@@ -13,6 +13,10 @@ import me.skiincraft.api.paladins.enums.Queue;
 import me.skiincraft.api.paladins.exceptions.ContextException;
 import me.skiincraft.api.paladins.impl.MatchPlayerImpl;
 
+/**
+ * <h1>Match</h1>
+ * <p>This class will have information about a match in a player's history</p>
+ */
 public class HistoryMatch implements Match {
 
 	private final JsonObject object;

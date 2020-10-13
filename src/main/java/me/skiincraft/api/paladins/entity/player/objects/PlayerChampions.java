@@ -11,6 +11,13 @@ import me.skiincraft.api.paladins.entity.player.PlayerChampion;
 
 import javax.annotation.Nonnull;
 
+/**
+ * <h1>PlayerChampions</h1>
+ * <p>
+ *     <p>This class will have all the champions that were played by a player</p>
+ *     <p>No items can be removed from this class</p>
+ * </p>
+ */
 public class PlayerChampions implements CustomList<PlayerChampion> {
 
 	private final PlayerChampion[] items;

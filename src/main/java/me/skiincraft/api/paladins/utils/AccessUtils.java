@@ -1,5 +1,7 @@
 package me.skiincraft.api.paladins.utils;
 
+import me.skiincraft.api.paladins.Paladins;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -8,13 +10,11 @@ import java.util.SimpleTimeZone;
 
 public class AccessUtils {
 
-	private final Integer devId;
-	private final String authKey;
+	private Paladins paladins;
 	private static final String ENDPOINT = "http://api.paladins.com/paladinsapi.svc";
 	
-	public AccessUtils(int devId, String authkey) {
-		this.devId = devId;
-		this.authKey = authkey;
+	public AccessUtils(Paladins paladins) {
+		this.paladins = paladins;
 	}
 
 	public boolean checkResponse(String body) {
@@ -38,11 +38,11 @@ public class AccessUtils {
 	}
 	
 	public String getAuthKey() {
-		return authKey;
+		return paladins.getAuthkey();
 	}
 	
 	public Integer getDevId() {
-		return devId;
+		return paladins.getDevId();
 	}
 	
 	private String complete(String... strings) {

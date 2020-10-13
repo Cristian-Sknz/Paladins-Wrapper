@@ -14,6 +14,7 @@ import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.entity.match.MatchPlayer;
 import me.skiincraft.api.paladins.entity.match.objects.Ban;
 import me.skiincraft.api.paladins.enums.Queue;
+import me.skiincraft.api.paladins.exceptions.MatchException;
 
 public class MatchImpl implements Match {
 
@@ -143,6 +144,9 @@ public class MatchImpl implements Match {
 	}
 
 	public Request<Match> getMatchDetails() {
+		if (isDetailedMatch()){
+			throw new MatchException("This match is already a detailed match");
+		}
 		return null;
 	}
 

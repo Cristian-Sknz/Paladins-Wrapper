@@ -11,6 +11,13 @@ import me.skiincraft.api.paladins.entity.player.Loadout;
 
 import javax.annotation.Nonnull;
 
+/**
+ * <h1>Loadouts</h1>
+ * <p>
+ *     <p>This class will have all the loadouts of all the champions of a player</p>
+ *     <p>No items can be removed from this class</p>
+ * </p>
+ */
 public class Loadouts implements CustomList<Loadout> {
 
 	private final Loadout[] items;
