@@ -1,7 +1,7 @@
-# <img src="https://web2.hirez.com/paladins/assets/paladins-logo.png" alt="Paladins" width="300"/>
-## A Paladins API wrapper for Java
-
-
+<p align= "center">
+<img src="https://web2.hirez.com/paladins/assets/paladins-logo.png" alt="Paladins" width="300"/>	
+<h1 align= "center"> A Paladins API wrapper for Java</h1>
+</p>
 
 
 ## :paperclip: My Objective
@@ -15,8 +15,8 @@ The dependencies are inside build.gradle
 
 ## :newspaper: Add your dependencies!
 [![](https://jitpack.io/v/Cristian-Sknz/Paladins-Wrapper.svg)](https://jitpack.io/#Cristian-Sknz/Paladins-Wrapper)
-* Gradle
 
+* Gradle
 ```groovy
 repositories {
      maven { url 'https://jitpack.io' }
@@ -64,7 +64,8 @@ Paladins paladins = Paladins.getInstance()
          .setDevId(0000);
 ```
 
-### Create a Session
+### :asterisk: Create a Session
+:page_facing_up:
 ```java
 Session session = paladins.createSession().get();
 
@@ -78,27 +79,30 @@ session.setOnValidating(() -> {
 });
 ```
 
-#### Resume Session
+#### :link: Resume Session
+:page_facing_up:
 ```java
 /*
 This method will make a request to see if the session is valid
 If not valid, it will throw an exception
 */
 Session session = paladins.resumeSession("SESSIONID").get();
-});
+
 ```
 
-#### Test Session
+#### :link: Test Session
+:page_facing_up:
 ```java
 /**
 * This method will make a request to see if the session is valid
 * If not valid, it will throw an exception
 */
 boolean isValid = paladins.testSession("SESSIONID").get();
-});
+
 ```
 
-### Using a Session
+### :asterisk: Using a Session
+:page_facing_up:
 ```java
 // Getting an active session
 Session session = paladins.getSessions().get(0);
@@ -115,6 +119,7 @@ Champion champion = champions.get(0);
 // Printing the information obtained
 System.out.println(champion.getName());
 champion.getAbilities().forEach(System.out::println);
+
 ```
 This project is not complete, I intend to update whenever I can.
 Thanks for reading me :D
