@@ -25,6 +25,8 @@ public class PaladinsBuilder {
      *
      * @see Paladins
      */
+    public PaladinsBuilder() {}
+
     public PaladinsBuilder(String authKey, int devId) {
         this.authKey = authKey;
         this.devId = devId;
