@@ -1,5 +1,7 @@
 package me.skiincraft.api.paladins.enums;
 
+import java.util.Arrays;
+
 public enum Tier {
 
 	Unranked(0), Bronze_V(1), Bronze_IV(2), Bronze_III(3), Bronze_II(4), Bronze_I(5),
@@ -20,12 +22,10 @@ public enum Tier {
 	}
 	
 	public static Tier getTierById(int id) {
-		for (Tier tier:Tier.values()) {
-			if (tier.getRankId() == id) {
-				return tier;
-			}
-		}
-		return Tier.Bronze_I;
+		return Arrays.stream(values())
+				.filter(q -> q.getRankId() == id)
+				.findFirst()
+				.orElse(Unranked);
 	}
 	
 	public String getName(Language language) {

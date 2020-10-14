@@ -1,5 +1,7 @@
 package me.skiincraft.api.paladins.enums;
 
+import java.util.Arrays;
+
 /**
  * <h1>DamageType</h1>
  * <p>These are the types of damage present in the game</p>
@@ -30,12 +32,9 @@ public enum DamageType {
 	}
 	
 	public static DamageType getByOriginal(String string) {
-		for (DamageType damage:DamageType.values()) {
-			if (damage.getOriginal().equalsIgnoreCase(string)) {
-				return damage;
-			}
-		}
-		return Complete;
+		return Arrays.stream(values())
+				.filter(damageType -> damageType.getOriginal().equalsIgnoreCase(string))
+				.findFirst().orElse(Complete);
 	}
 	
 	public int getId() {

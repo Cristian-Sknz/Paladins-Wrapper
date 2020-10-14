@@ -1,7 +1,8 @@
 package me.skiincraft.api.paladins.enums;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum Queue {
 	None(0), Custom_Siege_Stone_Keep(423), Live_Siege(424), Live_Pratice_Siege(425), Custom_Siege_Bazaar(426),
@@ -32,36 +33,22 @@ public enum Queue {
 		return this.queueId;
 	}
 
-	public static Queue[] getLives() {
-		List<Queue> customs = new ArrayList<>();
-		for (Queue queue : values()) {
-			if (queue.name().contains("LIVE")) {
-				customs.add(queue);
-			}
-		}
-		Queue[] queue = new Queue[customs.size()];
-		customs.toArray(queue);
-		return queue;
+	public static List<Queue> getLives() {
+		return Arrays.stream(values())
+				.filter(q -> q.name().contains("Live"))
+				.collect(Collectors.toList());
 	}
 
-	public static Queue[] getCustoms() {
-		List<Queue> customs = new ArrayList<>();
-		for (Queue queue : values()) {
-			if (queue.name().contains("Custom")) {
-				customs.add(queue);
-			}
-		}
-		Queue[] queue = new Queue[customs.size()];
-		customs.toArray(queue);
-		return queue;
+	public static List<Queue> getCustoms() {
+		return Arrays.stream(values())
+				.filter(q -> q.name().contains("Custom"))
+				.collect(Collectors.toList());
 	}
 
 	public static Queue getQueueById(int id) {
-		for (Queue queue : Queue.values()) {
-			if (queue.getQueueId() == id) {
-				return queue;
-			}
-		}
-		return Queue.None;
+		return Arrays.stream(values())
+				.filter(q -> q.getQueueId() == id)
+				.findFirst()
+				.orElse(None);
 	}
 }

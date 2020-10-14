@@ -1,5 +1,7 @@
 package me.skiincraft.api.paladins.enums;
 
+import java.util.Arrays;
+
 public enum Platform {
 
 	/**
@@ -49,23 +51,21 @@ public enum Platform {
 	}
 	
 	public static Platform getPlatformByName(String name) {
-		for (Platform a:values()) {
-			if (a.name().equalsIgnoreCase(name)) {
-				return a;	
-			}
-		}
-		return Platform.PC;
+		return Arrays.stream(Platform.values())
+				.filter(platform -> platform.name().equalsIgnoreCase(name))
+				.findFirst().orElse(PC);
 	}
 	
 	public static Platform getPlatformByPortalId(int portalId) {
-		for (Platform a:values()) {
-			for (int portalIds : a.getPortalId()) {
-				if (portalIds == portalId) {
-					return a;	
+		return Arrays.stream(values())
+				.filter(platform -> {
+			for (int portal : platform.getPortalId()) {
+				if (portal == portalId) {
+					return true;
 				}
 			}
-		}
-		return Platform.PC;
+			return false;
+		}).findFirst().orElse(PC);
 	}
 	
 	public int[] getPortalId() {

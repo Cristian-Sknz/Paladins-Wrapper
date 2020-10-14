@@ -164,7 +164,7 @@ public class PlayerImpl implements Player {
 
 	@Override
 	public String getInGameName() {
-		return (getPlatform() == Platform.PC) ? (!getHirezName().equals(""))? getHirezName() : getName()
+		return (getPlatform() == Platform.PC) ? (getHirezName().length() <= 1)?  getName() : getHirezName()
 				: getName();
 	}
 

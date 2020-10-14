@@ -4,8 +4,9 @@ import me.skiincraft.api.paladins.common.EndPoint;
 import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.match.LiveMatch;
 import me.skiincraft.api.paladins.entity.player.Player;
-import me.skiincraft.api.paladins.exceptions.ContextException;
 import me.skiincraft.api.paladins.exceptions.MatchException;
+
+import java.util.Arrays;
 
 /**
  * <h1>PlayerStatus</h1>
@@ -61,12 +62,10 @@ public class PlayerStatus {
 			return id;
 		}
 		public static Status getStatusById(int id) {
-			for (Status status : values()) {
-				if (status.getId() == id) {
-					return status;
-				}
-			}
-			return Unknown;
+			return Arrays.stream(values())
+					.filter(status -> status.getId() == id)
+					.findFirst()
+					.orElse(Unknown);
 		}
 	}
 

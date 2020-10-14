@@ -1,5 +1,7 @@
 package me.skiincraft.api.paladins.enums;
 
+import java.util.Arrays;
+
 /**
  * <h1>Rarity</h1>
  * <p>It’s the rarity of items in the game, like skins, cards and legends</p>
@@ -19,12 +21,10 @@ public enum Rarity {
 	}
 	
 	public static Rarity getRarityByName(String name) {
-		for (Rarity rarity : Rarity.values()) {
-			if (rarity.name().equalsIgnoreCase(name)) {
-				return rarity;
-			}
-		}
-		return null;
+		return Arrays.stream(values())
+				.filter(rarity -> rarity.name().equalsIgnoreCase(name))
+				.findFirst()
+				.orElse(null);
 	}
 
 }
