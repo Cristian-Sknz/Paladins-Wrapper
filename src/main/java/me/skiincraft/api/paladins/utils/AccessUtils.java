@@ -10,7 +10,7 @@ import java.util.SimpleTimeZone;
 
 public class AccessUtils {
 
-	private Paladins paladins;
+	private final Paladins paladins;
 	private static final String ENDPOINT = "http://api.paladins.com/paladinsapi.svc";
 	
 	public AccessUtils(Paladins paladins) {
@@ -106,7 +106,7 @@ public class AccessUtils {
 			}
 			return url + buffer.toString();
 		}
-		return null;
+		return url + buffer.toString();
 	}
 	
 	public String getTimeStamp() {

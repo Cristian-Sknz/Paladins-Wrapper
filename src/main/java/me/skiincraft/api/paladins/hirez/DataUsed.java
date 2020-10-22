@@ -7,7 +7,7 @@ public class DataUsed {
     private int RequestLimitDaily;
     private int SessionCap;
     private int SessionTimeLimit;
-    private int TotalRequestToday;
+    private int TotalRequestsToday;
     private int TotalSessionsToday;
     private String retmsg;
 
@@ -17,7 +17,7 @@ public class DataUsed {
         RequestLimitDaily = requestLimitDaily;
         SessionCap = sessionCap;
         SessionTimeLimit = sessionTimeLimit;
-        TotalRequestToday = totalRequestToday;
+        TotalRequestsToday = totalRequestToday;
         TotalSessionsToday = totalSessionsToday;
         this.retmsg = retmsg;
     }
@@ -43,7 +43,7 @@ public class DataUsed {
     }
 
     public int getTotalRequestToday() {
-        return TotalRequestToday;
+        return TotalRequestsToday;
     }
 
     public int getTotalSessionsToday() {
@@ -62,7 +62,7 @@ public class DataUsed {
                 ", RequestLimitDaily=" + RequestLimitDaily +
                 ", SessionCap=" + SessionCap +
                 ", SessionTimeLimit=" + SessionTimeLimit +
-                ", TotalRequestToday=" + TotalRequestToday +
+                ", TotalRequestToday=" + TotalRequestsToday +
                 ", TotalSessionsToday=" + TotalSessionsToday +
                 ", retmsg='" + retmsg + '\'' +
                 '}';
