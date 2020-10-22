@@ -1,6 +1,6 @@
 package me.skiincraft.api.paladins.entity.player;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import me.skiincraft.api.paladins.common.Request;
@@ -42,7 +42,7 @@ public interface Player {
 	/**
 	 * <p>Is the date of the player's account creation</p>
 	 */
-	Date getCreated();
+	OffsetDateTime getCreated();
 
 	/**
 	 * <p>Is the amount of time the player has played in hours</p>
@@ -57,7 +57,7 @@ public interface Player {
 	/**
 	 * <p>This player's last login date</p>
 	 */
-	Date getLastLogin();
+	OffsetDateTime getLastLogin();
 
 	/**
 	 * <p>Is the times that the player left a game</p>

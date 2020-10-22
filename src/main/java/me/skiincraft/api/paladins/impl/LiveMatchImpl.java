@@ -12,7 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.skiincraft.api.paladins.enums.Queue;
 
-public class LiveMatchImpl implements LiveMatch{
+public class LiveMatchImpl implements LiveMatch {
 
 	private final JsonArray array;
 	private final JsonObject object;

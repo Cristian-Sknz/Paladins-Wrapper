@@ -1,5 +1,9 @@
 package me.skiincraft.api.paladins.impl;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -148,6 +152,11 @@ public class MatchImpl implements Match {
 			throw new MatchException("This match is already a detailed match");
 		}
 		return null;
+	}
+
+	@Override
+	public OffsetDateTime getMatchDate() {
+		return OffsetDateTime.of(LocalDateTime.parse(object.get("Match_Time").getAsString(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
 	}
 
 }

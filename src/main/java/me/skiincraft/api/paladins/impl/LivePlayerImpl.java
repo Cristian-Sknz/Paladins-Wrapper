@@ -12,6 +12,11 @@ import me.skiincraft.api.paladins.objects.LeagueSeason;
 
 import com.google.gson.JsonObject;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
 public class LivePlayerImpl implements LivePlayer {
 	
 	private final JsonObject object;
@@ -56,6 +61,10 @@ public class LivePlayerImpl implements LivePlayer {
 			throw new PlayerException("The requested player has a private profile");
 		}
 		return endPoint.getPlayer(getPlayerId());
+	}
+
+	public OffsetDateTime getPlayerCreated() {
+		return OffsetDateTime.of(LocalDateTime.parse(object.get("playerCreated").getAsString(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
 	}
 
 	public String getPlayerName() {

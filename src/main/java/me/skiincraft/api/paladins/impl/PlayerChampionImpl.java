@@ -1,16 +1,19 @@
 package me.skiincraft.api.paladins.impl;
 
-import java.util.concurrent.TimeUnit;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import me.skiincraft.api.paladins.common.EndPoint;
 import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.entity.player.PlayerChampion;
 import me.skiincraft.api.paladins.enums.Language;
+
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerChampionImpl implements PlayerChampion {
 
@@ -82,9 +85,9 @@ public class PlayerChampionImpl implements PlayerChampion {
 	public long getWorshippers() {
 		return get("Worshippers").getAsLong();
 	}
-	
-	public String getLastPlayed() {
-		return get("LastPlayed").getAsString();
+
+	public OffsetDateTime getLastPlayed() {
+		return OffsetDateTime.of(LocalDateTime.parse(object.get("LastPlayed").getAsString(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
 	}
 
 	public long getPlayerId() {

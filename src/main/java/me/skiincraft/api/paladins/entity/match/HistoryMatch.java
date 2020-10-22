@@ -1,5 +1,9 @@
 package me.skiincraft.api.paladins.entity.match;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +38,10 @@ public class HistoryMatch implements Match {
 
 	public List<Ban> getBans() {
 		throw new ContextException("This implementation of Match is not a detailed Match. Is a " + this.getClass().getSimpleName());
+	}
+
+	public OffsetDateTime getMatchDate() {
+		return OffsetDateTime.of(LocalDateTime.parse(object.get("Match_Time").getAsString(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
 	}
 
 	public long getMatchId() {

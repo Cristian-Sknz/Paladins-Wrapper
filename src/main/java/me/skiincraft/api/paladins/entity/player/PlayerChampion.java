@@ -4,6 +4,8 @@ import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.enums.Language;
 
+import java.time.OffsetDateTime;
+
 /**
  * <h1>Player Champion</h1>
  *
@@ -53,7 +55,7 @@ public interface PlayerChampion {
 	 */
 	long getChampionId();
 	
-	String getLastPlayed();
+	OffsetDateTime getLastPlayed();
 
 	/**
 	 * <p>Is the total number of assists</p>
@@ -102,5 +104,7 @@ public interface PlayerChampion {
 
 	//?
 	int getMinionKills();
+
+
 
 }

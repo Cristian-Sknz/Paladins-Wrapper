@@ -1,8 +1,9 @@
 package me.skiincraft.api.paladins.impl;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -50,13 +51,8 @@ public class PlayerImpl implements Player {
 		return (getAvatarId() == 0) ? null : object.get("AvatarURL").getAsString();
 	}
 
-	public Date getCreated() {
-		try {
-			return new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a").parse(object.get("Created_Datetime").getAsString());
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return null;
+	public OffsetDateTime getCreated() {
+		return OffsetDateTime.of(LocalDateTime.parse(object.get("Created_Datetime").getAsString(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
 	}
 
 	public long getHoursPlayed() {
@@ -67,13 +63,8 @@ public class PlayerImpl implements Player {
 		return get("Id").getAsLong();
 	}
 
-	public Date getLastLogin() {
-		try {
-			return new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a").parse(object.get("Last_Login_Datetime").getAsString());
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return null;
+	public OffsetDateTime getLastLogin() {
+		return OffsetDateTime.of(LocalDateTime.parse(object.get("Last_Login_Datetime").getAsString(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
 	}
 
 	public int getLeaves() {
@@ -162,7 +153,6 @@ public class PlayerImpl implements Player {
 		return get("Wins").getAsInt();
 	}
 
-	@Override
 	public String getInGameName() {
 		return (getPlatform() == Platform.PC) ? (getHirezName().length() <= 1)?  getName() : getHirezName()
 				: getName();
@@ -200,12 +190,10 @@ public class PlayerImpl implements Player {
 			private Place place;
 			private String json;
 
-			@Override
 			public boolean wasRequested() {
 				return place != null;
 			}
 
-			@Override
 			public Place get() {
 				if (wasRequested()) {
 					return place;
@@ -214,7 +202,6 @@ public class PlayerImpl implements Player {
 				return place = queue.getLeaderboard(getTier(), season).get().getById(getId());
 			}
 
-			@Override
 			public void getWithJson(BiConsumer<Place, String> biConsumer) {
 				biConsumer.accept(get(), "");
 			}
