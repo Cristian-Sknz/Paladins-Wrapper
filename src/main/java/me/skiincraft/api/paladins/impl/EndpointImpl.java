@@ -26,10 +26,8 @@ import me.skiincraft.api.paladins.entity.other.Friends;
 import me.skiincraft.api.paladins.entity.player.Loadout;
 import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.entity.player.PlayerChampion;
-import me.skiincraft.api.paladins.entity.player.objects.Loadouts;
-import me.skiincraft.api.paladins.entity.player.objects.PlayerBatch;
-import me.skiincraft.api.paladins.entity.player.objects.PlayerChampions;
-import me.skiincraft.api.paladins.entity.player.objects.SearchResults;
+import me.skiincraft.api.paladins.entity.player.QueueChampion;
+import me.skiincraft.api.paladins.entity.player.objects.*;
 import me.skiincraft.api.paladins.enums.Language;
 import me.skiincraft.api.paladins.enums.Platform;
 import me.skiincraft.api.paladins.enums.PlayerStatus;
@@ -563,6 +561,53 @@ public class EndpointImpl implements EndPoint {
 					playerChampions = new PlayerChampions(heeychamps);
 				}
 				return playerChampions;
+			}
+		};
+	}
+
+	public Request<QueueChampions> getQueueStats(long userId, Queue queue) {
+		return new Request<QueueChampions>() {
+
+			private QueueChampions queueChampions;
+			private String json;
+
+			public boolean wasRequested() {
+				return queueChampions != null;
+			}
+
+			public QueueChampions get() {
+				if (!Queue.getLives().contains(queue)) {
+					throw new ContextException("Only queue live is accepted for this request: " + Queue.getLives().toString());
+				}
+
+				if (!wasRequested()){
+					String url = makeUrl("getqueuestats", new String[]{ String.valueOf(userId), String.valueOf(queue.getQueueId())});
+					HttpRequest request = HttpRequest.get(url);
+
+					json = request.body();
+
+					JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+					if (!paladins.getAccessUtils().checkResponse(json)){
+						throw new RequestException("Possibly the session is invalid. Check the session.");
+					}
+
+					if (array.size() == 0){
+						throw new PlayerException("The requested Player does not exist, or has a private profile");
+					}
+
+					List<QueueChampion> heeychamps = new ArrayList<>();
+					for (JsonElement element : array) {
+						JsonObject object = element.getAsJsonObject();
+						heeychamps.add(new QueueChampionImpl(object, queue, api));
+					}
+					queueChampions = new QueueChampions(heeychamps, queue);
+				}
+				return queueChampions;
+			}
+
+
+			public void getWithJson(BiConsumer<QueueChampions, String> biConsumer) {
+				biConsumer.accept(get(), json);
 			}
 		};
 	}

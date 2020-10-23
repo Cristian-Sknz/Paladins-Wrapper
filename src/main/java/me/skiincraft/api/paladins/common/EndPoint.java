@@ -11,14 +11,8 @@ import me.skiincraft.api.paladins.entity.match.LiveMatch;
 import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.entity.other.Friends;
 import me.skiincraft.api.paladins.entity.player.Player;
-import me.skiincraft.api.paladins.entity.player.objects.Loadouts;
-import me.skiincraft.api.paladins.entity.player.objects.PlayerBatch;
-import me.skiincraft.api.paladins.entity.player.objects.PlayerChampions;
-import me.skiincraft.api.paladins.entity.player.objects.SearchResults;
-import me.skiincraft.api.paladins.enums.Language;
-import me.skiincraft.api.paladins.enums.Platform;
-import me.skiincraft.api.paladins.enums.PlayerStatus;
-import me.skiincraft.api.paladins.enums.Tier;
+import me.skiincraft.api.paladins.entity.player.objects.*;
+import me.skiincraft.api.paladins.enums.*;
 import me.skiincraft.api.paladins.entity.match.HistoryMatch;
 
 import javax.annotation.Nullable;
@@ -235,6 +229,19 @@ public interface EndPoint {
 	 * @return PlayerChampions
 	 */
 	Request<PlayerChampions> getPlayerChampions(long userId);
+
+	/**
+	 * <p>Make an API request to return a statistic of all champions played by a player</p>
+	 * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
+	 *
+	 * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
+	 * @throws me.skiincraft.api.paladins.exceptions.PlayerException If the player has a private profile or does not exist.
+	 *
+	 * @param userId the player id
+	 *
+	 * @return PlayerQueue
+	 */
+	Request<QueueChampions> getQueueStats(long userId, Queue queue);
 
 	/**
 	 * <p>Make an API request to return a player's friends</p>
