@@ -65,7 +65,7 @@ public class LivePlayerImpl implements LivePlayer {
 	}
 
 	public OffsetDateTime getPlayerCreated() {
-		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("playerCreated").getAsString()), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
+		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("playerCreated").getAsString())), ZoneOffset.UTC);
 	}
 
 	public String getPlayerName() {

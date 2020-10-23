@@ -42,7 +42,7 @@ public class HistoryMatch implements Match {
 	}
 
 	public OffsetDateTime getMatchDate() {
-		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("Match_Time").getAsString()), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
+		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("Match_Time").getAsString())), ZoneOffset.UTC);
 	}
 
 	public long getMatchId() {

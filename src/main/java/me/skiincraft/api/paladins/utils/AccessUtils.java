@@ -5,6 +5,7 @@ import me.skiincraft.api.paladins.Paladins;
 import javax.swing.text.DateFormatter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -136,45 +137,17 @@ public class AccessUtils {
 	}
 
 	/**
-	 * Convert datetime; MM/dd/yyyy HH:mm:ss a
+	 * Convert datetime; MM/dd/yyyy h:mm:ss a
 	 */
 	public static String formatDate(String convert){
-		//String convert = "9/6/2020 6:38:37 PM";
-		String[] split = convert.split(" ");
-		StringBuilder builder = new StringBuilder();
-		for(String fix : split[0].split("/")) {
-			if (fix.length() >= 3){
-				builder.append(fix).append(" ");
-				break;
-			}
-			if (fix.length() == 1){
-				builder.append("0").append(fix).append("/");
-			} else builder.append(fix).append("/");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy h:mm:ss aa");
+		SimpleDateFormat finalFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		try {
+			return finalFormat.format(dateFormat.parse(convert));
+		} catch (ParseException e){
+			e.printStackTrace();
 		}
-
-		if (split[2].toLowerCase().contains("pm")) {
-			String hoursplit = split[1].split(":")[0];
-			if (!hoursplit.contains("12")) {
-				Integer hour = Integer.parseInt(hoursplit) + 2;
-				if (hour.toString().startsWith("1")) {
-					builder.append(hour.toString().replace("1", "2")).append(split[1].substring(hoursplit.length()));
-				} else {
-					builder.append("1").append(hour).append(split[1].substring(hoursplit.length()));
-				}
-			} else {
-				builder.append("12").append(split[1].substring(hoursplit.length()));
-			}
-		}
-
-		if (split[2].toLowerCase().contains("am")) {
-			String hoursplit = split[1].split(":")[0];
-			if (hoursplit.contains("12")){
-				builder.append("00").append(split[1].substring(hoursplit.length()));
-			} else if (hoursplit.length() != 2) {
-				builder.append("0").append(hoursplit).append(split[1].substring(hoursplit.length()));
-			}
-		}
-		return builder.toString();
+		return "";
 	}
 
 }

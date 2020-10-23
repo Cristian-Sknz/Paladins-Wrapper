@@ -88,7 +88,7 @@ public class PlayerChampionImpl implements PlayerChampion {
 	}
 
 	public OffsetDateTime getLastPlayed() {
-		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("LastPlayed").getAsString()), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
+		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("LastPlayed").getAsString())), ZoneOffset.UTC);
 	}
 
 	public long getPlayerId() {
