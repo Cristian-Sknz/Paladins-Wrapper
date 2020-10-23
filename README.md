@@ -48,7 +48,10 @@ I recommend that you read the official Documentation to know the limits of the A
 
 [Json API Responses](https://github.com/luissilva1044894/hirez-api-docs/tree/master/api)
 
-### Create a Instance
+### :asterisk: Create a Instance
+<p align="center">
+:page_facing_up:
+</p>
 
 ```java
 /*
@@ -65,7 +68,10 @@ Paladins paladins = Paladins.getInstance()
 ```
 
 ### :asterisk: Create a Session
+<p align="center">
 :page_facing_up:
+</p>
+
 ```java
 Session session = paladins.createSession().get();
 
@@ -80,7 +86,10 @@ session.setOnValidating(() -> {
 ```
 
 #### :link: Resume Session
+<p align="center">
 :page_facing_up:
+</p>
+
 ```java
 /*
 This method will make a request to see if the session is valid
@@ -91,7 +100,10 @@ Session session = paladins.resumeSession("SESSIONID").get();
 ```
 
 #### :link: Test Session
+<p align="center">
 :page_facing_up:
+</p>
+
 ```java
 /**
 * This method will make a request to see if the session is valid
@@ -102,7 +114,10 @@ boolean isValid = paladins.testSession("SESSIONID").get();
 ```
 
 ### :asterisk: Using a Session
+<p align="center">
 :page_facing_up:
+</p>
+
 ```java
 // Getting an active session
 Session session = paladins.getSessions().get(0);
