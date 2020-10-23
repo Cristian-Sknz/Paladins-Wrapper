@@ -151,13 +151,27 @@ public class AccessUtils {
 				builder.append("0").append(fix).append("/");
 			} else builder.append(fix).append("/");
 		}
+
 		if (split[2].toLowerCase().contains("pm")) {
 			String hoursplit = split[1].split(":")[0];
-			Integer hour = Integer.parseInt(hoursplit)+2;
-			if (hour.toString().startsWith("1")){
-				builder.append(hour.toString().replace("1", "2")).append(split[1].substring(hoursplit.length()));
+			if (!hoursplit.contains("12")) {
+				Integer hour = Integer.parseInt(hoursplit) + 2;
+				if (hour.toString().startsWith("1")) {
+					builder.append(hour.toString().replace("1", "2")).append(split[1].substring(hoursplit.length()));
+				} else {
+					builder.append("1").append(hour).append(split[1].substring(hoursplit.length()));
+				}
 			} else {
-				builder.append("1").append(hour).append(split[1].substring(hoursplit.length()));
+				builder.append("12").append(split[1].substring(hoursplit.length()));
+			}
+		}
+
+		if (split[2].toLowerCase().contains("am")) {
+			String hoursplit = split[1].split(":")[0];
+			if (hoursplit.contains("12")){
+				builder.append("00").append(split[1].substring(hoursplit.length()));
+			} else if (hoursplit.length() != 2) {
+				builder.append("0").append(hoursplit).append(split[1].substring(hoursplit.length()));
 			}
 		}
 		return builder.toString();
