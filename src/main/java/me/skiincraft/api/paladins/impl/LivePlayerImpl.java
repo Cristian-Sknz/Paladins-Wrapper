@@ -11,6 +11,7 @@ import me.skiincraft.api.paladins.exceptions.PlayerException;
 import me.skiincraft.api.paladins.objects.LeagueSeason;
 
 import com.google.gson.JsonObject;
+import me.skiincraft.api.paladins.utils.AccessUtils;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -64,7 +65,7 @@ public class LivePlayerImpl implements LivePlayer {
 	}
 
 	public OffsetDateTime getPlayerCreated() {
-		return OffsetDateTime.of(LocalDateTime.parse(object.get("playerCreated").getAsString(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
+		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("playerCreated").getAsString()), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
 	}
 
 	public String getPlayerName() {

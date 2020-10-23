@@ -5,6 +5,7 @@ import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.enums.Language;
 
 import java.time.OffsetDateTime;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <h1>Player Champion</h1>
@@ -72,6 +73,10 @@ public interface PlayerChampion {
 	 */
 	int getDeaths();
 
+	default int getMatchs(){
+		return getWins() + getLosses();
+	}
+
 	/**
 	 * <p>Is the total number of wins</p>
 	 */
@@ -100,7 +105,14 @@ public interface PlayerChampion {
 	/**
 	 * <p>Is the total game time in milliseconds</p>
 	 */
-	long getPlayedTime();
+	long getMillisPlayed();
+
+	/**
+	 * <p>Is the total game time in minutes</p>
+	 */
+	default int getMinutes() {
+		return Integer.parseInt(TimeUnit.MILLISECONDS.toMinutes(getMillisPlayed()) + "");
+	}
 
 	//?
 	int getMinionKills();

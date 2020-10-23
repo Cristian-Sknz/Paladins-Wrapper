@@ -8,6 +8,7 @@ import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.entity.player.PlayerChampion;
 import me.skiincraft.api.paladins.enums.Language;
+import me.skiincraft.api.paladins.utils.AccessUtils;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -66,7 +67,7 @@ public class PlayerChampionImpl implements PlayerChampion {
 		return get("Wins").getAsInt();
 	}
 
-	public long getPlayedTime() {
+	public long getMillisPlayed() {
 		return TimeUnit.MINUTES.toMillis(get("Minutes").getAsLong());
 	}
 
@@ -87,7 +88,7 @@ public class PlayerChampionImpl implements PlayerChampion {
 	}
 
 	public OffsetDateTime getLastPlayed() {
-		return OffsetDateTime.of(LocalDateTime.parse(object.get("LastPlayed").getAsString(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
+		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("LastPlayed").getAsString()), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
 	}
 
 	public long getPlayerId() {

@@ -24,6 +24,7 @@ import me.skiincraft.api.paladins.objects.LeagueSeason;
 import me.skiincraft.api.paladins.objects.Place;
 import me.skiincraft.api.paladins.objects.Team;
 import me.skiincraft.api.paladins.ranked.RankedKBM;
+import me.skiincraft.api.paladins.utils.AccessUtils;
 
 public class PlayerImpl implements Player {
 
@@ -52,7 +53,7 @@ public class PlayerImpl implements Player {
 	}
 
 	public OffsetDateTime getCreated() {
-		return OffsetDateTime.of(LocalDateTime.parse(object.get("Created_Datetime").getAsString(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
+		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("Created_Datetime").getAsString()), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
 	}
 
 	public long getHoursPlayed() {
@@ -64,7 +65,7 @@ public class PlayerImpl implements Player {
 	}
 
 	public OffsetDateTime getLastLogin() {
-		return OffsetDateTime.of(LocalDateTime.parse(object.get("Last_Login_Datetime").getAsString(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
+		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("Last_Login_Datetime").getAsString()), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
 	}
 
 	public int getLeaves() {

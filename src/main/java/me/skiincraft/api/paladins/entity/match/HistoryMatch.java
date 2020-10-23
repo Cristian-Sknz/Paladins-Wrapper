@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import me.skiincraft.api.paladins.enums.Queue;
 import me.skiincraft.api.paladins.exceptions.ContextException;
 import me.skiincraft.api.paladins.impl.MatchPlayerImpl;
+import me.skiincraft.api.paladins.utils.AccessUtils;
 
 /**
  * <h1>Match</h1>
@@ -41,7 +42,7 @@ public class HistoryMatch implements Match {
 	}
 
 	public OffsetDateTime getMatchDate() {
-		return OffsetDateTime.of(LocalDateTime.parse(object.get("Match_Time").getAsString(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
+		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("Match_Time").getAsString()), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
 	}
 
 	public long getMatchId() {

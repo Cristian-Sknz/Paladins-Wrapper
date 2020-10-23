@@ -2,9 +2,11 @@ package me.skiincraft.api.paladins.utils;
 
 import me.skiincraft.api.paladins.Paladins;
 
+import javax.swing.text.DateFormatter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.SimpleTimeZone;
 
@@ -132,6 +134,33 @@ public class AccessUtils {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Convert datetime; MM/dd/yyyy HH:mm:ss a
+	 */
+	public static String formatDate(String convert){
+		//String convert = "9/6/2020 6:38:37 PM";
+		String[] split = convert.split(" ");
+		StringBuilder builder = new StringBuilder();
+		for(String fix : split[0].split("/")) {
+			if (fix.length() >= 3){
+				builder.append(fix).append(" ");
+				break;
+			}
+			if (fix.length() == 1){
+				builder.append("0").append(fix).append("/");
+			} else builder.append(fix).append("/");
+		}
+		if (split[2].toLowerCase().contains("pm")) {
+			String hoursplit = split[1].split(":")[0];
+			Integer hour = Integer.parseInt(hoursplit)+2;
+			if (hour.toString().startsWith("1")){
+				builder.append(hour.toString().replace("1", "2")).append(split[1].substring(hoursplit.length()));
+			} else {
+				builder.append("1").append(hour).append(split[1].substring(hoursplit.length()));
+			}
+		}
+		return builder.toString();
+	}
 
 }

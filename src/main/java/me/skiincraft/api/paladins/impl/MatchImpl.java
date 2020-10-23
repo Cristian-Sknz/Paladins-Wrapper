@@ -19,6 +19,7 @@ import me.skiincraft.api.paladins.entity.match.MatchPlayer;
 import me.skiincraft.api.paladins.entity.match.objects.Ban;
 import me.skiincraft.api.paladins.enums.Queue;
 import me.skiincraft.api.paladins.exceptions.MatchException;
+import me.skiincraft.api.paladins.utils.AccessUtils;
 
 public class MatchImpl implements Match {
 
@@ -156,7 +157,7 @@ public class MatchImpl implements Match {
 
 	@Override
 	public OffsetDateTime getMatchDate() {
-		return OffsetDateTime.of(LocalDateTime.parse(object.get("Match_Time").getAsString(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
+		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("Match_Time").getAsString()), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a")), ZoneOffset.UTC);
 	}
 
 }
