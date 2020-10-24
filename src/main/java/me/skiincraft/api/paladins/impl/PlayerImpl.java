@@ -45,7 +45,7 @@ public class PlayerImpl implements Player {
 	}
 
 	public long getAvatarId() {
-		return object.get("ActivePlayerId").getAsLong();
+		return object.get("AvatarId").getAsLong();
 	}
 
 	public String getAvatarURL() {
