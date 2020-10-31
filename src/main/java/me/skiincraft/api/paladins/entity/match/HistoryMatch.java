@@ -14,9 +14,10 @@ import me.skiincraft.api.paladins.entity.match.objects.Ban;
 
 import com.google.gson.JsonObject;
 import me.skiincraft.api.paladins.enums.Queue;
-import me.skiincraft.api.paladins.exceptions.ContextException;
 import me.skiincraft.api.paladins.impl.MatchPlayerImpl;
 import me.skiincraft.api.paladins.utils.AccessUtils;
+
+import javax.annotation.Nullable;
 
 /**
  * <h1>Match</h1>
@@ -37,8 +38,9 @@ public class HistoryMatch implements Match {
 		return object.get("Win_Status").getAsString();
 	}
 
+	@Nullable
 	public List<Ban> getBans() {
-		throw new ContextException("This implementation of Match is not a detailed Match. Is a " + this.getClass().getSimpleName());
+		return null;
 	}
 
 	public OffsetDateTime getMatchDate() {
@@ -74,12 +76,14 @@ public class HistoryMatch implements Match {
 		return Queue.getQueueById(object.get("Match_Queue_Id").getAsInt());
 	}
 
+	@Nullable
 	public List<MatchPlayer> getTeam1() {
-		throw new ContextException("This implementation of Match is not a detailed Match. Is a " + this.getClass().getSimpleName());
+		return null;
 	}
 
+	@Nullable
 	public List<MatchPlayer> getTeam2() {
-		throw new ContextException("This implementation of Match is not a detailed Match. Is a " + this.getClass().getSimpleName());
+		return null;
 	}
 
 	public MatchPlayer getMatchPlayer(){

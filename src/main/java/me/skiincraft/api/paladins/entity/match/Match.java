@@ -10,6 +10,8 @@ import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.match.objects.Ban;
 import me.skiincraft.api.paladins.enums.Queue;
 
+import javax.annotation.Nullable;
+
 
 /**
  * <h1>Match</h1>
@@ -26,6 +28,7 @@ public interface Match {
 	/**
 	 * Are the bans that occurred in the match. If it is not a ranked match it will return null
 	 */
+	@Nullable
 	List<Ban> getBans();
 
 	/**
@@ -71,11 +74,13 @@ public interface Match {
 	/**
 	 * <p>Is the total number of players in the blue team</p>
 	 */
+	@Nullable
 	List<MatchPlayer> getTeam1();
 
 	/**
 	 * <p>Is the total number of players in the red team</p>
 	 */
+	@Nullable
 	List<MatchPlayer> getTeam2();
 
 	/**
