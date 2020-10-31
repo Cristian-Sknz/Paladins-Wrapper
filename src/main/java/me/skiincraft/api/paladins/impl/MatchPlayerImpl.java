@@ -128,6 +128,11 @@ public class MatchPlayerImpl implements MatchPlayer {
 	}
 
 	@Override
+	public long getAssists() {
+		return get("Assists").getAsInt();
+	}
+
+	@Override
 	public long getDeaths() {
 		return get("Deaths").getAsInt();
 	}

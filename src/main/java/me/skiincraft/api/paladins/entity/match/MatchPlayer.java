@@ -71,6 +71,11 @@ public interface MatchPlayer {
 	long getKillsRaw();
 
 	/**
+	 * <p>It is the player's total assists in the match</p>
+	 */
+	long getAssists();
+
+	/**
 	 * <p>It is the player's total deaths in the match</p>
 	 */
 	long getDeaths();
