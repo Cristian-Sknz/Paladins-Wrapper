@@ -17,11 +17,11 @@ public enum DamageType {
 	/**
 	 * <p>Is an area damage that affects many opponents</p>
 	 */
-	Area_Damage(1, "AoE"),
+	Area_Damage  (1, "AoE"),
 	/**
 	 * <p>They are skills like healing, which are classified as DamageType in {@link me.skiincraft.api.paladins.objects.Ability}</p>
 	 */
-	Complete(2, "True");
+	Complete     (2, "True");
 	
 	private final int id;
 	private final String original;

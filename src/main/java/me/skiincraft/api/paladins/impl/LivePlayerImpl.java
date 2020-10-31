@@ -16,7 +16,6 @@ import me.skiincraft.api.paladins.utils.AccessUtils;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 
 public class LivePlayerImpl implements LivePlayer {
 	

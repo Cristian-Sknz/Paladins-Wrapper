@@ -6,15 +6,15 @@ package me.skiincraft.api.paladins.enums;
  */
 public enum Language {
 
-	English(1),
-	German(2),
-	French(3),
-	Chinese(5),
-	Spanish(7),
-	Portuguese(10),
-	Russian(11),
-	Polish(12),
-	Turkish(13);
+	English     (1),
+	German      (2),
+	French      (3),
+	Chinese     (5),
+	Spanish     (7),
+	Portuguese  (10),
+	Russian     (11),
+	Polish      (12),
+	Turkish     (13);
 	
 	private int languagecode;
 

@@ -2,12 +2,10 @@ package me.skiincraft.api.paladins.utils;
 
 import me.skiincraft.api.paladins.Paladins;
 
-import javax.swing.text.DateFormatter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.SimpleTimeZone;
 

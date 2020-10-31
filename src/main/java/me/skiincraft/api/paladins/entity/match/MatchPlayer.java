@@ -9,7 +9,6 @@ import me.skiincraft.api.paladins.enums.Language;
 import me.skiincraft.api.paladins.enums.Tier;
 import me.skiincraft.api.paladins.objects.Kills;
 import me.skiincraft.api.paladins.objects.LeagueSeason;
-import me.skiincraft.api.paladins.ranked.RankedKBM;
 
 public interface MatchPlayer {
 

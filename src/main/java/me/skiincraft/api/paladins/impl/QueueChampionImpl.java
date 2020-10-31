@@ -13,7 +13,6 @@ import me.skiincraft.api.paladins.utils.AccessUtils;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
 public class QueueChampionImpl implements QueueChampion {
