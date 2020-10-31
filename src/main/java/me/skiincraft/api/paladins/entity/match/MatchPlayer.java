@@ -6,7 +6,10 @@ import me.skiincraft.api.paladins.entity.match.objects.ActiveItems;
 import me.skiincraft.api.paladins.entity.match.objects.Damage;
 import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.enums.Language;
+import me.skiincraft.api.paladins.enums.Tier;
 import me.skiincraft.api.paladins.objects.Kills;
+import me.skiincraft.api.paladins.objects.LeagueSeason;
+import me.skiincraft.api.paladins.ranked.RankedKBM;
 
 public interface MatchPlayer {
 
@@ -149,5 +152,9 @@ public interface MatchPlayer {
 	 * <p>Get the match this player played in</p>
 	 */
 	Match getMatch();
+
+	Tier getTier();
+
+	LeagueSeason getTierDetails();
 
 }

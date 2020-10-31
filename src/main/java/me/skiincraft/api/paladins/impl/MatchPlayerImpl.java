@@ -15,11 +15,15 @@ import me.skiincraft.api.paladins.entity.match.objects.Damage;
 import me.skiincraft.api.paladins.enums.ShopItem;
 import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.enums.Language;
+import me.skiincraft.api.paladins.enums.Tier;
 import me.skiincraft.api.paladins.exceptions.PlayerException;
 import me.skiincraft.api.paladins.objects.Kills;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import me.skiincraft.api.paladins.objects.LeagueSeason;
+
+import javax.annotation.Nullable;
 
 public class MatchPlayerImpl implements MatchPlayer {
 	
@@ -188,6 +192,24 @@ public class MatchPlayerImpl implements MatchPlayer {
 	}
 	public Match getMatch() {
 		return match;
+	}
+
+	@Override
+	@Nullable
+	public Tier getTier() {
+		if (has("League_Tier")){
+			return Tier.getTierById(get("League_Tier").getAsInt());
+		}
+		return null;
+	}
+
+	@Override
+	@Nullable
+	public LeagueSeason getTierDetails() {
+		if (has("League_Tier")){
+			return new LeagueSeason(get("League_Wins").getAsInt(), get("League_Losses").getAsInt(), get("League_Points").getAsInt(), Tier.getTierById(get("League_Tier").getAsInt()));
+		}
+		return null;
 	}
 
 	public Request<Player> getPlayer() {
