@@ -6,6 +6,7 @@ import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.objects.Cards;
 import me.skiincraft.api.paladins.entity.champions.objects.Skins;
 import me.skiincraft.api.paladins.enums.Language;
+import me.skiincraft.api.paladins.enums.Role;
 import me.skiincraft.api.paladins.objects.Ability;
 
 /**
@@ -36,8 +37,14 @@ public interface Champion {
 
 	/**
 	 * <p>Is the champion's role in the game</p>
+	 * ex: "Paladins Damage"
 	 */
-	String getRole();
+	String getRoleString();
+
+
+	default Role getRole(){
+		return Role.getRoleByName(getRoleString().split(" ")[1]);
+	}
 
 	/**
 	 * <p>Is a short story about the character</p>
