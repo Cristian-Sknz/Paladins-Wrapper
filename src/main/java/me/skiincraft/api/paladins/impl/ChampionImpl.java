@@ -47,7 +47,8 @@ public class ChampionImpl implements Champion {
 		return get("Title").getAsString();
 	}
 
-	public String getRole() {
+	@Override
+	public String getRoleString() {
 		return get("Roles").getAsString();
 	}
 
