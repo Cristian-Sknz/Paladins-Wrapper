@@ -155,7 +155,7 @@ public class PlayerImpl implements Player {
 
 	public String getInGameName() {
 		return (getPlatform() == Platform.PC) ? (getHirezName().length() <= 1)?  getName() : getHirezName()
-				: getName();
+				: (getHirezGamerTag().length() <= 1)? getName() : getHirezGamerTag();
 	}
 
 	public String getHirezName() {
