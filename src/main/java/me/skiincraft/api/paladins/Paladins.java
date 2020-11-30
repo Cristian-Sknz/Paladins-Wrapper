@@ -1,26 +1,25 @@
 package me.skiincraft.api.paladins;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.*;
+import me.skiincraft.api.paladins.cache.CacheMemoryImpl;
 import me.skiincraft.api.paladins.cache.PaladinsCache;
 import me.skiincraft.api.paladins.cache.PaladinsCacheImpl;
-import me.skiincraft.api.paladins.cache.CacheMemoryImpl;
 import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.common.Session;
 import me.skiincraft.api.paladins.entity.champions.Champions;
+import me.skiincraft.api.paladins.entity.champions.objects.Cards;
 import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.exceptions.ContextException;
 import me.skiincraft.api.paladins.exceptions.RequestException;
 import me.skiincraft.api.paladins.hirez.DataUsed;
 import me.skiincraft.api.paladins.utils.AccessUtils;
-import me.skiincraft.api.paladins.entity.champions.objects.Cards;
 
-import com.github.kevinsawicki.http.HttpRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -83,12 +82,9 @@ public class Paladins {
 			}
 			
 			public Session get() {
-				String url = accessUtils.makeUrl("createsession", null);
-				HttpRequest request = HttpRequest.get(url);
-				json = request.body();
-				
+				HttpRequest request = HttpRequest.get(accessUtils.makeUrl("createsession", null));
 				try {
-					JsonElement ele = new JsonParser().parse(json);
+					JsonElement ele = new JsonParser().parse(json = request.body());
 					JsonObject object = ele.getAsJsonObject();
 
 					String retMsg = object.get("ret_msg").isJsonNull() ? "" : object.get("ret_msg").getAsString();
@@ -127,11 +123,8 @@ public class Paladins {
 			private String json;
 
 			public Boolean get() {
-				String url = accessUtils.makeUrl("testsession", sessionId, new String[] {});
-				HttpRequest request = HttpRequest.get(url);
-				String body = request.body();
-				json = body;
-				boolean bool = accessUtils.checkResponse(body);
+				HttpRequest request = HttpRequest.get(accessUtils.makeUrl("testsession", sessionId, new String[] {}));
+				boolean bool = accessUtils.checkResponse(json = request.body());
 				if (!bool) {
 					Stream<Session> streamsessions = sessions.stream().filter(session -> session.getSessionId().equals(sessionId));
 					if (streamsessions.count() >= 1){
@@ -139,7 +132,7 @@ public class Paladins {
 						sessions.removeAll(streamsessions.collect(Collectors.toList()));
 					}
 
-					throw new RequestException(body, body);
+					throw new RequestException(json, json);
 				}
 
 				return true;
@@ -185,7 +178,8 @@ public class Paladins {
 				sessions.remove(s);
 				
 				testSession(sessionId).getWithJson((b, j)-> {
-					test = b; json = j;
+					test = b;
+					json = j;
 				});
 				
 				if (!test) {
@@ -225,11 +219,8 @@ public class Paladins {
 			@Override
 			public DataUsed get() {
 				if (!wasRequested()){
-					String url = accessUtils.makeUrl("getdataused", sessionId, new String[] {});
-					HttpRequest request = HttpRequest.get(url);
-					json = request.body();
-
-					if (!accessUtils.checkResponse(json)){
+					HttpRequest request = HttpRequest.get(accessUtils.makeUrl("getdataused", sessionId, new String[] {}));
+					if (!accessUtils.checkResponse(json = request.body())){
 						throw new RequestException(json);
 					}
 
@@ -323,9 +314,8 @@ public class Paladins {
 	 * @param devId The Developer Id
 	 */
 	public Paladins setDevId(int devId) {
-		if (sessions.size() != 0){
+		if (sessions.size() != 0)
 			throw new ContextException("You cannot change the data after a session has already been created!");
-		}
 		this.devId = devId;
 		return this;
 	}
