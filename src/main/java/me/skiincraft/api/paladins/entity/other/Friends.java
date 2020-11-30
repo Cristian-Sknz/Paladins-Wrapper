@@ -3,6 +3,7 @@ package me.skiincraft.api.paladins.entity.other;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,9 +29,9 @@ public class Friends implements CustomList<Friend> {
 	public Friends(List<Friend> friends, EndPoint endPoint) {
 		items = new Friend[friends.size()];
 		this.endPoint = endPoint;
-		int i = 0;
+		AtomicInteger integer = new AtomicInteger();
 		for (Friend item :friends) {
-			items[i] = item; i++;
+			items[integer.getAndIncrement()] = item;
 		}
 	}
 	

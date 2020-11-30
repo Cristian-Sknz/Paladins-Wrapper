@@ -1,21 +1,20 @@
 package me.skiincraft.api.paladins.impl;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.skiincraft.api.paladins.common.EndPoint;
 import me.skiincraft.api.paladins.entity.leaderboard.LeaderBoard;
 import me.skiincraft.api.paladins.enums.Tier;
 import me.skiincraft.api.paladins.objects.Place;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LeaderboardImpl implements LeaderBoard {
 	
@@ -24,9 +23,9 @@ public class LeaderboardImpl implements LeaderBoard {
 	
 	public LeaderboardImpl(List<Place> place, Tier tier) {
 		this.places = new Place[place.size()];
-		int i = 0;
-		for (Place p: place) {
-		   places[i] = p; i++;	
+		AtomicInteger integer = new AtomicInteger();
+		for (Place p : place) {
+			places[integer.getAndIncrement()] = p;
 		}
 		this.tier = tier;
 	}

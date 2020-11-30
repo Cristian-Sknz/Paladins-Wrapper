@@ -3,6 +3,7 @@ package me.skiincraft.api.paladins.entity.match.objects;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,9 +18,9 @@ public class ActiveItems implements CustomList<ShopItem>{
 	
 	public ActiveItems(List<ShopItem> itens) {
 		shopItems = new ShopItem[itens.size()];
-		int i = 0;
-		for (ShopItem shopItem :itens) {
-			shopItems[i] = shopItem; i++;
+		AtomicInteger integer = new AtomicInteger();
+		for (ShopItem shopItem : itens) {
+			shopItems[integer.getAndIncrement()] = shopItem;
 		}
 	}
 	

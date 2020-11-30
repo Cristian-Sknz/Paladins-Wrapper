@@ -3,6 +3,7 @@ package me.skiincraft.api.paladins.entity.player.objects;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,9 +18,9 @@ public class SearchResults implements CustomList<SearchPlayer> {
 	
 	public SearchResults(List<SearchPlayer> players) {
 		items = new SearchPlayer[players.size()];
-		int i = 0;
+		AtomicInteger integer = new AtomicInteger();
 		for (SearchPlayer item :players) {
-			items[i] = item; i++;
+			items[integer.getAndIncrement()] = item;
 		}
 	}
 	

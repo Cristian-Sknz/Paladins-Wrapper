@@ -3,6 +3,7 @@ package me.skiincraft.api.paladins.entity.player.objects;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,9 +25,9 @@ public class Loadouts implements CustomList<Loadout> {
 	
 	public Loadouts(List<Loadout> players) {
 		items = new Loadout[players.size()];
-		int i = 0;
+		AtomicInteger integer = new AtomicInteger();
 		for (Loadout item :players) {
-			items[i] = item; i++;
+			items[integer.getAndIncrement()] = item;
 		}
 	}
 	

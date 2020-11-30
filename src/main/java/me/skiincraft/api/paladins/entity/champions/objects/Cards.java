@@ -3,6 +3,7 @@ package me.skiincraft.api.paladins.entity.champions.objects;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,9 +28,9 @@ public class Cards implements CustomList<Card> {
 	
 	public Cards(List<Card> card, long championId, Language language) {
 		cards = new Card[card.size()];
-		int i = 0;
+		AtomicInteger integer = new AtomicInteger();
 		for (Card item : card) {
-			cards[i] = item; i++;
+			cards[integer.getAndIncrement()] = item;
 		}
 	}
 	

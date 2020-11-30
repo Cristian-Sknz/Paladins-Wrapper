@@ -3,6 +3,7 @@ package me.skiincraft.api.paladins.entity.champions.objects;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,9 +24,9 @@ public class Skins implements CustomList<ChampionSkin> {
 	
 	public Skins(List<ChampionSkin> ChampionSkin) {
 		ChampionSkins = new ChampionSkin[ChampionSkin.size()];
-		int i = 0;
+		AtomicInteger integer = new AtomicInteger();
 		for (ChampionSkin item : ChampionSkin) {
-			ChampionSkins[i] = item; i++;
+			ChampionSkins[integer.getAndIncrement()] = item;
 		}
 	}
 	

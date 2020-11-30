@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,9 +27,9 @@ public class QueueChampions implements CustomList<QueueChampion> {
 	public QueueChampions(List<QueueChampion> players, Queue queue) {
 		items = new QueueChampion[players.size()];
 		this.queue = queue;
-		int i = 0;
+		AtomicInteger integer = new AtomicInteger();
 		for (QueueChampion item :players) {
-			items[i] = item; i++;
+			items[integer.getAndIncrement()] = item;
 		}
 	}
 	
