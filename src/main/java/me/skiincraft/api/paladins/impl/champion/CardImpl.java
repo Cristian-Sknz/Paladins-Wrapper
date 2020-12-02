@@ -1,4 +1,4 @@
-package me.skiincraft.api.paladins.impl;
+package me.skiincraft.api.paladins.impl.champion;
 
 import java.util.Arrays;
 import com.google.gson.JsonObject;

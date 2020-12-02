@@ -1,4 +1,4 @@
-package me.skiincraft.api.paladins.impl;
+package me.skiincraft.api.paladins.impl.champion;
 
 import com.google.gson.JsonObject;
 import me.skiincraft.api.paladins.common.EndPoint;
