@@ -45,4 +45,11 @@ public abstract class StorageImpl<T> implements Storage<T> {
 
 	public abstract T getById(long id);
 
+	@Override
+	public String toString() {
+		return "Storage{" +
+				"item=" + item.length +
+				", lastupdate=" + lastupdate +
+				'}';
+	}
 }

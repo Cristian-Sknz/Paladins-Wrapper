@@ -65,7 +65,7 @@ public class ChampionSkinImpl implements ChampionSkin {
 
 	@Override
 	public String toString() {
-		return "ChampionSkinImpl{" +
+		return "ChampionSkin{" +
 				"championId=" + getChampionId() +
 				", skinName=" + getSkinNameEnglish() +
 				", skinId2=" + getSkinId2() +

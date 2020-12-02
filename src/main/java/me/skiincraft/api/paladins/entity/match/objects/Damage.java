@@ -94,8 +94,13 @@ public class Damage {
 	public long getDamageTakenUsingPhysical() {
 		return damageTakenUsingPhysical;
 	}
-	
-	
-	
 
+
+	@Override
+	public String toString() {
+		return "Damage{" +
+				"damage=" + damage +
+				", damageTaken=" + damageTaken +
+				'}';
+	}
 }

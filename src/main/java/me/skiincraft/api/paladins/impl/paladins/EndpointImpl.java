@@ -423,4 +423,10 @@ public class EndpointImpl implements EndPoint {
 		return session;
 	}
 
+	@Override
+	public String toString() {
+		return "Endpoint{" +
+				"session=" + session +
+				'}';
+	}
 }

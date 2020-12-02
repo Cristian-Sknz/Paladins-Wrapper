@@ -328,4 +328,12 @@ public class Paladins {
 		return instance;
 	}
 
+	@Override
+	public String toString() {
+		return "Paladins{" +
+				"sessions=" + sessions.size() +
+				", devId=" + devId +
+				", authkey='" + authkey + '\'' +
+				'}';
+	}
 }

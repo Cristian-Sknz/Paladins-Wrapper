@@ -64,6 +64,7 @@ public class PaladinsRequest<T> implements Request<T> {
     public String toString() {
         return "PaladinsRequest{" +
                 "url='" + url + '\'' +
+                ", hasCompleted=" + wasRequested() +
                 '}';
     }
 }

@@ -107,5 +107,12 @@ public class PaladinsStorageImpl implements PaladinsStorage {
 		impl.item = cc.toArray(new Cards[0]);
 	}
 
-
+	@Override
+	public String toString() {
+		return "PaladinsStorage{" +
+				"championMemory=" + championMemory.size() +
+				", matchMemory=" + matchMemory.size() +
+				", cardsMemory=" + cardsMemory.size() +
+				'}';
+	}
 }

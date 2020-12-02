@@ -218,4 +218,14 @@ public class MatchPlayerImpl implements MatchPlayer {
 		}
 		return endPoint.getPlayer(getId());
 	}
+
+	@Override
+	public String toString() {
+		return "MatchPlayer{" +
+				"matchId=" + match.getMatchId() +
+				", userId=" + getId() +
+				", name=" + getName() +
+				", championId=" + getChampionId() +
+				'}';
+	}
 }

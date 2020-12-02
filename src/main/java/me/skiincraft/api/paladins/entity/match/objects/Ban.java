@@ -49,5 +49,12 @@ public class Ban {
 	public String getChampionName() {
 		return championName;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Ban{" +
+				"championId=" + championId +
+				", championName='" + championName + '\'' +
+				'}';
+	}
 }

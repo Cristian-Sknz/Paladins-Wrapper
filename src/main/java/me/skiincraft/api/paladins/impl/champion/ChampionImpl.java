@@ -100,7 +100,7 @@ public class ChampionImpl implements Champion {
 
 	@Override
 	public String toString() {
-		return "ChampionImpl{" +
+		return "Champion{" +
 				"championId=" + getId() +
 				", championName=" + getName() +
 				", role=" + getRole() +

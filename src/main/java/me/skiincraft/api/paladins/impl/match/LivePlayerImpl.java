@@ -83,4 +83,14 @@ public class LivePlayerImpl implements LivePlayer {
 		return object.get("taskForce").getAsInt();
 	}
 
+	@Override
+	public String toString() {
+		return "LivePlayer{" +
+				"playerName=" + getPlayerName() +
+				", userId=" + getPlayerId() +
+				", tier=" + getTier().getTier() +
+				", championId=" + getChampionId() +
+				", championSkin=" + getChampionSkinName() +
+				'}';
+	}
 }

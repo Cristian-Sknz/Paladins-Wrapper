@@ -41,4 +41,10 @@ public class ActiveItems implements CustomList<ShopItem>{
 		return getAsStream().filter(o -> o.getItemId() == id).findFirst().orElse(null);
 	}
 
+	@Override
+	public String toString() {
+		return "ActiveItems{" +
+				"shopItems=" + Arrays.toString(shopItems) +
+				'}';
+	}
 }
