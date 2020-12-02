@@ -73,5 +73,12 @@ public class LiveMatchImpl implements LiveMatch {
 		return team2;
 	}
 
-
+	@Override
+	public String toString() {
+		return "LiveMatch{" +
+				"matchId=" + getMatchId() +
+				", queue=" + getQueue() +
+				", mapName=" + getMapName() +
+				'}';
+	}
 }

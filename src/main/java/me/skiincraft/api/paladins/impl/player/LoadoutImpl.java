@@ -79,4 +79,13 @@ public class LoadoutImpl implements Loadout {
 		return language;
 	}
 
+	@Override
+	public String toString() {
+		return "Loadout{" +
+				"deckName=" + getDeckname() +
+				", userId=" + getOwnername() +
+				", championId=" + getChampionId() +
+				", language=" + language +
+				'}';
+	}
 }

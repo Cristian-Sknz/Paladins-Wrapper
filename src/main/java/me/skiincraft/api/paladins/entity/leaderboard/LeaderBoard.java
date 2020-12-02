@@ -22,5 +22,6 @@ public interface LeaderBoard extends CustomList<Place> {
 	 * <p>Get a specific player on the leaderboard</p>
 	 */
 	Place getByName(String playername);
+
 	
 }

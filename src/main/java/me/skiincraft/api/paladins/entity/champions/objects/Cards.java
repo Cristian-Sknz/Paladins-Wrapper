@@ -59,4 +59,12 @@ public class Cards implements CustomList<Card> {
 		return championId;
 	}
 
+	@Override
+	public String toString() {
+		return "Cards{" +
+				"cards=" + cards.length +
+				", championId=" + championId +
+				", language=" + language +
+				'}';
+	}
 }

@@ -27,7 +27,12 @@ public class ChampionSkinImpl implements ChampionSkin {
 	}
 	
 	public Request<Champion> getChampion(Language language) {
-		return endPoint.getChampion(get("champion_id").getAsLong(), language);
+		return endPoint.getChampion(getChampionId(), language);
+	}
+
+	@Override
+	public long getChampionId() {
+		return get("champion_id").getAsLong();
 	}
 
 	public String getChampionname() {
@@ -43,7 +48,7 @@ public class ChampionSkinImpl implements ChampionSkin {
 	}
 
 	public long getSkinId2() {
-		return get("skin_id1").getAsLong();
+		return get("skin_id2").getAsLong();
 	}
 
 	public String getSkinName() {
@@ -56,5 +61,15 @@ public class ChampionSkinImpl implements ChampionSkin {
 
 	public Language getLanguage() {
 		return language;
+	}
+
+	@Override
+	public String toString() {
+		return "ChampionSkinImpl{" +
+				"championId=" + getChampionId() +
+				", skinName=" + getSkinNameEnglish() +
+				", skinId2=" + getSkinId2() +
+				", language=" + getLanguage() +
+				'}';
 	}
 }

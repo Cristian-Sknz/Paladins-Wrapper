@@ -121,4 +121,12 @@ public class HistoryMatch implements Match {
 		return Collections.singletonList(new MatchPlayerImpl(endPoint, object, this));
 	}
 
+	@Override
+	public String toString() {
+		return "HistoryMatch{" +
+				"matchId=" + getMatchId() +
+				", player=" + getPlayers().get(0).getName() +
+				", mapName=" + getMapGame() +
+				'}';
+	}
 }

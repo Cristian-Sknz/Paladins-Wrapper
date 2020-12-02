@@ -94,4 +94,12 @@ public class PlayerChampionImpl implements PlayerChampion {
 		return get("player_id").getAsLong();
 	}
 
+
+	@Override
+	public String toString() {
+		return "PlayerChampion{" +
+				"userId=" + getPlayerId() +
+				", championId=" + getChampionId() +
+				'}';
+	}
 }

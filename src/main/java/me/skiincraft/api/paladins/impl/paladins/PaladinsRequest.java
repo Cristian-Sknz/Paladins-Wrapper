@@ -59,4 +59,11 @@ public class PaladinsRequest<T> implements Request<T> {
     public boolean isStored() {
         return isStored;
     }
+
+    @Override
+    public String toString() {
+        return "PaladinsRequest{" +
+                "url='" + url + '\'' +
+                '}';
+    }
 }

@@ -98,4 +98,13 @@ public class ChampionImpl implements Champion {
 		return language;
 	}
 
+	@Override
+	public String toString() {
+		return "ChampionImpl{" +
+				"championId=" + getId() +
+				", championName=" + getName() +
+				", role=" + getRole() +
+				", language=" + language +
+				'}';
+	}
 }

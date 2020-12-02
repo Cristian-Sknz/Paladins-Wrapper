@@ -75,5 +75,11 @@ public class LeaderboardImpl implements LeaderBoard {
 		return Arrays.stream(places).filter(o -> o.getUsername().equalsIgnoreCase(playername)).findFirst().orElse(null);
 	}
 
-	
+	@Override
+	public String toString() {
+		return "Leaderboard{" +
+				"places=" + places.length +
+				", tier=" + tier +
+				'}';
+	}
 }

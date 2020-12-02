@@ -45,4 +45,12 @@ public class Champions implements CustomList<Champion> {
 	public Language getLanguage() {
 		return language;
 	}
+
+	@Override
+	public String toString() {
+		return "Champions{" +
+				"champions=" + champions.length +
+				", language=" + language +
+				'}';
+	}
 }

@@ -54,5 +54,11 @@ public class QueueChampions implements CustomList<QueueChampion> {
 		return getAsStream().filter(o -> o.getChampionId() == id).findFirst().orElse(null);
 	}
 
-	
+	@Override
+	public String toString() {
+		return "QueueChampions{" +
+				"items=" + Arrays.toString(items) +
+				", queue=" + queue +
+				'}';
+	}
 }

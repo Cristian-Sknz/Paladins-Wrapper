@@ -45,5 +45,11 @@ public class SearchPlayers implements CustomList<SearchPlayer> {
 		return getAsStream().filter(o -> o.getUserId() == id).findFirst().orElse(null);
 	}
 
-	
+	@Override
+	public String toString() {
+		return "SearchPlayers{" +
+				"size=" + items.length + ", " +
+				"items=" + Arrays.toString(items) +
+				'}';
+	}
 }

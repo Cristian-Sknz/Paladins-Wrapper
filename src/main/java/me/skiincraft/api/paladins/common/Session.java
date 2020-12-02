@@ -197,4 +197,10 @@ public final class Session {
 		return nextSerialNumber.getAndIncrement();
 	}
 
+	@Override
+	public String toString() {
+		return "Session{" +
+				"sessionId='" + sessionId + '\'' +
+				'}';
+	}
 }

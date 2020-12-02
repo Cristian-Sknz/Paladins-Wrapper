@@ -52,5 +52,10 @@ public class Loadouts implements CustomList<Loadout> {
 		return getAsStream().filter(o -> o.getDeckId() == id).findFirst().orElse(null);
 	}
 
-	
+	@Override
+	public String toString() {
+		return "Loadouts{" +
+				"items=" + items.length +
+				'}';
+	}
 }

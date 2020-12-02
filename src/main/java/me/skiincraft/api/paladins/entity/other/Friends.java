@@ -55,5 +55,11 @@ public class Friends implements CustomList<Friend> {
 	public Request<PlayerBatch> getPlayersBatch() {
 		return endPoint.getPlayerBatch(getAsStream().map(Friend::getId).collect(Collectors.toList()));
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Friends{" +
+				"items=" + Arrays.toString(items) +
+				'}';
+	}
 }

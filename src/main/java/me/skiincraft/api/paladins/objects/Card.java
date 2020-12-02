@@ -89,4 +89,14 @@ public class Card {
 	public String getIcon() {
 		return icon;
 	}
+
+	@Override
+	public String toString() {
+		return "Card{" +
+				"nameEnglish='" + nameEnglish + '\'' +
+				", cardId2=" + cardId2 +
+				", championId=" + championId +
+				", language=" + language +
+				'}';
+	}
 }

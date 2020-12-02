@@ -130,9 +130,12 @@ public class PlayerStatus {
 		return endPoint.getMatchPlayerDetails(getMatchId());
 	}
 
+	@Override
 	public String toString() {
-		return "PlayerStatus [matchId=" + matchId + ", status=" + status +"]";
+		return "PlayerStatus{" +
+				"matchId=" + matchId +
+				", status=" + status +
+				", player='" + player + '\'' +
+				'}';
 	}
-
-	
 }

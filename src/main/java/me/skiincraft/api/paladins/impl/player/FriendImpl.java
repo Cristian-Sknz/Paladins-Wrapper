@@ -42,4 +42,12 @@ public class FriendImpl implements Friend{
 		return endPoint.getPlayer(get("player_id").getAsLong());
 	}
 
+	@Override
+	public String toString() {
+		return "Friend{" +
+				"userId=" + getId() +
+				", name=" + getName() +
+				", status=" + getStatus() +
+				'}';
+	}
 }

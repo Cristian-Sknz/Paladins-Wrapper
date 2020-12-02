@@ -1,6 +1,7 @@
 package me.skiincraft.api.paladins.objects;
 
 import com.google.gson.JsonObject;
+import me.skiincraft.api.paladins.enums.Platform;
 
 public class SearchPlayer {
 
@@ -39,7 +40,6 @@ public class SearchPlayer {
 		return (!getHirezName().equals("")) ? getHirezName() : getName();
 	}
 
-
 	public String getHirezName() {
 		return hirezName;
 	}
@@ -48,13 +48,17 @@ public class SearchPlayer {
 		return portalId;
 	}
 
+	public Platform getPlatform() {
+		return Platform.getPlatformByPortalId(portalId);
+	}
+
 	public boolean isPrivacyFlag() {
 		return privacyFlag;
 	}
 
 	@Override
 	public String toString() {
-		return "SearchPlayer [name=" + name + ", userId=" + userId + ", portalId=" + portalId + "]";
+		return "SearchPlayer [name=" + name + ", userId=" + userId + ", platform=" + getPlatform() + "]";
 	}
 	
 	

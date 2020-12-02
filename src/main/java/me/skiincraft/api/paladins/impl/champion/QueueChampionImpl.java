@@ -87,4 +87,11 @@ public class QueueChampionImpl implements QueueChampion {
         return TimeUnit.MINUTES.toMillis(getMinutes());
     }
 
+    @Override
+    public String toString() {
+        return "QueueChampion{" +
+                "userId=" + getPlayerId() +
+                ", championId=" + getChampionId() +
+                '}';
+    }
 }

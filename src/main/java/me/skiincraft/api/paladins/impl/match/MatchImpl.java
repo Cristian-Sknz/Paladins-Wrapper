@@ -160,4 +160,12 @@ public class MatchImpl implements Match {
 		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("Match_Time").getAsString())), ZoneOffset.UTC);
 	}
 
+	@Override
+	public String toString() {
+		return "Match{" +
+				"matchId=" + getMatchId() +
+				", winner=" + getWinner() +
+				", isRanked=" + isRanked() +
+				'}';
+	}
 }

@@ -208,4 +208,12 @@ public class PlayerImpl implements Player {
 		};
 	}
 
+	@Override
+	public String toString() {
+		return "Player{" +
+				"userId=" + getId() +
+				", name=" + getInGameName() +
+				", platform=" + getPlatform().toString() +
+				'}';
+	}
 }

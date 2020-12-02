@@ -20,31 +20,38 @@ import javax.annotation.Nonnull;
  */
 public class Skins implements CustomList<ChampionSkin> {
 
-	private final ChampionSkin[] ChampionSkins;
+	private final ChampionSkin[] championSkins;
 	
 	public Skins(List<ChampionSkin> ChampionSkin) {
-		ChampionSkins = new ChampionSkin[ChampionSkin.size()];
+		championSkins = new ChampionSkin[ChampionSkin.size()];
 		AtomicInteger integer = new AtomicInteger();
 		for (ChampionSkin item : ChampionSkin) {
-			ChampionSkins[integer.getAndIncrement()] = item;
+			championSkins[integer.getAndIncrement()] = item;
 		}
 	}
 	
 	@Nonnull
     public Iterator<ChampionSkin> iterator() {
-		return Arrays.stream(ChampionSkins).iterator();
+		return Arrays.stream(championSkins).iterator();
 	}
 
 	public List<ChampionSkin> getAsList() {
-		return Arrays.stream(ChampionSkins).collect(Collectors.toList());
+		return Arrays.stream(championSkins).collect(Collectors.toList());
 	}
 
 	public Stream<ChampionSkin> getAsStream() {
-		return Arrays.stream(ChampionSkins);
+		return Arrays.stream(championSkins);
 	}
 
 	public ChampionSkin getById(long id) {
 		return getAsStream().filter(o -> o.getSkinId2() == id).findFirst().orElse(null);
 	}
 
+	@Override
+	public String toString() {
+		return "Skins{" +
+				"championSkins=" + Arrays.toString(championSkins) +
+				", championId=" + championSkins[0].getChampionId()+
+				'}';
+	}
 }

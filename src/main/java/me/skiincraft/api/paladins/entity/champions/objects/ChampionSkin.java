@@ -27,6 +27,11 @@ public interface ChampionSkin {
 	Request<Champion> getChampion(Language language);
 
 	/**
+	 * <p>Is the Champion Id</p>
+	 */
+	long getChampionId();
+
+	/**
 	 * <p>Is the Champion name</p>
 	 */
 	String getChampionname();

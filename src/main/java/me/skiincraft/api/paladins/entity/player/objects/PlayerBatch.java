@@ -48,5 +48,10 @@ public class PlayerBatch implements CustomList<Player> {
 		return getAsStream().filter(o -> o.getId() == id).findFirst().orElse(null);
 	}
 
-	
+	@Override
+	public String toString() {
+		return "PlayerBatch{" +
+				"items=" + Arrays.toString(items) +
+				'}';
+	}
 }
