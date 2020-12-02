@@ -18,7 +18,7 @@ public class AccessUtils {
 		this.paladins = paladins;
 	}
 
-	public boolean checkResponse(String body) {
+	public static boolean checkResponse(String body) {
 		if (body.contains("Invalid Developer Id")) {
 			return false;
 		}

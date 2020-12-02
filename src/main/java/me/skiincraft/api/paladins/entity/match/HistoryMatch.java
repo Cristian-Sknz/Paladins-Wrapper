@@ -13,7 +13,7 @@ import me.skiincraft.api.paladins.entity.match.objects.Ban;
 
 import com.google.gson.JsonObject;
 import me.skiincraft.api.paladins.enums.Queue;
-import me.skiincraft.api.paladins.impl.MatchPlayerImpl;
+import me.skiincraft.api.paladins.impl.player.MatchPlayerImpl;
 import me.skiincraft.api.paladins.utils.AccessUtils;
 
 import javax.annotation.Nullable;

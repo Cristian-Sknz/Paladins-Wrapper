@@ -2,9 +2,6 @@ package me.skiincraft.api.paladins;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.*;
-import me.skiincraft.api.paladins.cache.CacheMemoryImpl;
-import me.skiincraft.api.paladins.cache.PaladinsCache;
-import me.skiincraft.api.paladins.cache.PaladinsCacheImpl;
 import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.common.Session;
 import me.skiincraft.api.paladins.entity.champions.Champions;
@@ -13,6 +10,9 @@ import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.exceptions.ContextException;
 import me.skiincraft.api.paladins.exceptions.RequestException;
 import me.skiincraft.api.paladins.hirez.DataUsed;
+import me.skiincraft.api.paladins.impl.storage.PaladinsStorageImpl;
+import me.skiincraft.api.paladins.impl.storage.StorageImpl;
+import me.skiincraft.api.paladins.storage.PaladinsStorage;
 import me.skiincraft.api.paladins.utils.AccessUtils;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 /**
  * <h1>Paladins</h1>
- * <p>This class is the main API class, it will keep information like Cache and Token.</p>
+ * <p>This class is the main API class, it will keep information like Storage and Token.</p>
  * <p>This class can only be instantiated once. To catch the instance use <code>Paladins.getInstance()</code></p>
  *
  * @see PaladinsBuilder
@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 public class Paladins {
 	
 	private final AccessUtils accessUtils;
-	private final PaladinsCache cache;
+	private final PaladinsStorage storage;
 	
 	private final List<Session> sessions;
 	private static Paladins instance;
@@ -41,23 +41,20 @@ public class Paladins {
 	private String authkey;
 
 	private Paladins() {
-		accessUtils = new AccessUtils(this);
-		sessions = new ArrayList<>();
-		cache = new PaladinsCacheImpl(
-				new CacheMemoryImpl<Champions>(new Champions[0]) {
-
+		this.accessUtils = new AccessUtils(this);
+		this.sessions = new ArrayList<>();
+		this.storage = new PaladinsStorageImpl(
+			new StorageImpl<Champions>(new Champions[0]) {
 			public Champions getById(long id) {
 				return getAsList().stream().filter(i -> i.getLanguage().getLanguagecode() == id).findAny().orElse(null);
 			}
-		}, new CacheMemoryImpl<Match>(new Match[0]) {
-
+		}, new StorageImpl<Match>(new Match[0]) {
 			public Match getById(long id) {
-				return getAsList().stream().filter(i -> i.getMatchId() == id).findAny().orElse(null);
+				return getAsList().stream().filter(i -> i.getMatchId() == id).findFirst().orElse(null);
 			}
-		}, new CacheMemoryImpl<Cards>(new Cards[0]) {
-
+		}, new StorageImpl<Cards>(new Cards[0]) {
 			public Cards getById(long id) {
-				return getAsList().stream().filter(i -> i.getChampionCardId() == id).findAny().orElse(null);
+				return getAsList().stream().filter(i -> i.getChampionCardId() == id).findFirst().orElse(null);
 			}
 		});
 	}
@@ -124,7 +121,7 @@ public class Paladins {
 
 			public Boolean get() {
 				HttpRequest request = HttpRequest.get(accessUtils.makeUrl("testsession", sessionId, new String[] {}));
-				boolean bool = accessUtils.checkResponse(json = request.body());
+				boolean bool = AccessUtils.checkResponse(json = request.body());
 				if (!bool) {
 					Stream<Session> streamsessions = sessions.stream().filter(session -> session.getSessionId().equals(sessionId));
 					if (streamsessions.count() >= 1){
@@ -220,7 +217,7 @@ public class Paladins {
 			public DataUsed get() {
 				if (!wasRequested()){
 					HttpRequest request = HttpRequest.get(accessUtils.makeUrl("getdataused", sessionId, new String[] {}));
-					if (!accessUtils.checkResponse(json = request.body())){
+					if (!AccessUtils.checkResponse(json = request.body())){
 						throw new RequestException(json);
 					}
 
@@ -254,10 +251,10 @@ public class Paladins {
 	}
 
 	/**
-	 * @return The cache such as Matches, Champions and Cards.
+	 * @return The storage such as Matches, Champions and Cards.
 	 */
-	public PaladinsCache getCache() {
-		return cache;
+	public PaladinsStorage getStorage() {
+		return storage;
 	}
 
 	/**

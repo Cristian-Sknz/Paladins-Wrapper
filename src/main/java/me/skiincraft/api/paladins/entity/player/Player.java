@@ -12,7 +12,7 @@ import me.skiincraft.api.paladins.enums.Tier;
 import me.skiincraft.api.paladins.entity.match.HistoryMatch;
 import me.skiincraft.api.paladins.objects.Place;
 import me.skiincraft.api.paladins.objects.Team;
-import me.skiincraft.api.paladins.ranked.RankedKBM;
+import me.skiincraft.api.paladins.objects.RankedKBM;
 
 /**
  * <h1>Player</h1>
@@ -90,7 +90,7 @@ public interface Player {
 	int getMaestryLevel();
 
 	/**
-	 * @deprecated A function will soon be put in place.
+	 * A function will soon be put in place.
 	 */
 	Object getMergedPlayers();
 

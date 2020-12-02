@@ -65,9 +65,9 @@ public interface EndPoint {
 	 * @param queue search
 	 * @param platform Platform than the player you want
 	 *
-	 * @return SearchResults
+	 * @return SearchPlayers
 	 */
-	Request<SearchResults> searchPlayer(String queue, @Nullable Platform platform);
+	Request<SearchPlayers> searchPlayer(String queue, @Nullable Platform platform);
 
 	/**
 	 * <p>Make an api request to return a Player Status</p>
@@ -114,7 +114,7 @@ public interface EndPoint {
 	 * <p>Make an API request to return a specific champion.</p>
 	 * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
 	 *
-	 * <p>This request is the same as getChampions, but you get 1 specific champion, and the other champions will be cached depending on the language</p>
+	 * <p>This request is the same as getChampions, but you get 1 specific champion, and the other champions will be stored depending on the language</p>
 	 *
 	 * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
 	 * @throws me.skiincraft.api.paladins.exceptions.ChampionException In case the champion Id is wrong.
@@ -130,7 +130,7 @@ public interface EndPoint {
 	 * <p>Make an API request to return a specific champion.</p>
 	 * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
 	 *
-	 * <p>This request is the same as getChampions, but you get 1 specific champion, and the other champions will be cached depending on the language</p>
+	 * <p>This request is the same as getChampions, but you get 1 specific champion, and the other champions will be stored depending on the language</p>
 	 *
 	 * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
 	 * @throws me.skiincraft.api.paladins.exceptions.ChampionException In case the champion Id is wrong.

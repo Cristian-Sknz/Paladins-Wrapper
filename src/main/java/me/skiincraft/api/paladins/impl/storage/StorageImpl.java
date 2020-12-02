@@ -1,4 +1,6 @@
-package me.skiincraft.api.paladins.cache;
+package me.skiincraft.api.paladins.impl.storage;
+
+import me.skiincraft.api.paladins.storage.Storage;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -9,14 +11,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * <p>Is the CacheMemory implementation class</p>
+ * <p>Is the Storage implementation class</p>
  */
-public abstract class CacheMemoryImpl<T> implements CacheMemory<T> {
+public abstract class StorageImpl<T> implements Storage<T> {
 	
 	public T[] item;
 	protected long lastupdate;
 	
-	public CacheMemoryImpl(T[] item){
+	public StorageImpl(T[] item){
 		this.item = item;
 	}
 

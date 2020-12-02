@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import me.skiincraft.api.paladins.Paladins;
 import me.skiincraft.api.paladins.exceptions.RequestException;
-import me.skiincraft.api.paladins.impl.EndpointImpl;
+import me.skiincraft.api.paladins.impl.paladins.EndpointImpl;
 
 import javax.annotation.Nullable;
 
@@ -180,7 +180,7 @@ public final class Session {
 					System.err.println("[SessionWorker-" + worker + "] Session [" + sessionId + "] is still valid.");
 					return;
 				}
-				System.err.println("[SessionWorker-" + worker + "] Session [" + sessionId + "] is no longer valid, and will be removed from the cache.");
+				System.err.println("[SessionWorker-" + worker + "] Session [" + sessionId + "] is no longer valid, and will be removed from the storage.");
 			}
 		}, TimeUnit.MINUTES.toMillis(10), TimeUnit.MINUTES.toMillis(14));
 	}
