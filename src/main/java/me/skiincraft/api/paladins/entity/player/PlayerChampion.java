@@ -64,6 +64,11 @@ public interface PlayerChampion {
 	int getAssists();
 
 	/**
+	 * <p>Is the player's KDA ratio calculation</p>
+	 */
+	float getKDA();
+
+	/**
 	 * <p>Is the total number of kills</p>
 	 */
 	int getKills();

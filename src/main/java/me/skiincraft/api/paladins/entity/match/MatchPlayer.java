@@ -83,6 +83,11 @@ public interface MatchPlayer {
 	long getDeaths();
 
 	/**
+	 * <p>Is the player's KDA ratio calculation</p>
+	 */
+	float getKDA();
+
+	/**
 	 * <p>It is the player's total healing in the match</p>
 	 */
 	int getHealing();

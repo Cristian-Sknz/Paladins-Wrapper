@@ -1,6 +1,7 @@
 package me.skiincraft.api.paladins.entity.player.objects;
 
 import me.skiincraft.api.paladins.common.CustomList;
+import me.skiincraft.api.paladins.entity.player.PlayerChampion;
 import me.skiincraft.api.paladins.entity.player.QueueChampion;
 import me.skiincraft.api.paladins.enums.Queue;
 
@@ -48,6 +49,14 @@ public class QueueChampions implements CustomList<QueueChampion> {
 
 	public Queue getQueue() {
 		return queue;
+	}
+
+	public float getTotalKDA(){
+		long kills = getAsStream().mapToLong(QueueChampion::getKills).sum();
+		long assits = getAsStream().mapToLong(QueueChampion::getAssists).sum();
+		long deaths = getAsStream().mapToLong(QueueChampion::getDeaths).sum();
+
+		return (float) kills + ((float) assits/2)/deaths;
 	}
 
 	public QueueChampion getById(long id) {

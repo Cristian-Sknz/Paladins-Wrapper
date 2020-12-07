@@ -30,6 +30,14 @@ public class PlayerChampions implements CustomList<PlayerChampion> {
 			items[integer.getAndIncrement()] = item;
 		}
 	}
+
+	public float getTotalKDA(){
+		long kills = getAsStream().mapToLong(PlayerChampion::getKills).sum();
+		long assits = getAsStream().mapToLong(PlayerChampion::getAssists).sum();
+		long deaths = getAsStream().mapToLong(PlayerChampion::getDeaths).sum();
+
+		return (float) kills + ((float) assits/2)/deaths;
+	}
 	
 	@Nonnull
     public Iterator<PlayerChampion> iterator() {

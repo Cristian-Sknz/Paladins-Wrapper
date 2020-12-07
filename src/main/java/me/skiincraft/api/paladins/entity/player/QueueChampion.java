@@ -73,6 +73,11 @@ public interface QueueChampion {
 	 */
 	int getLosses();
 
+	/**
+	 * <p>Is the player's KDA ratio calculation</p>
+	 */
+	float getKDA();
+
 	Queue getQueue();
 	OffsetDateTime getLastPlayed();
 

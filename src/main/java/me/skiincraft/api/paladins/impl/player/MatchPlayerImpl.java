@@ -141,6 +141,11 @@ public class MatchPlayerImpl implements MatchPlayer {
 		return get("Deaths").getAsInt();
 	}
 
+	@Override
+	public float getKDA() {
+		return (float) getKillsRaw() + ((float) getAssists()/2) / getDeaths();
+	}
+
 	public int getHealing() {
 		return get("Healing").getAsInt();
 	}

@@ -67,6 +67,10 @@ public class QueueChampionImpl implements QueueChampion {
         return object.get("Losses").getAsInt();
     }
 
+    public float getKDA() {
+        return (float) getKills() + ((float)getAssists()/2) /getDeaths();
+    }
+
     public Queue getQueue() {
         return queue;
     }

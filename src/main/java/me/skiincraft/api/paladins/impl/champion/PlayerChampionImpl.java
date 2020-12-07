@@ -50,6 +50,10 @@ public class PlayerChampionImpl implements PlayerChampion {
 		return get("Assists").getAsInt();
 	}
 
+	public float getKDA() {
+		return (float) getKills() + ((float)getAssists()/2) /getDeaths();
+	}
+
 	public int getKills() {
 		return get("Kills").getAsInt();
 	}
