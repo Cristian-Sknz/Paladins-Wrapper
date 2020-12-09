@@ -15,10 +15,11 @@ import javax.annotation.Nonnull;
 public class Champions implements CustomList<Champion> {
 
 	private final Champion[] champions;
-	private Language language;
+	private final Language language;
 	
 	public Champions(List<Champion> champs, Language language) {
-		champions = new Champion[champs.size()];
+		this.champions = new Champion[champs.size()];
+		this.language = language;
 		AtomicInteger integer = new AtomicInteger();
 		for (Champion item : champs) {
 			champions[integer.getAndIncrement()] = item;

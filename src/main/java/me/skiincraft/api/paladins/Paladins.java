@@ -46,7 +46,7 @@ public class Paladins {
 		this.storage = new PaladinsStorageImpl(
 			new StorageImpl<Champions>(new Champions[0]) {
 			public Champions getById(long id) {
-				return getAsList().stream().filter(i -> i.getLanguage().getLanguagecode() == id).findAny().orElse(null);
+				return getAsList().stream().filter(i -> i.getLanguage().getLanguagecode() == id).findFirst().orElse(null);
 			}
 		}, new StorageImpl<Match>(new Match[0]) {
 			public Match getById(long id) {
