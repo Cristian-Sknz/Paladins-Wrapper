@@ -22,4 +22,15 @@ public enum ShopItem {
 	public String getIconUrl() {
 		return iconUrl;
 	}
+
+	public static ShopItem getById(long id) {
+		for (ShopItem item : values()) {
+			if (item.getItemId() == id) {
+				return item;
+			}
+		}
+
+		return null;
+	}
+
 }

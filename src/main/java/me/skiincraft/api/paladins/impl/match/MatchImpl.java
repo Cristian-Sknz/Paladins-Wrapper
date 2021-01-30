@@ -37,6 +37,10 @@ public class MatchImpl implements Match {
 		this.object = array.get(0).getAsJsonObject();
 	}
 
+	public JsonArray getRaw() {
+		return this.array;
+	}
+
 	public String getWinner() {
 		return (object.get("Winning_TaskForce").getAsInt() == 1) ? "Blue" : "Red";
 	}
@@ -108,7 +112,7 @@ public class MatchImpl implements Match {
 		}
 		for (JsonElement ele : array) {
 			JsonObject ob = ele.getAsJsonObject();
-			if (ob.get("TaskForce").getAsInt() != 1) {
+			if (ob.get("TaskForce").getAsInt() != 2) {
 				continue;
 			}
 			team2.add(new MatchPlayerImpl(endPoint, ob, this));

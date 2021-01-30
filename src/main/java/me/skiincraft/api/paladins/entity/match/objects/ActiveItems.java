@@ -12,33 +12,29 @@ import me.skiincraft.api.paladins.enums.ShopItem;
 
 import javax.annotation.Nonnull;
 
-public class ActiveItems implements CustomList<ShopItem>{
+public class ActiveItems implements CustomList<ActiveItem>{
 
-	private final ShopItem[] shopItems;
+	private final ActiveItem[] shopItems;
 	
-	public ActiveItems(List<ShopItem> itens) {
-		shopItems = new ShopItem[itens.size()];
-		AtomicInteger integer = new AtomicInteger();
-		for (ShopItem shopItem : itens) {
-			shopItems[integer.getAndIncrement()] = shopItem;
-		}
+	public ActiveItems(List<ActiveItem> itens) {
+		this.shopItems = itens.toArray(ActiveItem[]::new);
 	}
 	
 	@Nonnull
-	public Iterator<ShopItem> iterator() {
+	public Iterator<ActiveItem> iterator() {
 		return Arrays.stream(shopItems).iterator();
 	}
 
-	public List<ShopItem> getAsList() {
+	public List<ActiveItem> getAsList() {
 		return Arrays.stream(shopItems).collect(Collectors.toList());
 	}
 
-	public Stream<ShopItem> getAsStream() {
+	public Stream<ActiveItem> getAsStream() {
 		return Arrays.stream(shopItems);
 	}
 
-	public ShopItem getById(long id) {
-		return getAsStream().filter(o -> o.getItemId() == id).findFirst().orElse(null);
+	public ActiveItem getById(long id) {
+		return getAsStream().filter(o -> o.getItem().getItemId() == id).findFirst().orElse(null);
 	}
 
 	@Override

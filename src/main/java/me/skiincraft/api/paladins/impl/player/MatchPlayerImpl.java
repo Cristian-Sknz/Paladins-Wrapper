@@ -10,6 +10,7 @@ import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.entity.match.MatchPlayer;
+import me.skiincraft.api.paladins.entity.match.objects.ActiveItem;
 import me.skiincraft.api.paladins.entity.match.objects.ActiveItems;
 import me.skiincraft.api.paladins.entity.match.objects.Damage;
 import me.skiincraft.api.paladins.enums.ShopItem;
@@ -22,6 +23,7 @@ import me.skiincraft.api.paladins.objects.Kills;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.skiincraft.api.paladins.objects.LeagueSeason;
+import me.skiincraft.api.paladins.objects.LoadoutItem;
 
 import javax.annotation.Nullable;
 
@@ -180,16 +182,17 @@ public class MatchPlayerImpl implements MatchPlayer {
 		if (activeItems != null) {
 			return activeItems;
 		}
-		List<ShopItem> shopItems = new ArrayList<>();
-		Arrays.stream(ShopItem.values()).filter(shopItem -> {
-			for (int i = 1; i <= 4; i++) {
-				if (get("ActiveId" + i).getAsLong() == shopItem.getItemId()) {
-					return true;
-				}
+		List<ActiveItem> shopItems = new ArrayList<>();
+
+		for (int i = 1; i <= 4; i++) {
+			long id = get("ActiveId" + i).getAsLong();
+			if (id != 0) {
+				ShopItem item = ShopItem.getById(id);
+				int level = get("ActiveLevel" + i).getAsInt();
+				shopItems.add(new ActiveItem(item, level));
 			}
-			return false;
-		}).collect(Collectors.toList()).addAll(shopItems);
-		
+		}
+
 		return activeItems = new ActiveItems(shopItems);
 	}
 	public boolean hasWon() {
@@ -222,6 +225,30 @@ public class MatchPlayerImpl implements MatchPlayer {
 			throw new PlayerException("The requested player has a private profile");
 		}
 		return endPoint.getPlayer(getId());
+	}
+
+	@Override
+	public long getPartyId() {
+		return get("PartyId").getAsLong();
+	}
+
+	@Override
+	public List<LoadoutItem> getLoadout() {
+		List<LoadoutItem> res = new ArrayList<>();
+		for (int i = 1; i <= 5; i++) {
+			long id = get("ItemId" + i).getAsLong();
+			String name = get("Item_Purch_" + i).getAsString();
+			int level = get("ItemLevel" + i).getAsInt();
+			res.add(new LoadoutItem(id, name, level));
+		}
+		return res;
+	}
+
+	@Override
+	public LoadoutItem getTalent() {
+		return new LoadoutItem(get("ItemId6").getAsLong(),
+				get("Item_Purch_6").getAsString(),
+				get("ItemLevel6").getAsInt());
 	}
 
 	@Override
