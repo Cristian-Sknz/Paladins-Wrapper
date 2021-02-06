@@ -9,6 +9,9 @@ import me.skiincraft.api.paladins.enums.Language;
 import me.skiincraft.api.paladins.enums.Tier;
 import me.skiincraft.api.paladins.objects.Kills;
 import me.skiincraft.api.paladins.objects.LeagueSeason;
+import me.skiincraft.api.paladins.objects.LoadoutItem;
+
+import java.util.List;
 
 public interface MatchPlayer {
 
@@ -147,6 +150,21 @@ public interface MatchPlayer {
 	 * @return Player
 	 */
 	Request<Player> getPlayer();
+
+	/**
+	 * <p>Return the party id that this player is a member of</p>
+	 */
+	long getPartyId();
+
+	/**
+	 * <p>Return the loadout the player used this match</p>
+	 */
+	List<LoadoutItem> getLoadout();
+
+	/**
+	 * <p>Return the talent the player used this match</p>
+	 */
+	LoadoutItem getTalent();
 
 	default boolean isPrivateProfile(){
 		return getName().length() <= 2;
