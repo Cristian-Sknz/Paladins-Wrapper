@@ -17,7 +17,7 @@ public class ActiveItems implements CustomList<ActiveItem>{
 	private final ActiveItem[] shopItems;
 	
 	public ActiveItems(List<ActiveItem> itens) {
-		this.shopItems = itens.toArray(ActiveItem[]::new);
+		this.shopItems = itens.toArray(new ActiveItem[0]);
 	}
 	
 	@Nonnull
