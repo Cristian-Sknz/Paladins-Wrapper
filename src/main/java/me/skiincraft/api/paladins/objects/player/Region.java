@@ -9,21 +9,22 @@ import java.util.Locale;
  * <p>Is the region of the game servers</p>
  */
 public enum Region {
-	
-	Brazil(new Locale("pt", "BR"), Language.Portuguese), Asia(null, null), Australia(null, Language.English), Europe(null, Language.English), North_America(Locale.US, Language.English);
 
-	private Locale locale;
-	private Language language;
+    Brazil(new Locale("pt", "BR"), Language.Portuguese), Asia(null, null), Australia(null, Language.English), Europe(null, Language.English), North_America(Locale.US, Language.English);
 
-	Region(Locale locale, Language language){
-		this.locale = locale;
-		this.language = language;
-	}
+    private final Locale locale;
+    private final Language language;
 
-	public Language getLanguage() {
-		return language;
-	}
-	public Locale getLocale() {
-		return locale;
-	}
+    Region(Locale locale, Language language) {
+        this.locale = locale;
+        this.language = language;
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
 }

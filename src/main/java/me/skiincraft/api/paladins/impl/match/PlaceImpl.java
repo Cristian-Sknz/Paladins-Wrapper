@@ -1,8 +1,8 @@
 package me.skiincraft.api.paladins.impl.match;
 
 import me.skiincraft.api.paladins.internal.session.EndPoint;
-import me.skiincraft.api.paladins.objects.ranking.Tier;
 import me.skiincraft.api.paladins.objects.ranking.Place;
+import me.skiincraft.api.paladins.objects.ranking.Tier;
 
 public class PlaceImpl extends Place {
 
@@ -10,17 +10,17 @@ public class PlaceImpl extends Place {
         super(username, wins, losses, leaves, points, season, tier, userId, trend, position, endPoint);
     }
 
-    public PlaceImpl setTier(Tier tier){
+    public PlaceImpl setTier(Tier tier) {
         this.tier = tier;
         return this;
     }
 
-    public PlaceImpl setEndPoint(EndPoint endPoint){
+    public PlaceImpl setEndPoint(EndPoint endPoint) {
         this.endPoint = endPoint;
         return this;
     }
 
-    public PlaceImpl setPosition(int position){
+    public PlaceImpl setPosition(int position) {
         this.position = position;
         return this;
     }

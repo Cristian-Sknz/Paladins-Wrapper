@@ -10,30 +10,30 @@ import java.util.Set;
  */
 public interface Storage<T> extends Iterable<T> {
 
-	/**
-	 * Returns a copy of the list of T items saved in that class.
-	 */
-	List<T> getAsList();
+    /**
+     * Returns a copy of the list of T items saved in that class.
+     */
+    List<T> getAsList();
 
-	/**
-	 * Returns a copy of the set of T items saved in that class.
-	 */
-	Set<T> getAsSet();
+    /**
+     * Returns a copy of the set of T items saved in that class.
+     */
+    Set<T> getAsSet();
 
-	/**
-	 * Quantity of items in the class
-	 */
-	int size();
+    /**
+     * Quantity of items in the class
+     */
+    int size();
 
-	/**
-	 * Returns the time of the last update in milliseconds
-	 */
-	long lastUpdate();
+    /**
+     * Returns the time of the last update in milliseconds
+     */
+    long lastUpdate();
 
-	/**
-	 * Returns an item by Id, if there is no item with the Id, null will be returned
-	 */
-	@Nullable
-	T getById(long id);
-	
+    /**
+     * Returns an item by Id, if there is no item with the Id, null will be returned
+     */
+    @Nullable
+    T getById(long id);
+
 }

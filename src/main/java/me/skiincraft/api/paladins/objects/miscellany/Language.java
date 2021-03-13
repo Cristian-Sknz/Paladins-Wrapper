@@ -6,28 +6,28 @@ package me.skiincraft.api.paladins.objects.miscellany;
  */
 public enum Language {
 
-	English     (1),
-	German      (2),
-	French      (3),
-	Chinese     (5),
-	Spanish     (7),
-	Portuguese  (10),
-	Russian     (11),
-	Polish      (12),
-	Turkish     (13);
-	
-	private int languagecode;
+    English(1),
+    German(2),
+    French(3),
+    Chinese(5),
+    Spanish(7),
+    Portuguese(10),
+    Russian(11),
+    Polish(12),
+    Turkish(13);
 
-	Language(int languagecode) {
-		this.setLanguagecode(languagecode);
-	}
+    private int languagecode;
 
-	public int getLanguagecode() {
-		return languagecode;
-	}
+    Language(int languagecode) {
+        this.setLanguagecode(languagecode);
+    }
 
-	private void setLanguagecode(int languagecode) {
-		this.languagecode = languagecode;
-	}
-	
+    public int getLanguagecode() {
+        return languagecode;
+    }
+
+    private void setLanguagecode(int languagecode) {
+        this.languagecode = languagecode;
+    }
+
 }

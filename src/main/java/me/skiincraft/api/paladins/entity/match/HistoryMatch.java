@@ -12,25 +12,25 @@ import java.util.List;
  */
 public interface HistoryMatch extends Match {
 
-	MatchPlayer getMatchPlayer();
+    MatchPlayer getMatchPlayer();
 
-	@Nullable
-	default List<Ban> getBans() {
-		return null;
-	}
+    @Nullable
+    default List<Ban> getBans() {
+        return null;
+    }
 
-	@Nullable
-	default List<MatchPlayer> getTeam1() {
-		return null;
-	}
+    @Nullable
+    default List<MatchPlayer> getTeam1() {
+        return null;
+    }
 
-	@Nullable
-	default List<MatchPlayer> getTeam2() {
-		return null;
-	}
+    @Nullable
+    default List<MatchPlayer> getTeam2() {
+        return null;
+    }
 
-	default List<MatchPlayer> getPlayers() {
-		return Collections.singletonList(getMatchPlayer());
-	}
+    default List<MatchPlayer> getPlayers() {
+        return Collections.singletonList(getMatchPlayer());
+    }
 
 }

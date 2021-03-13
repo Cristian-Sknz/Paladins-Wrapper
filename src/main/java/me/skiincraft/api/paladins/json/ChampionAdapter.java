@@ -1,11 +1,11 @@
 package me.skiincraft.api.paladins.json;
 
 import com.google.gson.*;
-import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.entity.champions.Champion;
-import me.skiincraft.api.paladins.objects.miscellany.Language;
 import me.skiincraft.api.paladins.impl.champion.ChampionImpl;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.objects.champion.Ability;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class ChampionAdapter implements JsonDeserializer<Champion> {
         Gson gson = new Gson();
         ChampionImpl championImpl = gson.fromJson(object, ChampionImpl.class);
         List<Ability> abilityList = new ArrayList<>();
-        for (int i = 1; i <= 5; i++){
+        for (int i = 1; i <= 5; i++) {
             abilityList.add(gson.fromJson(object.get("Ability_" + i), Ability.class));
         }
         return championImpl.setLanguage(language)

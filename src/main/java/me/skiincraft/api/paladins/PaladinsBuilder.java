@@ -25,7 +25,8 @@ public class PaladinsBuilder {
      *
      * @see Paladins
      */
-    public PaladinsBuilder() {}
+    public PaladinsBuilder() {
+    }
 
     public PaladinsBuilder(String authKey, int devId) {
         this.authKey = authKey;
@@ -36,17 +37,17 @@ public class PaladinsBuilder {
         return devId;
     }
 
+    public PaladinsBuilder setDevId(int devId) {
+        this.devId = devId;
+        return this;
+    }
+
     public String getAuthKey() {
         return authKey;
     }
 
     public PaladinsBuilder setAuthKey(String authKey) {
         this.authKey = authKey;
-        return this;
-    }
-
-    public PaladinsBuilder setDevId(int devId) {
-        this.devId = devId;
         return this;
     }
 

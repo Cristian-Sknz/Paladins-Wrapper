@@ -9,35 +9,35 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ActiveItems implements CustomList<ActiveItem>{
+public class ActiveItems implements CustomList<ActiveItem> {
 
-	private final ActiveItem[] shopItems;
-	
-	public ActiveItems(List<ActiveItem> itens) {
-		this.shopItems = itens.toArray(new ActiveItem[0]);
-	}
-	
-	@Nonnull
-	public Iterator<ActiveItem> iterator() {
-		return Arrays.stream(shopItems).iterator();
-	}
+    private final ActiveItem[] shopItems;
 
-	public List<ActiveItem> getAsList() {
-		return Arrays.stream(shopItems).collect(Collectors.toList());
-	}
+    public ActiveItems(List<ActiveItem> itens) {
+        this.shopItems = itens.toArray(new ActiveItem[0]);
+    }
 
-	public Stream<ActiveItem> getAsStream() {
-		return Arrays.stream(shopItems);
-	}
+    @Nonnull
+    public Iterator<ActiveItem> iterator() {
+        return Arrays.stream(shopItems).iterator();
+    }
 
-	public ActiveItem getById(long id) {
-		return getAsStream().filter(o -> o.getItem().getItemId() == id).findFirst().orElse(null);
-	}
+    public List<ActiveItem> getAsList() {
+        return Arrays.stream(shopItems).collect(Collectors.toList());
+    }
 
-	@Override
-	public String toString() {
-		return "ActiveItems{" +
-				"shopItems=" + Arrays.toString(shopItems) +
-				'}';
-	}
+    public Stream<ActiveItem> getAsStream() {
+        return Arrays.stream(shopItems);
+    }
+
+    public ActiveItem getById(long id) {
+        return getAsStream().filter(o -> o.getItem().getItemId() == id).findFirst().orElse(null);
+    }
+
+    @Override
+    public String toString() {
+        return "ActiveItems{" +
+                "shopItems=" + Arrays.toString(shopItems) +
+                '}';
+    }
 }

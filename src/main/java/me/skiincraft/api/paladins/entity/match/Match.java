@@ -1,13 +1,12 @@
 package me.skiincraft.api.paladins.entity.match;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
 import me.skiincraft.api.paladins.entity.match.objects.Ban;
-import me.skiincraft.api.paladins.objects.match.Queue;
 import me.skiincraft.api.paladins.internal.requests.APIRequest;
+import me.skiincraft.api.paladins.objects.match.Queue;
 
 import javax.annotation.Nullable;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 
 /**
@@ -16,111 +15,112 @@ import javax.annotation.Nullable;
  */
 public interface Match {
 
-	/**
-	 * Is the information of which team won the game
-	 * @return Red or Blue
-	 */
-	String getWinner();
+    /**
+     * Is the information of which team won the game
+     *
+     * @return Red or Blue
+     */
+    String getWinner();
 
-	/**
-	 * Are the bans that occurred in the match. If it is not a ranked match it will return null
-	 */
-	@Nullable
-	List<Ban> getBans();
+    /**
+     * Are the bans that occurred in the match. If it is not a ranked match it will return null
+     */
+    @Nullable
+    List<Ban> getBans();
 
-	/**
-	 * <p>Is the Match Id</p>
-	 */
-	long getMatchId();
+    /**
+     * <p>Is the Match Id</p>
+     */
+    long getMatchId();
 
-	/**
-	 * <p>Is the duration of the game in Milliseconds</p>
-	 */
-	long getMatchDuration();
+    /**
+     * <p>Is the duration of the game in Milliseconds</p>
+     */
+    long getMatchDuration();
 
-	/**
-	 * <p>is the name of the map on which the match took place</p>
-	 */
-	String getMapGame();
+    /**
+     * <p>is the name of the map on which the match took place</p>
+     */
+    String getMapGame();
 
-	/**
-	 * <p>Is the duration of the game in Minutes</p>
-	 */
-	long getMatchMinutes();
+    /**
+     * <p>Is the duration of the game in Minutes</p>
+     */
+    long getMatchMinutes();
 
-	/**
-	 * <p>Is the score of the blue team</p>
-	 */
-	int getTeam1Score();
+    /**
+     * <p>Is the score of the blue team</p>
+     */
+    int getTeam1Score();
 
-	/**
-	 * <p>Is the score of the red team</p>
-	 */
-	int getTeam2Score();
+    /**
+     * <p>Is the score of the red team</p>
+     */
+    int getTeam2Score();
 
-	/**
-	 * <p>Is the match queue</p>
-	 */
-	Queue getQueue();
+    /**
+     * <p>Is the match queue</p>
+     */
+    Queue getQueue();
 
-	/**
-	 * <p>Is the total players in the match</p>
-	 */
-	List<MatchPlayer> getPlayers();
+    /**
+     * <p>Is the total players in the match</p>
+     */
+    List<MatchPlayer> getPlayers();
 
-	/**
-	 * <p>Is the total number of players in the blue team</p>
-	 */
-	@Nullable
-	List<MatchPlayer> getTeam1();
+    /**
+     * <p>Is the total number of players in the blue team</p>
+     */
+    @Nullable
+    List<MatchPlayer> getTeam1();
 
-	/**
-	 * <p>Is the total number of players in the red team</p>
-	 */
-	@Nullable
-	List<MatchPlayer> getTeam2();
+    /**
+     * <p>Is the total number of players in the red team</p>
+     */
+    @Nullable
+    List<MatchPlayer> getTeam2();
 
-	/**
-	 * The number of the team that won
-	 * @return 1 for blue, and 2 for red
-	 */
-	int getWinnerTeam();
+    /**
+     * The number of the team that won
+     *
+     * @return 1 for blue, and 2 for red
+     */
+    int getWinnerTeam();
 
-	/**
-	 * <p>Check if the match has a replay available</p>
-	 */
-	boolean hasReplay();
+    /**
+     * <p>Check if the match has a replay available</p>
+     */
+    boolean hasReplay();
 
-	/**
-	 * <p>Is the match queue id</p>
-	 */
-	int getMatchQueueId();
+    /**
+     * <p>Is the match queue id</p>
+     */
+    int getMatchQueueId();
 
-	/**
-	 * Is the game mode that the game was played
-	 */
-	String getGamemode();
+    /**
+     * Is the game mode that the game was played
+     */
+    String getGamemode();
 
-	/**
-	 * <p>Check if the match is ranked</p>
-	 */
-	boolean isRanked();
+    /**
+     * <p>Check if the match is ranked</p>
+     */
+    boolean isRanked();
 
-	/**
-	 * <p>Check if it is a detailed match</p>
-	 */
-	boolean isDetailedMatch();
+    /**
+     * <p>Check if it is a detailed match</p>
+     */
+    boolean isDetailedMatch();
 
-	/**
-	 * <p>Make an API request to return to a match</p>
-	 * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
-	 *
-	 * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
-	 * @throws me.skiincraft.api.paladins.exceptions.MatchException If no match is found or is already a detailed match
-	 *
-	 * @return Match
-	 */
-	APIRequest<Match> getMatchDetails();
+    /**
+     * <p>Make an API request to return to a match</p>
+     * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
+     *
+     * @return Match
+     * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
+     * @throws me.skiincraft.api.paladins.exceptions.MatchException   If no match is found or is already a detailed match
+     */
+    APIRequest<Match> getMatchDetails();
 
-	OffsetDateTime getMatchDate();
+    OffsetDateTime getMatchDate();
 }
