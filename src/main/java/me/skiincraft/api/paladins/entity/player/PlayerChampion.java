@@ -1,8 +1,8 @@
 package me.skiincraft.api.paladins.entity.player;
 
-import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
-import me.skiincraft.api.paladins.enums.Language;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
 
 import java.time.OffsetDateTime;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +28,7 @@ public interface PlayerChampion {
 	 *
 	 * @return Champion
 	 */
-	Request<Champion> getChampion(Language language);
+	APIRequest<Champion> getChampion(Language language);
 
 	/**
 	 * <p>Make an api request to return a Player</p>
@@ -39,10 +39,12 @@ public interface PlayerChampion {
 	 *
 	 * @return Player
 	 */
-	Request<Player> getPlayer();
+	APIRequest<Player> getPlayer();
 
 	/**
-	 * <p>Is the level of the champion of this player</p>
+	 * <p>Is the level of the champion of this player
+     * <br>This value is unavailable in queue stats</br>
+	 * </p>
 	 */
 	int getChampionLevel();
 
@@ -98,7 +100,9 @@ public interface PlayerChampion {
 	long getCredits();
 
 	/**
-	 * <p>Is the total number of worshipers</p>
+	 * <p>Is the total number of worshipers
+	 * <br>This value is unavailable in queue stats</br>
+	 * </p>
 	 */
 	long getWorshippers();
 
@@ -108,7 +112,8 @@ public interface PlayerChampion {
 	long getPlayerId();
 
 	/**
-	 * <p>Is the total game time in milliseconds</p>
+	 * <p>Is the total game time in milliseconds
+	 * </p>
 	 */
 	long getMillisPlayed();
 
@@ -119,7 +124,10 @@ public interface PlayerChampion {
 		return Integer.parseInt(TimeUnit.MILLISECONDS.toMinutes(getMillisPlayed()) + "");
 	}
 
-	//?
+	/**
+	 * <p>This value is unavailable in queue stats</p>
+	 */
+
 	int getMinionKills();
 
 

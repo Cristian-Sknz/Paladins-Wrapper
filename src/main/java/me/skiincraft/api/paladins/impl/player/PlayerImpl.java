@@ -1,219 +1,293 @@
 package me.skiincraft.api.paladins.impl.player;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
-
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import me.skiincraft.api.paladins.common.EndPoint;
-import me.skiincraft.api.paladins.common.Request;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.entity.match.HistoryMatch;
 import me.skiincraft.api.paladins.entity.other.Friends;
 import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.entity.player.objects.PlayerChampions;
-import me.skiincraft.api.paladins.enums.Platform;
-import me.skiincraft.api.paladins.enums.PlayerStatus;
-import me.skiincraft.api.paladins.enums.Tier;
-import me.skiincraft.api.paladins.objects.LeagueSeason;
-import me.skiincraft.api.paladins.objects.Place;
-import me.skiincraft.api.paladins.objects.Team;
-import me.skiincraft.api.paladins.objects.RankedKBM;
-import me.skiincraft.api.paladins.utils.AccessUtils;
+import me.skiincraft.api.paladins.objects.player.Platform;
+import me.skiincraft.api.paladins.objects.player.PlayerStatus;
+import me.skiincraft.api.paladins.objects.ranking.Tier;
+import me.skiincraft.api.paladins.json.PaladinsDateAdapter;
+import me.skiincraft.api.paladins.objects.ranking.RankedKBM;
+import me.skiincraft.api.paladins.objects.match.Team;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
+
+import javax.annotation.Nullable;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerImpl implements Player {
 
-	private final JsonObject object;
-	private final EndPoint queue;
-	
-	public PlayerImpl(JsonObject object, EndPoint queue) {
-		this.object = object;
-		this.queue = queue;
-	}
-	
-	private JsonElement get(String string) {
-		return object.get(string);
+	@SerializedName(value = "ActivePlayerId")
+	private final long activePlayerId;
+	@SerializedName(value = "AvatarId")
+	private final long avatarId;
+	@SerializedName(value = "AvatarURL")
+	private final String avatarUrl;
+	@SerializedName(value = "Created_Datetime")
+	@JsonAdapter(PaladinsDateAdapter.class)
+	private final OffsetDateTime created;
+	@SerializedName(value = "MinutesPlayed")
+	private final long minutesPlayed;
+	@SerializedName(value = "Id")
+	private final long id;
+	@SerializedName(value = "Last_Login_Datetime")
+	@JsonAdapter(PaladinsDateAdapter.class)
+	private final OffsetDateTime lastLoginDate;
+	@SerializedName(value = "Leaves")
+	private final int leaves;
+	@SerializedName(value = "Level")
+	private final int level;
+	@SerializedName(value = "Losses")
+	private final int losses;
+	@SerializedName(value = "LoadingFrame")
+	private final String loadingFrame;
+	@SerializedName(value = "MasteryLevel")
+	private final int masteryLevel;
+	@SerializedName(value = "MergedPlayers")
+	private final Object mergedPlayers;
+	@SerializedName(value = "Name")
+	private final String name;
+	@SerializedName(value = "Personal_Status_Message")
+	private final String personalStatusMessage;
+	@SerializedName(value = "Platform")
+	private final String platform;
+	@SerializedName(value = "RankedKBM")
+	private final RankedKBM rankedKBM;
+	@SerializedName(value = "Region")
+	private final String region;
+	private Team team;
+	@SerializedName(value = "Team_Name")
+	private String teamname;
+	@SerializedName(value = "TeamId")
+	private int teamid;
+	@SerializedName(value = "Title")
+	private final String title;
+	@SerializedName(value = "Total_Achievements")
+	private final int totalAchievements;
+	@SerializedName(value = "Total_Worshippers")
+	private final long totalWorshippers;
+	@SerializedName(value = "Total_XP")
+	private final long totalXp;
+	@SerializedName(value = "Wins")
+	private final int wins;
+	@SerializedName(value = "hz_player_name")
+	private final String hirezName;
+	@SerializedName(value = "hz_gamer_tag")
+	private final String hirezGamerTag;
+	@Expose
+	private EndPoint endpoint;
+	@Expose
+	private JsonElement raw;
+
+	public PlayerImpl(long activePlayerId, long avatarId, String avatarUrl, OffsetDateTime created, long minutesPlayed, long id, OffsetDateTime lastLoginDate, int leaves, int level, int losses, String loadingFrame, int masteryLevel, Object mergedPlayers, String name, String personalStatusMessage, String platform, RankedKBM rankedKBM, String region, String title, int totalAchievements, long totalWorshippers, long totalXp, int wins, String hirezName, String hirezGamerTag) {
+		this.activePlayerId = activePlayerId;
+		this.avatarId = avatarId;
+		this.avatarUrl = avatarUrl;
+		this.created = created;
+		this.minutesPlayed = minutesPlayed;
+		this.id = id;
+		this.lastLoginDate = lastLoginDate;
+		this.leaves = leaves;
+		this.level = level;
+		this.losses = losses;
+		this.loadingFrame = loadingFrame;
+		this.masteryLevel = masteryLevel;
+		this.mergedPlayers = mergedPlayers;
+		this.name = name;
+		this.personalStatusMessage = personalStatusMessage;
+		this.platform = platform;
+		this.rankedKBM = rankedKBM;
+		this.region = region;
+		this.title = title;
+		this.totalAchievements = totalAchievements;
+		this.totalWorshippers = totalWorshippers;
+		this.totalXp = totalXp;
+		this.wins = wins;
+		this.hirezName = hirezName;
+		this.hirezGamerTag = hirezGamerTag;
 	}
 
 	public long getActivePlayerId() {
-		return object.get("ActivePlayerId").getAsLong();
+		return activePlayerId;
 	}
 
 	public long getAvatarId() {
-		return object.get("AvatarId").getAsLong();
+		return avatarId;
 	}
 
+	@Nullable
 	public String getAvatarURL() {
-		return (getAvatarId() == 0) ? null : object.get("AvatarURL").getAsString();
+		return avatarUrl;
 	}
 
 	public OffsetDateTime getCreated() {
-		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("Created_Datetime").getAsString())), ZoneOffset.UTC);
+		return created;
 	}
 
 	public long getHoursPlayed() {
-		return TimeUnit.MINUTES.toHours(get("MinutesPlayed").getAsLong());
+		return TimeUnit.MINUTES.toHours(getMinutesPlayed());
 	}
 
 	public long getId() {
-		return get("Id").getAsLong();
+		return id;
 	}
 
 	public OffsetDateTime getLastLogin() {
-		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("Last_Login_Datetime").getAsString())), ZoneOffset.UTC);
+		return lastLoginDate;
 	}
 
 	public int getLeaves() {
-		return get("Leaves").getAsInt();
+		return leaves;
 	}
 
 	public int getLevel() {
-		return get("Level").getAsInt();
+		return level;
 	}
 
 	public String getLoadingFrame() {
-		return get("LoadingFrame").isJsonNull() ? null : get("LoadingFrame").getAsString();
+		return loadingFrame;
 	}
 
 	public int getLosses() {
-		return get("Losses").getAsInt();
+		return losses;
 	}
 
 	public int getMaestryLevel() {
-		return get("MasteryLevel").getAsInt();
+		return masteryLevel;
 	}
 
 	public Object getMergedPlayers() {
-		return get("MergedPlayers").toString();
+		return mergedPlayers;
 	}
 
 	public long getMinutesPlayed() {
-		return get("MinutesPlayed").getAsLong();
+		return minutesPlayed;
 	}
 
 	public String getName() {
-		return get("Name").getAsString();
+		return name;
 	}
 
+	@Nullable
 	public String getPersonalStatusMessage() {
-		return (get("Personal_Status_Message").isJsonNull()) ? "": get("Personal_Status_Message").getAsString();
+		return personalStatusMessage;
 	}
 
 	public Platform getPlatform() {
-		return Platform.getPlatformByName(get("Platform").getAsString());
+		return Platform.getPlatformByName(getPlataformString());
+	}
+
+	public String getPlataformString(){
+		return platform;
 	}
 
 	public RankedKBM getRankedKBM() {
-		JsonObject ranked = get("RankedKBM").getAsJsonObject();
-		
-		LeagueSeason l = new LeagueSeason(ranked.get("Wins").getAsInt(), ranked.get("Losses").getAsInt(), ranked.get("Points").getAsInt(), Tier.getTierById(ranked.get("Tier").getAsInt()));
-		return new RankedKBM(l,
-				ranked.get("Leaves").getAsInt(),
-				ranked.get("PrevRank").getAsInt(),
-				ranked.get("Rank").getAsInt(),
-				ranked.get("Season").getAsInt(),
-				ranked.get("Trend").getAsInt(),
-				(ranked.get("player_id").isJsonNull()) ? 0 : ranked.get("player_id").getAsLong());
+		return rankedKBM;
 	}
 
 	public String getRegion() {
-		return get("Region").getAsString();
+		return region;
+	}
+
+	private String getTeamName(){
+		return teamname;
+	}
+
+	private int getTeamId(){
+		return teamid;
 	}
 
 	public Team getTeam() {
-		String teamname = (get("Team_Name").isJsonNull()) ? "": get("Team_Name").getAsString();
-		return new Team(get("TeamId").getAsInt(), teamname);
+		if (this.team != null){
+			return team;
+		}
+
+		return team = new Team(getTeamId(), getTeamName());
 	}
 
 	public Tier getTier() {
-		return Tier.getTierById(get("Tier_RankedKBM").getAsInt());
+		return getRankedKBM().getTier();
 	}
 
 	public String getTitle() {
-		return get("Title").isJsonNull() ? "" : get("Title").getAsString();
+		return title;
 	}
 
 	public int getTotalAchievements() {
-		return get("Total_Achievements").getAsInt();
+		return totalAchievements;
 	}
 
 	public long getTotalWorshippers() {
-		return get("Total_Worshippers").getAsInt();
+		return totalWorshippers;
 	}
 
 	public long getTotalXP() {
-		return get("Total_XP").getAsLong();
+		return totalXp;
 	}
 
 	public int getWins() {
-		return get("Wins").getAsInt();
+		return wins;
 	}
 
 	public String getInGameName() {
-		return (getPlatform() == Platform.PC) ? (getHirezName().length() <= 1)?  getName() : getHirezName()
-				: (getHirezGamerTag().length() <= 1)? getName() : getHirezGamerTag();
+		return (getPlatform().isPC()) ? (getHirezName() != null) ? getHirezName() : getName()
+				: (getHirezGamerTag() != null && getHirezGamerTag().length() <= 1)? getName() : getHirezGamerTag();
 	}
 
 	public String getHirezName() {
-		return (!get("hz_player_name").isJsonNull()) ? get("hz_player_name").getAsString() : "";
+		return hirezName;
 	}
 
 	public String getHirezGamerTag() {
-		return (!get("hz_gamer_tag").isJsonNull()) ? get("hz_gamer_tag").getAsString() : "";
+		return hirezGamerTag;
 	}
 
-	public Request<PlayerStatus> getStatus() {
-		return queue.getPlayerStatus(String.valueOf(getId()));
+	@Override
+	public JsonElement getRaw() {
+		return raw;
 	}
 
-	public Request<PlayerChampions> getChampions() {
-		return queue.getPlayerChampions(getId());
+	public APIRequest<PlayerStatus> getStatus() {
+		return endpoint.getPlayerStatus(String.valueOf(getId()));
 	}
 
-	public Request<Friends> getFriends() {
-		return queue.getFriends(getId());
+	public APIRequest<PlayerChampions> getChampions() {
+		return endpoint.getPlayerChampions(getId());
 	}
 
-	public Request<List<HistoryMatch>> getMatchHistory() {
-		return queue.getMatchHistory(getId());
+	public APIRequest<Friends> getFriends() {
+		return endpoint.getFriends(getId());
 	}
 
-	public Request<Place> searchOnLeaderboard(int season) {
-		if (getTier() == Tier.Unranked){
-			return null;
-		}
-		return new Request<Place>() {
-			private Place place;
-			private String json;
+	public APIRequest<List<HistoryMatch>> getMatchHistory() {
+		return endpoint.getMatchHistory(getId());
+	}
 
-			public boolean wasRequested() {
-				return place != null;
-			}
+	public PlayerImpl setEndpoint(EndPoint endpoint) {
+		this.endpoint = endpoint;
+		return this;
+	}
 
-			public Place get() {
-				if (wasRequested()) {
-					return place;
-				}
-
-				return place = queue.getLeaderboard(getTier(), season).get().getById(getId());
-			}
-
-			public void getWithJson(BiConsumer<Place, String> biConsumer) {
-				biConsumer.accept(get(), "");
-			}
-		};
+	public PlayerImpl setRaw(JsonElement raw) {
+		this.raw = raw;
+		return this;
 	}
 
 	@Override
 	public String toString() {
-		return "Player{" +
-				"userId=" + getId() +
-				", name=" + getInGameName() +
-				", platform=" + getPlatform().toString() +
+		return "PlayerImpl{" +
+				"id=" + id +
+				", level=" + level +
+				", name='" + getInGameName() + '\'' +
+				", platform='" + platform + '\'' +
+				", region='" + region + '\'' +
 				'}';
 	}
 }

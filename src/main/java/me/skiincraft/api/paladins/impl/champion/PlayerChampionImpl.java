@@ -1,53 +1,92 @@
 package me.skiincraft.api.paladins.impl.champion;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import me.skiincraft.api.paladins.common.EndPoint;
-import me.skiincraft.api.paladins.common.Request;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.entity.player.PlayerChampion;
-import me.skiincraft.api.paladins.enums.Language;
-import me.skiincraft.api.paladins.utils.AccessUtils;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
+import me.skiincraft.api.paladins.json.PaladinsDateAdapter;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerChampionImpl implements PlayerChampion {
 
-	private final EndPoint endPoint;
-	private final JsonObject object;
-	
-	public PlayerChampionImpl(EndPoint endPoint, JsonObject object) {
-		this.endPoint = endPoint;
-		this.object = object;
+	@SerializedName(value = "champion", alternate = {"Champion"})
+	private final String championName;
+	@SerializedName(value = "champion_id", alternate = {"ChampionId"})
+	private final long championId;
+	@SerializedName("Rank")
+	private final int championLevel;
+
+	@SerializedName("Assists")
+	private final int assists;
+	@SerializedName("Kills")
+	private final int kills;
+	@SerializedName("Deaths")
+	private final int deaths;
+
+	@SerializedName("Gold")
+	private final int credits;
+	@SerializedName("Wins")
+	private final int wins;
+	@SerializedName("Losses")
+	private final int losses;
+	@SerializedName("Minutes")
+	private final int minutesPlayed;
+
+	@SerializedName("MinionKills")
+	private final int minionKills;
+	@SerializedName("Worshippers")
+	private final long worshippers;
+
+	@SerializedName("player_id")
+	private final long playerId;
+
+	@JsonAdapter(PaladinsDateAdapter.class)
+	@SerializedName("LastPlayed")
+	private final OffsetDateTime lastPlayed;
+	private EndPoint endPoint;
+
+	public PlayerChampionImpl(String championName, long championId, int championLevel, int assists, int kills, int deaths, int credits, int wins, int losses, int minutesPlayed, int minionKills, long worshippers, long playerId, OffsetDateTime lastPlayed) {
+		this.championName = championName;
+		this.championId = championId;
+		this.championLevel = championLevel;
+		this.assists = assists;
+		this.kills = kills;
+		this.deaths = deaths;
+		this.credits = credits;
+		this.wins = wins;
+		this.losses = losses;
+		this.minutesPlayed = minutesPlayed;
+		this.minionKills = minionKills;
+		this.worshippers = worshippers;
+		this.playerId = playerId;
+		this.lastPlayed = lastPlayed;
 	}
 
-	protected JsonElement get(String key) {
-		return object.get(key);
-	}
-	
-	public Request<Champion> getChampion(Language language) {
+	public APIRequest<Champion> getChampion(Language language) {
 		return endPoint.getChampion(getChampionId(), language);
 	}
 
 	public int getChampionLevel() {
-		return get("Rank").getAsInt();
+		return championLevel;
 	}
 
 	public String getChampionName() {
-		return get("champion").getAsString();
+		return championName;
 		
 	}
 
 	public long getChampionId() {
-		return get("champion_id").getAsLong();
+		return championId;
 	}
 
 	public int getAssists() {
-		return get("Assists").getAsInt();
+		return assists;
 	}
 
 	public float getKDA() {
@@ -55,55 +94,66 @@ public class PlayerChampionImpl implements PlayerChampion {
 	}
 
 	public int getKills() {
-		return get("Kills").getAsInt();
+		return kills;
 	}
 
 	public int getDeaths() {
-		return get("Deaths").getAsInt();
+		return deaths;
 	}
 	
 	public long getCredits() {
-		return get("Gold").getAsInt();
+		return credits;
 	}
 
 	public int getWins() {
-		return get("Wins").getAsInt();
+		return wins;
 	}
 
 	public long getMillisPlayed() {
-		return TimeUnit.MINUTES.toMillis(get("Minutes").getAsLong());
+		return TimeUnit.MINUTES.toMillis(minutesPlayed);
 	}
 
 	public int getMinionKills() {
-		return get("MinionKills").getAsInt();
+		return minionKills;
 	}
 
-	public Request<Player> getPlayer() {
-		return endPoint.getPlayer(getChampionId());
+	public APIRequest<Player> getPlayer() {
+		return endPoint.getPlayer(playerId);
 	}
 
 	public int getLosses() {
-		return get("Losses").getAsInt();
+		return losses;
 	}
 
 	public long getWorshippers() {
-		return get("Worshippers").getAsLong();
+		return worshippers;
 	}
 
 	public OffsetDateTime getLastPlayed() {
-		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("LastPlayed").getAsString())), ZoneOffset.UTC);
+		return lastPlayed;
 	}
 
 	public long getPlayerId() {
-		return get("player_id").getAsLong();
+		return playerId;
 	}
 
+	public PlayerChampionImpl setEndPoint(EndPoint endPoint) {
+		this.endPoint = endPoint;
+		return this;
+	}
+
+	public EndPoint getEndPoint() {
+		return endPoint;
+	}
 
 	@Override
 	public String toString() {
 		return "PlayerChampion{" +
-				"userId=" + getPlayerId() +
-				", championId=" + getChampionId() +
+				"championName='" + championName + '\'' +
+				", championId=" + championId +
+				", championLevel=" + championLevel +
+				", minutesPlayed=" + minutesPlayed +
+				", playerId=" + playerId +
 				'}';
 	}
 }

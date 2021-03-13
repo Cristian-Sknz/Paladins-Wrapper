@@ -1,60 +1,86 @@
 package me.skiincraft.api.paladins.impl.match;
 
-import java.time.LocalDateTime;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
+import me.skiincraft.api.paladins.entity.match.Match;
+import me.skiincraft.api.paladins.entity.match.MatchPlayer;
+import me.skiincraft.api.paladins.entity.match.objects.Ban;
+import me.skiincraft.api.paladins.objects.match.Queue;
+import me.skiincraft.api.paladins.exceptions.MatchException;
+import me.skiincraft.api.paladins.json.PaladinsDateAdapter;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
+
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import me.skiincraft.api.paladins.common.EndPoint;
-import me.skiincraft.api.paladins.common.Request;
-import me.skiincraft.api.paladins.entity.match.Match;
-import me.skiincraft.api.paladins.entity.match.MatchPlayer;
-import me.skiincraft.api.paladins.entity.match.objects.Ban;
-import me.skiincraft.api.paladins.enums.Queue;
-import me.skiincraft.api.paladins.exceptions.MatchException;
-import me.skiincraft.api.paladins.impl.player.MatchPlayerImpl;
-import me.skiincraft.api.paladins.utils.AccessUtils;
-
 public class MatchImpl implements Match {
 
-	private final EndPoint endPoint;
-	private final JsonArray array;
-	private final JsonObject object;
-	
-	private final List<MatchPlayer> team1 = new ArrayList<>();
-	private final List<MatchPlayer> team2 = new ArrayList<>();
-	private final List<Ban> bans = new ArrayList<>();
-	
-	public MatchImpl(EndPoint endPoint, JsonArray array) {
+	@SerializedName("Map_Game")
+	private final String mapGame;
+	@SerializedName("Winning_TaskForce")
+	private final int winningTask;
+	private List<Ban> bans;
+	@SerializedName("Match")
+	private final long matchId;
+	@SerializedName(value = "Match_Duration", alternate = "Time_In_Match_Seconds")
+	private final long matchDuration;
+
+	@SerializedName("Team1Score")
+	private final int team1Score;
+	@SerializedName("Team2Score")
+	private final int team2Score;
+	@SerializedName(value = "match_queue_id", alternate = "Match_Queue_Id")
+	private final int queueId;
+	@SerializedName(value = "name", alternate = "Queue")
+	private final String gamemode;
+	@JsonAdapter(PaladinsDateAdapter.class)
+	@SerializedName("Match_Time")
+	private final OffsetDateTime matchTime;
+	private final String hasReplay;
+
+	protected EndPoint endPoint;
+
+	private List<MatchPlayer> team1;
+	private List<MatchPlayer> team2;
+
+	public MatchImpl(String mapGame, int winningTask, List<Ban> bans, long matchId, long matchDuration, int team1Score, int team2Score, int queueId, String gamemode, OffsetDateTime matchTime, String hasReplay, List<MatchPlayer> team1, List<MatchPlayer> team2) {
+		this.mapGame = mapGame;
+		this.winningTask = winningTask;
+		this.bans = bans;
+		this.matchId = matchId;
+		this.matchDuration = matchDuration;
+		this.team1Score = team1Score;
+		this.team2Score = team2Score;
+		this.queueId = queueId;
+		this.gamemode = gamemode;
+		this.matchTime = matchTime;
+		this.hasReplay = hasReplay;
+		this.team1 = team1;
+		this.team2 = team2;
+	}
+
+	public MatchImpl buildMethods(JsonArray array, EndPoint endPoint){
 		this.endPoint = endPoint;
-		this.array = array;
-		this.object = array.get(0).getAsJsonObject();
+		if (bans != null)
+			return this;
+		Gson gson = new Gson();
+		this.bans = buildBans(array.get(0).getAsJsonObject());
+		this.team1 = buildPlayers(array, gson,1);
+		this.team2 = buildPlayers(array, gson,2);
+		return this;
 	}
 
-	public JsonArray getRaw() {
-		return this.array;
-	}
-
-	public String getWinner() {
-		return (object.get("Winning_TaskForce").getAsInt() == 1) ? "Blue" : "Red";
-	}
-	
-	protected JsonElement get(String key) {
-		return object.get(key);
-	}
-
-	public List<Ban> getBans() {
-		if (bans.size() != 0) {
-			return bans;
-		}
+	private List<Ban> buildBans(JsonObject object){
+		List<Ban> bans = new ArrayList<>();
 		for (int i = 1; i <= 4; i++) {
-			if (get("BanId" + i).getAsLong() == 0) {
+			if (object.get("BanId" + i).getAsLong() == 0) {
 				continue;
 			}
 			bans.add(new Ban(object.get("BanId"+ i).getAsLong(), object.get("Ban_"+ i).getAsString(), endPoint));
@@ -62,79 +88,78 @@ public class MatchImpl implements Match {
 		return bans;
 	}
 
+	private List<MatchPlayer> buildPlayers(JsonArray array, Gson gson, int taskForce) {
+		List<MatchPlayer> players = new ArrayList<>();
+		for (JsonElement ele : array) {
+			JsonObject ob = ele.getAsJsonObject();
+			if (ob.get("TaskForce").getAsInt() != taskForce) {
+				continue;
+			}
+			players.add(gson.fromJson(ob, MatchPlayerImpl.class));
+		}
+
+		return players;
+	}
+
+	public String getWinner() {
+		return (winningTask == 1) ? "Blue" : "Red";
+	}
+
+	public List<Ban> getBans() {
+		return bans;
+	}
+
 	public long getMatchId() {
-		return get("Match").getAsLong();
+		return matchId;
 	}
 
 	public long getMatchDuration() {
-		return TimeUnit.SECONDS.toMillis(get("Match_Duration").getAsLong());
+		return TimeUnit.SECONDS.toMillis(matchDuration);
 	}
 
 	public String getMapGame() {
-		return get("Map_Game").getAsString();
+		return mapGame;
 	}
 
 	public long getMatchMinutes() {
-		return TimeUnit.SECONDS.toMinutes(get("Match_Duration").getAsLong());
+		return TimeUnit.SECONDS.toMinutes(matchDuration);
 	}
 
 	public int getTeam1Score() {
-		return get("Team1Score").getAsInt();
+		return team1Score;
 	}
 
 	public int getTeam2Score() {
-		return get("Team2Score").getAsInt();
+		return team2Score;
 	}
 
 	@Override
 	public Queue getQueue() {
-		return Queue.getQueueById(object.get("match_queue_id").getAsInt());
+		return Queue.getQueueById(getMatchQueueId());
 	}
 
 	public List<MatchPlayer> getTeam1() {
-		if (team1.size() != 0) {
-			return team1;
-		}
-		for (JsonElement ele : array) {
-			JsonObject ob = ele.getAsJsonObject();
-			if (ob.get("TaskForce").getAsInt() != 1) {
-				continue;
-			}
-			team1.add(new MatchPlayerImpl(endPoint, ob, this));
-		}
-		
 		return team1;
 	}
 
 	public List<MatchPlayer> getTeam2() {
-		if (team2.size() != 0) {
-			return team2;
-		}
-		for (JsonElement ele : array) {
-			JsonObject ob = ele.getAsJsonObject();
-			if (ob.get("TaskForce").getAsInt() != 2) {
-				continue;
-			}
-			team2.add(new MatchPlayerImpl(endPoint, ob, this));
-		}
-		
 		return team2;
 	}
 
 	public int getWinnerTeam() {
-		return object.get("Winning_TaskForce").getAsInt();
+		return winningTask;
 	}
 
 	public boolean hasReplay() {
-		return get("hasReplay").getAsString().equals("y");
+		return hasReplay.equals("y");
 	}
 
 	public int getMatchQueueId() {
-		return get("match_queue_id").getAsInt();
+		return queueId;
 	}
 
 	public String getGamemode() {
-		return get("name").getAsString();
+		return gamemode;
 	}
 
 	public boolean isRanked() {
@@ -152,16 +177,16 @@ public class MatchImpl implements Match {
 		return true;
 	}
 
-	public Request<Match> getMatchDetails() {
+	public APIRequest<Match> getMatchDetails() {
 		if (isDetailedMatch()){
 			throw new MatchException("This match is already a detailed match");
 		}
-		return null;
+		return endPoint.getMatchDetails(getMatchId());
 	}
 
 	@Override
 	public OffsetDateTime getMatchDate() {
-		return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("Match_Time").getAsString())), ZoneOffset.UTC);
+		return matchTime;
 	}
 
 	@Override

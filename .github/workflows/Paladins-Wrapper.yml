@@ -33,4 +33,4 @@ jobs:
       name: "Upload PaladinsWrapper"
       with:
         name: Paladins-API
-        path: build/libs/Paladins-Wrapper.jar
+        path: build/libs/Paladins-Wrapper-2021.0313.0.jar

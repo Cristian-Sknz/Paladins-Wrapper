@@ -3,9 +3,9 @@ package me.skiincraft.api.paladins.entity.match;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.match.objects.Ban;
-import me.skiincraft.api.paladins.enums.Queue;
+import me.skiincraft.api.paladins.objects.match.Queue;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
 
 import javax.annotation.Nullable;
 
@@ -120,7 +120,7 @@ public interface Match {
 	 *
 	 * @return Match
 	 */
-	Request<Match> getMatchDetails();
+	APIRequest<Match> getMatchDetails();
 
 	OffsetDateTime getMatchDate();
 }

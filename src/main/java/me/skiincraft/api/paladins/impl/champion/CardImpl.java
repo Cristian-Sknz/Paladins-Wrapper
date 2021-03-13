@@ -3,9 +3,9 @@ package me.skiincraft.api.paladins.impl.champion;
 import java.util.Arrays;
 import com.google.gson.JsonObject;
 
-import me.skiincraft.api.paladins.enums.Language;
-import me.skiincraft.api.paladins.enums.Rarity;
-import me.skiincraft.api.paladins.objects.Card;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
+import me.skiincraft.api.paladins.objects.miscellany.Rarity;
+import me.skiincraft.api.paladins.objects.champion.Card;
 
 public class CardImpl {
 	
@@ -14,13 +14,12 @@ public class CardImpl {
 				.filter(r -> r.name().equalsIgnoreCase(object.get("rarity").getAsString())).findAny().orElse(null);
 		String description = object.get("card_description").getAsString();
 		float multiply = cardValueMultiplicator(description);
-
 		try {
 			multiply = cardValueMultiplicator(object.get("card_description").getAsString());
 			String multiplystring = String.valueOf(multiply).replace(".0", "");
 			description = object.get("card_description").getAsString()
-					.replace("{scale=" + multiplystring + "|" + multiplystring + "}", "{multiply}")
-					.replace("{scale=" + multiplystring + "|" + multiplystring + ")", "{multiply}");
+					.replace("{scale=" + multiplystring + "|" + multiplystring + "}", "%s")
+					.replace("{scale=" + multiplystring + "|" + multiplystring + ")", "%s");
 		} catch (StringIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}

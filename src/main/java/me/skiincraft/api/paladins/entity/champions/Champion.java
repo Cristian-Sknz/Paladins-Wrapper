@@ -2,12 +2,12 @@ package me.skiincraft.api.paladins.entity.champions;
 
 import java.util.List;
 
-import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.objects.Cards;
 import me.skiincraft.api.paladins.entity.champions.objects.Skins;
-import me.skiincraft.api.paladins.enums.Language;
-import me.skiincraft.api.paladins.enums.Role;
-import me.skiincraft.api.paladins.objects.Ability;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
+import me.skiincraft.api.paladins.objects.champion.Role;
+import me.skiincraft.api.paladins.objects.champion.Ability;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
 
 /**
  * <h1>Champion</h1>
@@ -75,7 +75,7 @@ public interface Champion {
 	 *
 	 * @return Cards
 	 */
-	Request<Cards> getCards();
+	APIRequest<Cards> getCards();
 
 	/**
 	 * <p>Make an API request to return all skins from the champion.</p>
@@ -86,7 +86,7 @@ public interface Champion {
 	 *
 	 * @return Skins
 	 */
-	Request<Skins> getSkins();
+	APIRequest<Skins> getSkins();
 
 	/**
 	 * <p>Is the language in which the champion was requested</p>

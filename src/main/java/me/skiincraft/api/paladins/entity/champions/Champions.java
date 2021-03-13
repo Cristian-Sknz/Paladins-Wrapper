@@ -7,8 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import me.skiincraft.api.paladins.common.CustomList;
-import me.skiincraft.api.paladins.enums.Language;
+import me.skiincraft.api.paladins.internal.CustomList;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
 
 import javax.annotation.Nonnull;
 

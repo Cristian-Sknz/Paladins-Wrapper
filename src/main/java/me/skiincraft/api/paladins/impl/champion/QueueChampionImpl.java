@@ -1,101 +1,48 @@
 package me.skiincraft.api.paladins.impl.champion;
 
-import com.google.gson.JsonObject;
-import me.skiincraft.api.paladins.common.EndPoint;
-import me.skiincraft.api.paladins.common.Request;
-import me.skiincraft.api.paladins.entity.champions.Champion;
-import me.skiincraft.api.paladins.entity.player.Player;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.entity.player.QueueChampion;
-import me.skiincraft.api.paladins.enums.Language;
-import me.skiincraft.api.paladins.enums.Queue;
-import me.skiincraft.api.paladins.utils.AccessUtils;
+import me.skiincraft.api.paladins.objects.match.Queue;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.concurrent.TimeUnit;
 
-public class QueueChampionImpl implements QueueChampion {
+public class QueueChampionImpl extends PlayerChampionImpl implements QueueChampion {
 
-    private final JsonObject object;
-    private final EndPoint endPoint;
-    private final Queue queue;
+	private Queue queue;
 
-    public QueueChampionImpl(JsonObject object, Queue queue, EndPoint endPoint) {
-        this.object = object;
-        this.endPoint = endPoint;
-        this.queue = queue;
-    }
+	public QueueChampionImpl(String championName, long championId, int assists, int kills, int deaths, int credits, int wins, int losses, int minutesPlayed, long playerId, OffsetDateTime lastPlayed, Queue queue) {
+		super(championName, championId, -1, assists, kills, deaths, credits, wins, losses, minutesPlayed, -1, -1, playerId, lastPlayed);
+		this.queue = queue;
+	}
 
-    public Request<Champion> getChampion(Language language) {
-        return endPoint.getChampion(getChampionId(), language);
-    }
 
-    public String getChampionName() {
-        return object.get("Champion").getAsString();
-    }
+	public float getKDA() {
+		return (float) getKills() + ((float)getAssists()/2) /getDeaths();
+	}
 
-    public long getChampionId() {
-        return object.get("ChampionId").getAsLong();
-    }
+	@Override
+	public Queue getQueue() {
+		return queue;
+	}
 
-    public Request<Player> getPlayer() {
-        return endPoint.getPlayer(getPlayerId());
-    }
+	public QueueChampionImpl setQueue(Queue queue) {
+		this.queue = queue;
+		return this;
+	}
 
-    public long getPlayerId() {
-        return object.get("player_id").getAsLong();
-    }
+	@Override
+	public QueueChampionImpl setEndPoint(EndPoint endPoint) {
+		return (QueueChampionImpl) super.setEndPoint(endPoint);
+	}
 
-    public int getAssists() {
-        return object.get("Assists").getAsInt();
-    }
-
-    public int getKills() {
-        return object.get("Kills").getAsInt();
-    }
-
-    public int getDeaths() {
-        return object.get("Deaths").getAsInt();
-    }
-
-    public int getWins() {
-        return object.get("Wins").getAsInt();
-    }
-
-    public int getLosses() {
-        return object.get("Losses").getAsInt();
-    }
-
-    public float getKDA() {
-        return (float) getKills() + ((float)getAssists()/2) /getDeaths();
-    }
-
-    public Queue getQueue() {
-        return queue;
-    }
-
-    public OffsetDateTime getLastPlayed() {
-        return OffsetDateTime.of(LocalDateTime.parse(AccessUtils.formatDate(object.get("LastPlayed").getAsString())), ZoneOffset.UTC);
-    }
-
-    public int getMatches() {
-        return object.get("Matches").getAsInt();
-    }
-
-    public int getMinutes() {
-        return object.get("Minutes").getAsInt();
-    }
-
-    public long getMillisPlayed() {
-        return TimeUnit.MINUTES.toMillis(getMinutes());
-    }
-
-    @Override
-    public String toString() {
-        return "QueueChampion{" +
-                "userId=" + getPlayerId() +
-                ", championId=" + getChampionId() +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "QueueChampion{" +
+				"championName='" + getChampionName() + '\'' +
+				", championId=" + getChampionId() +
+				", minutesPlayed=" + getMinutes() +
+				", playerId=" + getPlayerId() +
+				", queue=" + queue.getName() +
+				'}';
+	}
 }

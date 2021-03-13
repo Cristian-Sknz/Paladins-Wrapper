@@ -1,9 +1,8 @@
 package me.skiincraft.api.paladins.entity.player.objects;
 
-import me.skiincraft.api.paladins.common.CustomList;
-import me.skiincraft.api.paladins.entity.player.PlayerChampion;
+import me.skiincraft.api.paladins.internal.CustomList;
 import me.skiincraft.api.paladins.entity.player.QueueChampion;
-import me.skiincraft.api.paladins.enums.Queue;
+import me.skiincraft.api.paladins.objects.match.Queue;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -66,7 +65,7 @@ public class QueueChampions implements CustomList<QueueChampion> {
 	@Override
 	public String toString() {
 		return "QueueChampions{" +
-				"items=" + Arrays.toString(items) +
+				"items=" + items.length +
 				", queue=" + queue +
 				'}';
 	}

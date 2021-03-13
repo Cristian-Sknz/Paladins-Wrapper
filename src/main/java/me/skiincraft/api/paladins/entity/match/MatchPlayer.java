@@ -1,15 +1,15 @@
 package me.skiincraft.api.paladins.entity.match;
 
-import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.match.objects.ActiveItems;
 import me.skiincraft.api.paladins.entity.match.objects.Damage;
 import me.skiincraft.api.paladins.entity.player.Player;
-import me.skiincraft.api.paladins.enums.Language;
-import me.skiincraft.api.paladins.enums.Tier;
-import me.skiincraft.api.paladins.objects.Kills;
-import me.skiincraft.api.paladins.objects.LeagueSeason;
-import me.skiincraft.api.paladins.objects.LoadoutItem;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
+import me.skiincraft.api.paladins.objects.ranking.Tier;
+import me.skiincraft.api.paladins.objects.match.Kills;
+import me.skiincraft.api.paladins.objects.ranking.LeagueSeason;
+import me.skiincraft.api.paladins.objects.miscellany.LoadoutItem;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public interface MatchPlayer {
 	 *
 	 * @return Champion
 	 */
-	Request<Champion> getChampion(Language language);
+	APIRequest<Champion> getChampion(Language language);
 
 	/**
 	 * <p>Is the player's account Id</p>
@@ -66,24 +66,24 @@ public interface MatchPlayer {
 	/**
 	 * <p>Is the total damage caused in the match</p>
 	 */
-	long getDamageRaw();
+	int getDamageRaw();
 
 	Kills getKills();
 
 	/**
 	 * <p>It is the player's total kills in the match</p>
 	 */
-	long getKillsRaw();
+	int getKillsRaw();
 
 	/**
 	 * <p>It is the player's total assists in the match</p>
 	 */
-	long getAssists();
+	int getAssists();
 
 	/**
 	 * <p>It is the player's total deaths in the match</p>
 	 */
-	long getDeaths();
+	int getDeaths();
 
 	/**
 	 * <p>Is the player's KDA ratio calculation</p>
@@ -149,7 +149,7 @@ public interface MatchPlayer {
 	 *
 	 * @return Player
 	 */
-	Request<Player> getPlayer();
+	APIRequest<Player> getPlayer();
 
 	/**
 	 * <p>Return the party id that this player is a member of</p>

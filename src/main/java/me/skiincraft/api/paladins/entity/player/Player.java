@@ -3,16 +3,16 @@ package me.skiincraft.api.paladins.entity.player;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import me.skiincraft.api.paladins.common.Request;
+import com.google.gson.JsonElement;
 import me.skiincraft.api.paladins.entity.other.Friends;
 import me.skiincraft.api.paladins.entity.player.objects.PlayerChampions;
-import me.skiincraft.api.paladins.enums.Platform;
-import me.skiincraft.api.paladins.enums.PlayerStatus;
-import me.skiincraft.api.paladins.enums.Tier;
+import me.skiincraft.api.paladins.objects.player.Platform;
+import me.skiincraft.api.paladins.objects.player.PlayerStatus;
+import me.skiincraft.api.paladins.objects.ranking.Tier;
 import me.skiincraft.api.paladins.entity.match.HistoryMatch;
-import me.skiincraft.api.paladins.objects.Place;
-import me.skiincraft.api.paladins.objects.Team;
-import me.skiincraft.api.paladins.objects.RankedKBM;
+import me.skiincraft.api.paladins.objects.match.Team;
+import me.skiincraft.api.paladins.objects.ranking.RankedKBM;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
 
 /**
  * <h1>Player</h1>
@@ -165,6 +165,8 @@ public interface Player {
 	 */
 	String getHirezGamerTag();
 
+	JsonElement getRaw();
+
 	/**
 	 * <p>Make an api request to return a Player Status</p>
 	 * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
@@ -174,7 +176,7 @@ public interface Player {
 	 *
 	 * @return PlayerStatus
 	 */
-	Request<PlayerStatus> getStatus();
+	APIRequest<PlayerStatus> getStatus();
 
 	/**
 	 * <p>Make an API request to return a statistic of all champions played by a player</p>
@@ -185,7 +187,7 @@ public interface Player {
 	 *
 	 * @return PlayerChampions
 	 */
-	Request<PlayerChampions> getChampions();
+	APIRequest<PlayerChampions> getChampions();
 
 	/**
 	 * <p>Make an API request to return a player's friends</p>
@@ -196,7 +198,7 @@ public interface Player {
 	 *
 	 * @return Friends
 	 */
-	Request<Friends> getFriends();
+	APIRequest<Friends> getFriends();
 
 	/**
 	 * <p>Make an API request to return a player's match history</p>
@@ -211,20 +213,7 @@ public interface Player {
 	 *
 	 * @return HistoryMatch
 	 */
-	Request<List<HistoryMatch>> getMatchHistory();
-
-	/**
-	 * <p>Make an API request to return the player's position on the leaderboard</p>
-	 * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
-	 *
-	 * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
-	 * @throws me.skiincraft.api.paladins.exceptions.SearchException If no results are returned
-	 *
-	 * @param season Season you want to get information
-	 *
-	 * @return Place
-	 */
-	Request<Place> searchOnLeaderboard(int season);
+	APIRequest<List<HistoryMatch>> getMatchHistory();
 	
 	default Player getPlayer() {
 		return this;

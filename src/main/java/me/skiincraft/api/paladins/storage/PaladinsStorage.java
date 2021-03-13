@@ -2,8 +2,9 @@ package me.skiincraft.api.paladins.storage;
 
 import me.skiincraft.api.paladins.entity.champions.Champions;
 import me.skiincraft.api.paladins.entity.champions.objects.Cards;
+import me.skiincraft.api.paladins.entity.champions.objects.Skins;
 import me.skiincraft.api.paladins.entity.match.Match;
-import me.skiincraft.api.paladins.enums.Language;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -21,6 +22,7 @@ public interface PaladinsStorage {
 	Storage<Champions> getChampionsStorage();
 	Storage<Match> getMatchStorage();
 	Storage<Cards> getCardsStorage();
+	Storage<Skins> getSkinStorage();
 
 	@Nullable
 	Champions getChampionsFromStorage(Language language);
@@ -31,14 +33,23 @@ public interface PaladinsStorage {
 	@Nullable
 	Match getMatchFromStorage(long matchId);
 
+	@Nullable
+	Skins getSkinFromStorage(long championId, Language language);
+
 	default boolean championsIsStored(Language language){
 		return Objects.nonNull(getChampionsFromStorage(language));
 	}
+
 	default boolean cardsIsStored(long championId, Language language){
 		return Objects.nonNull(getCardsFromStorage(championId, language));
 	}
+
 	default boolean matchIsStored(long matchId) {
 		return Objects.nonNull(getMatchFromStorage(matchId));
+	}
+
+	default boolean skinIsStored(long championId, Language language){
+		return Objects.nonNull(getSkinFromStorage(championId, language));
 	}
 
 }

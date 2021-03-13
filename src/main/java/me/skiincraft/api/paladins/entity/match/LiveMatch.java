@@ -1,6 +1,6 @@
 package me.skiincraft.api.paladins.entity.match;
 
-import me.skiincraft.api.paladins.enums.Queue;
+import me.skiincraft.api.paladins.objects.match.Queue;
 
 import java.util.List;
 

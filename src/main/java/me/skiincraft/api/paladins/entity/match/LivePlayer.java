@@ -1,10 +1,12 @@
 package me.skiincraft.api.paladins.entity.match;
 
-import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.player.Player;
-import me.skiincraft.api.paladins.enums.Language;
-import me.skiincraft.api.paladins.objects.LeagueSeason;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
+import me.skiincraft.api.paladins.objects.ranking.LeagueSeason;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
+
+import java.time.OffsetDateTime;
 
 public interface LivePlayer {
 
@@ -19,7 +21,7 @@ public interface LivePlayer {
 	 *
 	 * @return Champion
 	 */
-	Request<Champion> getChampion(Language language);
+	APIRequest<Champion> getChampion(Language language);
 
 	/**
 	 * <p>Is the level of the champion of this player</p>
@@ -34,7 +36,7 @@ public interface LivePlayer {
 	/**
 	 * <p>Is the name of the champion skin of this player</p>
 	 */
-	String getChampionSkinName();
+	String getChampionSkin();
 
 	/**
 	 * <p>Is the champion Id</p>
@@ -60,7 +62,7 @@ public interface LivePlayer {
 	 *
 	 * @return Player
 	 */
-	Request<Player> getPlayer();
+	APIRequest<Player> getPlayer();
 
 	default boolean isPrivateProfile(){
 		return getPlayerName().length() <= 2;
@@ -70,6 +72,11 @@ public interface LivePlayer {
 	 * <p>Is the player's account name</p>
 	 */
 	String getPlayerName();
+
+	/**
+	 * <p>Is the date of the player's account creation</p>
+	 */
+	OffsetDateTime getPlayerCreated();
 
 	/**
 	 * <p>Is the region that this player</p>

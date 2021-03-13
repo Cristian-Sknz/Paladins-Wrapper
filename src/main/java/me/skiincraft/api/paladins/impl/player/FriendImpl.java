@@ -1,53 +1,61 @@
 package me.skiincraft.api.paladins.impl.player;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import me.skiincraft.api.paladins.common.EndPoint;
-import me.skiincraft.api.paladins.common.Request;
+import com.google.gson.annotations.SerializedName;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.entity.other.Friend;
 import me.skiincraft.api.paladins.entity.player.Player;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
 
 public class FriendImpl implements Friend{
 
-	private final JsonObject object;
-	private final EndPoint endPoint;
-	
-	public FriendImpl(JsonObject object, EndPoint endPoint) {
-		this.object = object;
+	@SerializedName("player_id")
+	private long playerId;
+	@SerializedName("friend_flags")
+	private int friendFlags;
+	private String name;
+	private String status;
+
+	private EndPoint endPoint;
+
+	public FriendImpl(long playerId, int friendFlags, String name, String status) {
+		this.playerId = playerId;
+		this.friendFlags = friendFlags;
+		this.name = name;
+		this.status = status;
+	}
+
+	public FriendImpl setEndPoint(EndPoint endPoint) {
 		this.endPoint = endPoint;
+		return this;
 	}
-	
-	protected JsonElement get(String key) {
-		return object.get(key);
-	}
+
 	
 	public long getId() {
-		return get("player_id").getAsLong();
+		return playerId;
 	}
 
 	public int getFriendFlags() {
-		return get("friend_flags").getAsInt();
+		return friendFlags;
 	}
 
 	public String getName() {
-		return get("name").getAsString();
+		return name;
 	}
 
 	public String getStatus() {
-		return get("status").getAsString();
+		return status;
 	}
 
-	public Request<Player> getPlayer() {
-		return endPoint.getPlayer(get("player_id").getAsLong());
+	public APIRequest<Player> getPlayer() {
+		return endPoint.getPlayer(playerId);
 	}
 
 	@Override
 	public String toString() {
 		return "Friend{" +
-				"userId=" + getId() +
-				", name=" + getName() +
-				", status=" + getStatus() +
+				"userId=" + playerId +
+				", name=" + name +
+				", status=" + status +
 				'}';
 	}
 }

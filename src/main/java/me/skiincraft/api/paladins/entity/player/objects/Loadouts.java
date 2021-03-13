@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import me.skiincraft.api.paladins.common.CustomList;
+import me.skiincraft.api.paladins.internal.CustomList;
 import me.skiincraft.api.paladins.entity.player.Loadout;
 
 import javax.annotation.Nonnull;

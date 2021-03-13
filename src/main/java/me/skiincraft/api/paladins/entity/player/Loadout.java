@@ -2,10 +2,10 @@ package me.skiincraft.api.paladins.entity.player;
 
 import java.util.List;
 
-import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
-import me.skiincraft.api.paladins.enums.Language;
-import me.skiincraft.api.paladins.objects.LoadoutItem;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
+import me.skiincraft.api.paladins.objects.miscellany.LoadoutItem;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
 
 /**
  * <h1>Loadout</h1>
@@ -26,12 +26,12 @@ public interface Loadout {
 	 *
 	 * @return Champion
 	 */
-	Request<Champion> getChampion();
+	APIRequest<Champion> getChampion();
 
 	/**
 	 * <p>Is the name of the deck</p>
 	 */
-	String getDeckname();
+	String getDeckName();
 
 	/**
 	 * <p>Is the id of the deck</p>
@@ -72,7 +72,7 @@ public interface Loadout {
 	 *
 	 * @return Player
 	 */
-	Request<Player> getOwner();
+	APIRequest<Player> getOwner();
 
 	/**
 	 * <p>Is the language in which the loadout was requested</p>

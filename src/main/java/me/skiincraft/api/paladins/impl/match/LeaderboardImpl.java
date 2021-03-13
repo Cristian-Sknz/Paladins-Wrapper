@@ -3,10 +3,10 @@ package me.skiincraft.api.paladins.impl.match;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.skiincraft.api.paladins.common.EndPoint;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.entity.leaderboard.LeaderBoard;
-import me.skiincraft.api.paladins.enums.Tier;
-import me.skiincraft.api.paladins.objects.Place;
+import me.skiincraft.api.paladins.objects.ranking.Tier;
+import me.skiincraft.api.paladins.objects.ranking.Place;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;

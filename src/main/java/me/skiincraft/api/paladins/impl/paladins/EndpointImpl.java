@@ -1,13 +1,9 @@
 package me.skiincraft.api.paladins.impl.paladins;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import me.skiincraft.api.paladins.Paladins;
-import me.skiincraft.api.paladins.common.EndPoint;
-import me.skiincraft.api.paladins.common.Request;
-import me.skiincraft.api.paladins.common.Session;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
+import me.skiincraft.api.paladins.internal.session.Session;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.champions.Champions;
 import me.skiincraft.api.paladins.entity.champions.objects.Cards;
@@ -24,27 +20,39 @@ import me.skiincraft.api.paladins.entity.player.Player;
 import me.skiincraft.api.paladins.entity.player.PlayerChampion;
 import me.skiincraft.api.paladins.entity.player.QueueChampion;
 import me.skiincraft.api.paladins.entity.player.objects.*;
-import me.skiincraft.api.paladins.enums.*;
-import me.skiincraft.api.paladins.enums.PlayerStatus.Status;
+import me.skiincraft.api.paladins.objects.miscellany.BountyItem;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
+import me.skiincraft.api.paladins.objects.player.Platform;
+import me.skiincraft.api.paladins.objects.player.PlayerStatus;
+import me.skiincraft.api.paladins.objects.player.PlayerStatus.Status;
 import me.skiincraft.api.paladins.exceptions.*;
-import me.skiincraft.api.paladins.impl.match.LeaderboardImpl;
 import me.skiincraft.api.paladins.impl.champion.*;
-import me.skiincraft.api.paladins.impl.match.LiveMatchImpl;
-import me.skiincraft.api.paladins.impl.match.MatchImpl;
+import me.skiincraft.api.paladins.impl.match.*;
 import me.skiincraft.api.paladins.impl.player.FriendImpl;
 import me.skiincraft.api.paladins.impl.player.LoadoutImpl;
 import me.skiincraft.api.paladins.impl.player.PlayerImpl;
 import me.skiincraft.api.paladins.impl.storage.PaladinsStorageImpl;
-import me.skiincraft.api.paladins.objects.Card;
-import me.skiincraft.api.paladins.objects.Place;
-import me.skiincraft.api.paladins.objects.SearchPlayer;
+import me.skiincraft.api.paladins.json.ChampionAdapter;
+import me.skiincraft.api.paladins.json.PaladinsDateAdapter;
+import me.skiincraft.api.paladins.objects.champion.Card;
+import me.skiincraft.api.paladins.objects.match.Queue;
+import me.skiincraft.api.paladins.objects.ranking.Place;
+import me.skiincraft.api.paladins.objects.player.SearchPlayer;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
+import me.skiincraft.api.paladins.internal.requests.impl.DefaultAPIRequest;
+import me.skiincraft.api.paladins.internal.requests.impl.FakeAPIRequest;
+import me.skiincraft.api.paladins.objects.ranking.Tier;
 import me.skiincraft.api.paladins.storage.PaladinsStorage;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class EndpointImpl implements EndPoint {
@@ -52,7 +60,6 @@ public class EndpointImpl implements EndPoint {
 	private final Session session;
 	private final Paladins paladins;
 	private final PaladinsStorage paladinsStorage;
-	private final EndPoint api;
 	
 	private final PaladinsStorageImpl storageImpl;
 
@@ -61,362 +68,443 @@ public class EndpointImpl implements EndPoint {
 		this.paladins = session.getPaladins();
 		this.paladinsStorage = paladins.getStorage();
 		this.storageImpl = (PaladinsStorageImpl) paladinsStorage;
-		this.api = this;
 	}
 	
 	private String makeUrl(String method, String[] args) {
 		return paladins.getAccessUtils().makeUrl(method, session.getSessionId(), args);
 	}
 
-	public Request<Player> getPlayer(String player) {
-		Function<String, Player> function = (json) -> {
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			if (array.size() == 0)
-				throw new PlayerException("The requested Player does not exist, or has a private profile");
+	public APIRequest<Player> getPlayer(String player) {
+		return new DefaultAPIRequest<>("getplayer", session.getSessionId(), new String[] { player }, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string())
+						.getAsJsonArray();
 
-			JsonObject object = array.get(0).getAsJsonObject();
-			if (!object.get("ret_msg").isJsonNull()) {
-				if (object.get("ret_msg").getAsString().contains("Player Privacy Flag set for"))
-					throw new PlayerException("This player has a private profile");
+				if (array.size() == 0){
+					throw new PlayerException(String.format("The player '%s' does not exist.", player), PlayerException.PlayerExceptionType.NOT_EXIST);
+				}
+				JsonObject object = array.get(0).getAsJsonObject();
+				if (!object.get("ret_msg").isJsonNull()){
+					if (object.get("ret_msg").getAsString().contains("Player Privacy Flag set for"))
+						throw new PlayerException(String.format("The '%s' player has the private profile.", player), PlayerException.PlayerExceptionType.PRIVATE_PROFILE);
+				}
+
+				return new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new PaladinsDateAdapter())
+						.create().fromJson(object, PlayerImpl.class)
+						.setEndpoint(this)
+						.setRaw(object);
+			} catch (IOException e){
+				e.printStackTrace();
+				return null;
 			}
-
-			return new PlayerImpl(object, api);
-		};
-
-		return new PaladinsRequest<>(makeUrl("getplayer", new String[] { player }), function);
+		}, paladins);
 	}
 
-	public Request<SearchPlayers> searchPlayer(String queue, Platform platform) {
-		Function<String, SearchPlayers> function = (json) -> {
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			if (array.size() == 0)
-				throw new SearchException("No players found");
+	public APIRequest<SearchPlayers> searchPlayer(String queue, Platform platform) {
+		return new DefaultAPIRequest<>("searchplayers", session.getSessionId(), new String[] {queue}, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+				if (array.size() == 0)
+					throw new SearchException("No players found");
 
-			List<SearchPlayer> searchPlayers = new ArrayList<>();
-			for (JsonElement element : array) {
-				searchPlayers.add(new SearchPlayer(element.getAsJsonObject()));
+				SearchPlayer[] search = new Gson().fromJson(array, SearchPlayer[].class);
+
+				return (platform != null) ? new SearchPlayers(Arrays.stream(search).filter(s -> Platform.getPlatformByPortalId(s.getPortalId()) == platform)
+						.toArray(SearchPlayer[]::new)) : new SearchPlayers(search);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
 			}
-
-			return (platform != null) ? new SearchPlayers(searchPlayers.stream()
-					.filter(s -> Platform.getPlatformByPortalId(s.getPortalId()) == platform)
-					.collect(Collectors.toList())) : new SearchPlayers(searchPlayers);
-		};
-
-		return new PaladinsRequest<>(makeUrl("searchplayers", new String[] { queue }), function);
+		}, paladins);
 	}
 
-	public Request<PlayerStatus> getPlayerStatus(String player) {
-		Function<String, PlayerStatus> function = (json) -> {
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			if (array.size() == 0)
-				throw new PlayerException("The requested Player does not exist, or has a private profile");
+	public APIRequest<PlayerStatus> getPlayerStatus(String player) {
+		return new DefaultAPIRequest<>("getplayerstatus", session.getSessionId(), new String[] {player}, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+				if (array.size() == 0)
+					throw new PlayerException("The requested Player does not exist, or has a private profile", PlayerException.PlayerExceptionType.UNDEFINED);
 
-			JsonObject object = array.get(0).getAsJsonObject();
-			return new PlayerStatus(player, object.get("Match").getAsLong(),
-					Status.getStatusById(object.get("status").getAsInt()), api);
-		};
-
-		return new PaladinsRequest<>(makeUrl("getplayerstatus", new String[] { player }), function);
+				JsonObject object = array.get(0).getAsJsonObject();
+				return new PlayerStatus(player, object.get("Match").getAsLong(),
+						Status.getStatusById(object.get("status").getAsInt()), this);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}, paladins);
 	}
 	
-	public Request<Champions> getChampions(Language language) {
-		Function<String, Champions> function = (json) -> {
-			if (paladinsStorage.championsIsStored(language)) {
-				return paladinsStorage.getChampionsFromStorage(language);
+	public APIRequest<Champions> getChampions(Language language) {
+		if (paladinsStorage.championsIsStored(language)){
+			return new FakeAPIRequest<>(paladinsStorage.getChampionsFromStorage(language), 200);
+		}
+		return new DefaultAPIRequest<>("getchampions", session.getSessionId(), new String[] {String.valueOf(language.getLanguagecode())}, (response) -> {
+			try {
+				ChampionImpl[] championsArray = new GsonBuilder().registerTypeAdapter(ChampionImpl.class, new ChampionAdapter(language, this))
+						.create().fromJson(Objects.requireNonNull(response.body(), "json is null").string(), ChampionImpl[].class);
+
+				Champions champions = new Champions(Arrays.asList(championsArray), language);
+				storageImpl.addChampion(champions);
+				return champions;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
 			}
-
-			List<Champion> champions = new ArrayList<>();
-			for (JsonElement element : new JsonParser().parse(json).getAsJsonArray()) {
-				champions.add(new ChampionImpl(element.getAsJsonObject(), language, api));
-			}
-			Champions champs = new Champions(champions, language);
-			storageImpl.addChampion(champs);
-
-			return champs;
-		};
-
-		return new PaladinsRequest<>(makeUrl("getchampions", new String[]{String.valueOf(language.getLanguagecode())}), function, paladinsStorage.championsIsStored(language));
+		}, paladins);
 	}
 
 	@Nullable
-	public Request<Champion> getChampion(long championId, Language language) {
-		Function<String, Champion> function = (json) -> {
-			Champion champion = getChampions(language).get().getById(championId);
-			if (champion == null)
-				throw new ChampionException("This requested champion does not exist.");
-
-			return champion;
-		};
-		return new PaladinsRequest<>(null, function);
+	public APIRequest<Champion> getChampion(long championId, Language language) {
+		Champion champion = getChampions(language).get().getById(championId);
+		if (champion != null){
+			return new FakeAPIRequest<>(champion, 200);
+		}
+		throw new ChampionException("This requested champion does not exist.");
 	}
 
 	@Nullable
-	public Request<Champion> getChampion(String championName, Language language) {
+	public APIRequest<Champion> getChampion(String championName, Language language) {
+		Champion champion = getChampions(language).get().getAsStream().filter(ch -> ch.getName().equalsIgnoreCase(championName))
+				.findFirst()
+				.orElse(null);
 
-		Function<String, Champion> function = (json) -> {
-			Champion champion = getChampions(language).get().getAsStream().filter(c -> c.getName().equalsIgnoreCase(championName)).findFirst().orElse(null);
-			if (champion == null)
-				throw new ChampionException("This requested champion does not exist.");
-
-			return champion;
-		};
-		return new PaladinsRequest<>(null, function);
+		if (champion != null){
+			return new FakeAPIRequest<>(champion, 200);
+		}
+		throw new ChampionException("This requested champion does not exist.");
 	}
 
-	public Request<Cards> getChampionCards(long championsId, Language language) {
-		Function<String, Cards> function = (json) -> {
-			if (paladinsStorage.cardsIsStored(championsId, language)){
-				return paladinsStorage.getCardsFromStorage(championsId, language);
-			}
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			if (array.size() == 0)
-				throw new ChampionException("This requested champion does not exist.");
+	public APIRequest<Cards> getChampionCards(long championsId, Language language) {
+		if (paladinsStorage.cardsIsStored(championsId, language)){
+			return new FakeAPIRequest<>(paladinsStorage.getCardsFromStorage(championsId, language), 200);
+		}
+		return new DefaultAPIRequest<>("getchampioncards", session.getSessionId(), new String[] { String.valueOf(championsId), String.valueOf(language.getLanguagecode())},
+				(response) -> {
+					try {
+						JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string())
+								.getAsJsonArray();
+						if (array.size() == 0)
+							throw new ChampionException("This requested champion does not exist.");
 
-			List<Card> cartas = new ArrayList<>();
-			for (JsonElement element : array) {
-				JsonObject object = element.getAsJsonObject();
-				cartas.add(CardImpl.parseCard(object, championsId, language));
-			}
-			Cards cards = new Cards(cartas, championsId, language);
-			storageImpl.addCard(cards);
-			return cards;
-		};
-		return new PaladinsRequest<>(makeUrl("getchampioncards",
-				new String[] {String.valueOf(championsId), String.valueOf(language.getLanguagecode())}), function, paladinsStorage.cardsIsStored(championsId, language));
+						List<Card> cardsList = new ArrayList<>();
+						for (JsonElement element : array){
+							cardsList.add(CardImpl.parseCard(element.getAsJsonObject(), championsId, language));
+						}
+						Cards cards = new Cards(cardsList, championsId, language);
+						storageImpl.addCard(cards);
+						return cards;
+					} catch (IOException e) {
+						e.printStackTrace();
+						return null;
+					}
+				}, paladins);
 	}
 
-	public Request<Skins> getChampionSkin(long championsId, Language language) {
-		Function<String, Skins> function = (json) -> {
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+	public APIRequest<Skins> getChampionSkin(long championsId, Language language) {
+		if (paladinsStorage.skinIsStored(championsId, language)){
+			return new FakeAPIRequest<>(paladinsStorage.getSkinFromStorage(championsId, language), 200);
+		}
+		return new DefaultAPIRequest<>("getchampionskins", session.getSessionId(), new String[]{String.valueOf(championsId), String.valueOf(language.getLanguagecode())},
+				(response) -> {
+					try {
+						JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+						if (array.size() == 0)
+							throw new ChampionException("This requested champion does not exist.");
 
-			if (array.size() == 0)
-				throw new ChampionException("This requested champion does not exist.");
-
-			List<ChampionSkin> skin = new ArrayList<>();
-			for (JsonElement element : array) {
-				JsonObject object = element.getAsJsonObject();
-				skin.add(new ChampionSkinImpl(api, object, language));
-			}
-			return new Skins(skin);
-		};
-		return new PaladinsRequest<>(makeUrl("getchampionskins",
-				new String[] {String.valueOf(championsId), String.valueOf(language.getLanguagecode())}), function);
+						List<ChampionSkin> skin = new ArrayList<>();
+						for (JsonElement element : array) {
+							skin.add(new Gson().fromJson(element.getAsJsonObject(), ChampionSkinImpl.class)
+									.setLanguage(language)
+									.setEndPoint(this));
+						}
+						return new Skins(skin, language);
+					} catch (IOException e) {
+						e.printStackTrace();
+						return null;
+					}
+				}, paladins);
 	}
 
-	public Request<PlayerBatch> getPlayerBatch(List<Long> id) {
-		if (id.size() <= 1)
+	public APIRequest<PlayerBatch> getPlayerBatch(@Nonnull List<Long> idList) {
+		if (idList.size() <= 1)
 			throw new ContextException("There are only 1 or less players being requested, use the getPlayer() method!");
 
-		final long ultimovalor = id.get(id.size() - 1);
-		StringBuilder buffer = new StringBuilder();
-		List<String> string = id.stream().map(o -> {
-			if (ultimovalor != o)
-				return o + ",";
-			return o + "";
-		}).collect(Collectors.toList());
-		string.forEach(buffer::append);
+		String ids = idList.stream()
+				.map(String::valueOf)
+				.collect(Collectors.joining(","));
 
-		Function<String, PlayerBatch> function = (json) -> {
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			List<Player> players = new ArrayList<>();
-			for (JsonElement element : array) {
-				JsonObject object = element.getAsJsonObject();
-
-				if (object.has("ret_msg")) if (!object.get("ret_msg").isJsonNull()) {
-					if (object.get("ret_msg").getAsString().contains("Player Privacy Flag set for")) {
-						System.err.println(object.get("ret_msg").getAsString());
-						continue;
+		return new DefaultAPIRequest<>("getplayerbatch", session.getSessionId(), new String[] { ids }, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+				List<Player> players = new ArrayList<>();
+				for (JsonElement element : array) {
+					JsonObject object = element.getAsJsonObject();
+					if (object.has("ret_msg") && !object.get("ret_msg").isJsonNull()) {
+						if (object.get("ret_msg").getAsString().contains("Player Privacy Flag set for")) {
+							System.err.println(object.get("ret_msg").getAsString());
+							continue;
+						}
 					}
+					players.add(new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new PaladinsDateAdapter())
+							.create().fromJson(object, PlayerImpl.class)
+							.setEndpoint(this)
+							.setRaw(object));
 				}
-				players.add(new PlayerImpl(object, api));
+				return new PlayerBatch(players, players.stream().filter(player -> idList.stream().anyMatch(id -> id == player.getId()))
+						.map(Player::getId)
+						.collect(Collectors.toList()));
+
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
 			}
-			return new PlayerBatch(players);
-		};
-		return new PaladinsRequest<>(makeUrl("getplayerbatch", new String[]{buffer.toString()}), function);
+		}, paladins);
 	}
 
-	public Request<PlayerChampions> getPlayerChampions(long userId) {
-		Function<String, PlayerChampions> function = (json) -> {
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			if (array.size() == 0)
-				throw new PlayerException("The requested Player does not exist, or has a private profile");
+	public APIRequest<PlayerChampions> getPlayerChampions(long userId) {
+		return new DefaultAPIRequest<>("getchampionranks", new String[]{String.valueOf(userId)}, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+				if (array.size() == 0)
+					throw new PlayerException("The requested Player does not exist, or has a private profile", PlayerException.PlayerExceptionType.UNDEFINED);
 
-			List<PlayerChampion> playerChampionList = new ArrayList<>();
-			for (JsonElement element : array) {
-				JsonObject object = element.getAsJsonObject();
-				playerChampionList.add(new PlayerChampionImpl(api, object));
-			}
-			return new PlayerChampions(playerChampionList);
-		};
-
-		return new PaladinsRequest<>(makeUrl("getchampionranks", new String[] { String.valueOf(userId) }), function);
-	}
-
-	public Request<QueueChampions> getQueueStats(long userId, Queue queue) {
-		Function<String, QueueChampions> function = (json) -> {
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			if (array.size() == 0)
-				throw new PlayerException("The requested Player does not exist, or has a private profile");
-
-			List<QueueChampion> queueChampions = new ArrayList<>();
-			for (JsonElement element : array) {
-				JsonObject object = element.getAsJsonObject();
-				queueChampions.add(new QueueChampionImpl(object, queue, api));
-			}
-			return new QueueChampions(queueChampions, queue);
-		};
-
-		return new PaladinsRequest<>(makeUrl("getqueuestats", new String[]{ String.valueOf(userId), String.valueOf(queue.getQueueId())}), function);
-	}
-
-	public Request<Friends> getFriends(long userId) {
-		Function<String, Friends> function = (json) -> {
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			if (array.size() == 0)
-				throw new SearchException("It was not possible to find the friends of the requested user, or he does not exist.");
-			List<Friend> friendslist = new ArrayList<>();
-			for (JsonElement element : array) {
-				JsonObject object = element.getAsJsonObject();
-				friendslist.add(new FriendImpl(object, api));
-			}
-			return new Friends(friendslist, api);
-		};
-
-		return new PaladinsRequest<>(makeUrl("getfriends", new String[] {String.valueOf(userId)}), function);
-	}
-
-	public Request<Loadouts> getLoadouts(long userId, Language language) {
-		Function<String, Loadouts> function = (json) -> {
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			if (array.size() == 0)
-				throw new SearchException("It was not possible to find the loadouts of the requested user, or he does not exist.");
-
-			List<Loadout> load = new ArrayList<>();
-			for (JsonElement element : array) {
-				JsonObject object = element.getAsJsonObject();
-				load.add(new LoadoutImpl(api, object, language));
-			}
-			return new Loadouts(load);
-		};
-		return new PaladinsRequest<>(makeUrl("getplayerloadouts", new String[] {String.valueOf(userId), String.valueOf(language.getLanguagecode())}), function);
-	}
-
-	public Request<Match> getMatchDetails(long matchId) {
-		Function<String, Match> function = (json) -> {
-			if (storageImpl.matchIsStored(matchId)){
-				return storageImpl.getMatchFromStorage(matchId);
+				List<PlayerChampion> champions = new ArrayList<>();
+				for (JsonElement element : array) {
+					champions.add(new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new PaladinsDateAdapter())
+							.create()
+							.fromJson(element.getAsJsonObject(), PlayerChampionImpl.class));
+				}
+				return new PlayerChampions(champions);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
 			}
 
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			if (array.size() == 0)
-				throw new MatchException("It was not possible to find this match.");
-
-			return new MatchImpl(api, array);
-		};
-
-		return new PaladinsRequest<>(makeUrl("getmatchdetails", new String[] {String.valueOf(matchId)}), function, storageImpl.matchIsStored(matchId));
+		}, paladins);
 	}
 
-	public Request<List<Match>> getMatchDetails(List<Long> matchbatch) {
-		if (matchbatch.size() <= 1)
+	public APIRequest<QueueChampions> getQueueStats(long userId, @Nonnull Queue queue) {
+		return new DefaultAPIRequest<>("getqueuestats", session.getSessionId(),new String[]{String.valueOf(userId), String.valueOf(queue.getQueueId())}, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+				if (array.size() == 0)
+					throw new PlayerException("The requested Player does not exist, or has a private profile", PlayerException.PlayerExceptionType.UNDEFINED);
+
+				List<QueueChampion> champions = new ArrayList<>();
+				for (JsonElement element : array) {
+					System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(element));
+					champions.add(new GsonBuilder()
+							.registerTypeAdapter(OffsetDateTime.class, new PaladinsDateAdapter())
+							.create()
+							.fromJson(element.getAsJsonObject(), QueueChampionImpl.class).setQueue(queue)
+							.setEndPoint(this));
+				}
+				return new QueueChampions(champions, queue);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}, paladins);
+	}
+
+	public APIRequest<Friends> getFriends(long userId) {
+		return new DefaultAPIRequest<>("getfriends", session.getSessionId(), new String[] {String.valueOf(userId)}, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+				if (array.size() == 0)
+					throw new SearchException("It was not possible to find the friends of the requested user, or he does not exist.");
+
+				Gson gson = new Gson();
+				List<Friend> friendList = new ArrayList<>();
+				for (JsonElement element : array){
+					friendList.add(gson.fromJson(element.getAsJsonObject(), FriendImpl.class)
+							.setEndPoint(this));
+				}
+				return new Friends(friendList, this);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}, paladins);
+	}
+
+	public APIRequest<Loadouts> getLoadouts(long userId, Language language) {
+		return new DefaultAPIRequest<>("getplayerloadouts", session.getSessionId(), new String[] {String.valueOf(userId), String.valueOf(language.getLanguagecode())}, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+				if (array.size() == 0)
+					throw new SearchException("It was not possible to find the friends of the requested user, or he does not exist.");
+
+				Gson gson = new Gson();
+				List<Loadout> loadoutList = new ArrayList<>();
+				for (JsonElement element : array){
+					loadoutList.add(gson.fromJson(element.getAsJsonObject(), LoadoutImpl.class)
+							.setLanguage(language)
+							.setEndPoint(this));
+				}
+				return new Loadouts(loadoutList);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}, paladins);
+	}
+
+	public APIRequest<Match> getMatchDetails(long matchId) {
+		if (storageImpl.matchIsStored(matchId)){
+			return new FakeAPIRequest<>(storageImpl.getMatchFromStorage(matchId), 200);
+		}
+		return new DefaultAPIRequest<>("getmatchdetails", session.getSessionId(), new String[]{String.valueOf(matchId)}, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+				if (array.size() == 0)
+					throw new MatchException("It was not possible to find this match.");
+
+				return new GsonBuilder()
+						.registerTypeAdapter(OffsetDateTime.class, new PaladinsDateAdapter())
+						.create()
+						.fromJson(array.get(0), MatchImpl.class)
+						.buildMethods(array, this);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}, paladins);
+	}
+
+	public APIRequest<List<Match>> getMatchDetails(@Nonnull List<Long> matchBatch) {
+		if (matchBatch.size() <= 1)
 			throw new ContextException("There are only 1 or less matchid being requested, use the getMatchDetails(long) method!");
 
-		List<Match> matchs = new ArrayList<>();
-		List<Long> storagematchs = matchbatch.stream().filter(storageImpl::matchIsStored).collect(Collectors.toList());
-		if (storagematchs.size() != 0){
-			matchs.addAll(storagematchs.stream().map(storageImpl::getMatchFromStorage).collect(Collectors.toList()));
-			matchbatch.removeAll(storagematchs);
+		List<Match> matchs = storageImpl.getMatchStorage().getAsList()
+				.stream()
+				.filter(match -> matchBatch.stream().distinct().anyMatch(id -> id == match.getMatchId()))
+				.collect(Collectors.toList());
+
+		if (matchs.size() == matchBatch.stream().distinct().count()){
+			return new FakeAPIRequest<>(matchs, 200);
 		}
 
-		final long ultimovalor = matchbatch.get(matchbatch.size() - 1);
+		String ids = matchBatch.stream()
+				.distinct()
+				.filter(id -> matchs.stream().noneMatch(match -> match.getMatchId() == id))
+				.map(String::valueOf).collect(Collectors.joining(","));
 
-		StringBuilder builder = new StringBuilder();
-		List<String> string = matchbatch.stream().map(o -> {
-			if (ultimovalor != o)
-				return o + ",";
-			return String.valueOf(o);
-		}).collect(Collectors.toList());
-		string.forEach(builder::append);
-
-		Function<String, List<Match>> function = (json) -> {
-			if (matchbatch.size() == 0){
-				return matchs;
-			}
-
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			if (array.size() == 0) {
-				return matchs;
-			}
-
-			AtomicInteger num = new AtomicInteger(0);
-			for (int i = 0; i < array.size() / 10; i++) {
-				JsonArray matchArray = new JsonArray();
-				for (int o = num.get(); o < num.get() + 10; o++) {
-					matchArray.add(array.get(o).getAsJsonObject());
+		return new DefaultAPIRequest<>("getmatchdetailsbatch", session.getSessionId(), new String[] {ids}, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+				if (array.size() == 0){
+					return matchs;
 				}
-				matchs.add(new MatchImpl(api, matchArray));
-				num.set(num.get()+10);
-			}
 
-			return matchs;
-		};
-		return new PaladinsRequest<>(makeUrl("getmatchdetailsbatch", new String[]{builder.toString()}), function, matchbatch.size() == 0);
+				AtomicInteger num = new AtomicInteger(0);
+				Gson gson = new GsonBuilder()
+						.registerTypeAdapter(OffsetDateTime.class, new PaladinsDateAdapter())
+						.create();
+
+				for (int i = 0; i < array.size() / 10; i++) {
+					JsonArray matchArray = new JsonArray();
+					for (int o = num.get(); o < num.get() + 10; o++) {
+						matchArray.add(array.get(o).getAsJsonObject());
+					}
+					Match match = gson.fromJson(matchArray.get(0), MatchImpl.class)
+							.buildMethods(matchArray, this);
+
+					storageImpl.addMatch(match);
+					matchs.add(match);
+
+					num.set(num.get()+10);
+				}
+				return matchs;
+			} catch (IOException e){
+				e.printStackTrace();
+				return null;
+			}
+		}, paladins);
 	}
 
-	public Request<List<HistoryMatch>> getMatchHistory(long userId) {
-		Function<String, List<HistoryMatch>> function = (json) -> {
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+	public APIRequest<List<HistoryMatch>> getMatchHistory(long userId) {
+		return new DefaultAPIRequest<>("getmatchhistory", session.getSessionId(), new String[] {String.valueOf(userId)}, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+				if (array.size() == 0)
+					throw new MatchException("It was not possible to find this match.");
 
-			if (array.size() == 0)
-				throw new MatchException("It was not possible to find this match.");
+				List<HistoryMatch> historyMatches = new ArrayList<>();
+				Gson gson = new GsonBuilder()
+						.registerTypeAdapter(OffsetDateTime.class, new PaladinsDateAdapter())
+						.create();
 
-			List<HistoryMatch> historyMatches = new ArrayList<>();
-			for (JsonElement element : array) {
-				JsonObject object = element.getAsJsonObject();
-				historyMatches.add(new HistoryMatch(object, api));
+				for (JsonElement element : array){
+					historyMatches.add(gson.fromJson(element, HistoryMatchImpl.class)
+							.buildMethods(element.getAsJsonObject(), this));
+				}
+				return historyMatches;
+			} catch (IOException e){
+				e.printStackTrace();
+				return null;
 			}
-			return historyMatches;
-		};
-		return new PaladinsRequest<>(makeUrl("getmatchhistory", new String[] { String.valueOf(userId) }), function);
+		}, paladins);
 	}
 
-	public Request<LeaderBoard> getLeaderboard(Tier tier, int season) {
-		Function<String, LeaderBoard> function = (json) -> {
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			if (array.size() == 0)
-				throw new SearchException("It was not possible to find this leaderboard.");
+	public APIRequest<LeaderBoard> getLeaderboard(@Nonnull Tier tier, int season) {
+		return new DefaultAPIRequest<>("getLeagueLeaderboard", session.getSessionId(), new String[] {Queue.Live_Competitive_Keyboard.getQueueId()+"", tier.getRankId()+"", season+""},
+				(response) -> {
+					try {
+						JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+						if (array.size() == 0)
+							throw new SearchException("It was not possible to find this leaderboard.");
 
-			List<Place> place = new ArrayList<>();
-			AtomicInteger integer = new AtomicInteger(1);
-			for (JsonElement element : array) {
-				JsonObject object = element.getAsJsonObject();
-				place.add(new Place(object.get("Name").getAsString(),
-						object.get("Wins").getAsInt(),
-						object.get("Losses").getAsInt(),
-						object.get("Leaves").getAsInt(),
-						object.get("Points").getAsInt(),
-						object.get("Season").getAsInt(),
-						tier,
-						object.get("player_id").getAsInt(),
-						object.get("Trend").getAsInt(),
-						integer.getAndIncrement(),
-						api));
-			}
-			return new LeaderboardImpl(place, tier);
-		};
-		return new PaladinsRequest<>(makeUrl("getLeagueLeaderboard", new String[] {Queue.Live_Competitive_Keyboard.getQueueId()+"", tier.getRankId()+"", season+""}), function);
+						List<Place> place = new ArrayList<>();
+						AtomicInteger integer = new AtomicInteger(1);
+						Gson gson = new Gson();
+						for (JsonElement element : array) {
+							place.add(gson.fromJson(element, PlaceImpl.class)
+									.setTier(tier)
+									.setPosition(integer.getAndIncrement())
+									.setEndPoint(this));
+						}
+						return new LeaderboardImpl(place, tier);
+					} catch (IOException e){
+						e.printStackTrace();
+						return null;
+					}
+				}, paladins);
 	}
 
-	public Request<LiveMatch> getMatchPlayerDetails(long matchId) {
-		Function<String, LiveMatch> function = (json) -> {
-			JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-			if (array.size() == 0)
-				throw new MatchException("It was not possible to find this match.");
+	public APIRequest<LiveMatch> getMatchPlayerDetails(long matchId) {
+		return new DefaultAPIRequest<>("getmatchplayerdetails", session.getSessionId(), new String[] {String.valueOf(matchId)}, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+				if (array.size() == 0)
+					throw new MatchException("It was not possible to find this match.");
 
-			return new LiveMatchImpl(array, api);
-		};
+				return new Gson().fromJson(array.get(0), LiveMatchImpl.class);
+			} catch (IOException e){
+				e.printStackTrace();
+				return null;
+			}
+		}, paladins);
+	}
 
-		return new PaladinsRequest<>(makeUrl("getmatchplayerdetails", new String[] { String.valueOf(matchId) }), function);
+	@Override
+	public APIRequest<List<BountyItem>> getBountyItems() {
+		return new DefaultAPIRequest<>("getBountyItems", session.getSessionId(), null, (response) -> {
+			try {
+				JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string()).getAsJsonArray();
+				if (array.size() == 0)
+					throw new RequestException("There was a problem ordering items from the bounty store");
+
+				return Arrays.asList(new GsonBuilder()
+						.registerTypeAdapter(OffsetDateTime.class, new PaladinsDateAdapter())
+						.create().fromJson(array, BountyItem[].class));
+			} catch (IOException e){
+				e.printStackTrace();
+				return null;
+			}
+		}, paladins);
 	}
 
 	public Session getSession() {

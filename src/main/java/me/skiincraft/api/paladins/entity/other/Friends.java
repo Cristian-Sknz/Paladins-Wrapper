@@ -7,10 +7,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import me.skiincraft.api.paladins.common.CustomList;
-import me.skiincraft.api.paladins.common.EndPoint;
-import me.skiincraft.api.paladins.common.Request;
+import me.skiincraft.api.paladins.internal.CustomList;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.entity.player.objects.PlayerBatch;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
 
 import javax.annotation.Nonnull;
 
@@ -52,7 +52,7 @@ public class Friends implements CustomList<Friend> {
 		return getAsStream().filter(o -> o.getId() == id).findFirst().orElse(null);
 	}
 	
-	public Request<PlayerBatch> getPlayersBatch() {
+	public APIRequest<PlayerBatch> getPlayersBatch() {
 		return endPoint.getPlayerBatch(getAsStream().map(Friend::getId).collect(Collectors.toList()));
 	}
 

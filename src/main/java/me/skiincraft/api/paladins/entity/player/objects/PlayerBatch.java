@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import me.skiincraft.api.paladins.common.CustomList;
+import me.skiincraft.api.paladins.internal.CustomList;
 import me.skiincraft.api.paladins.entity.player.Player;
 
 import javax.annotation.Nonnull;
@@ -22,9 +22,11 @@ import javax.annotation.Nonnull;
 public class PlayerBatch implements CustomList<Player> {
 
 	private final Player[] items;
+	private final Long[] fails;
 	
-	public PlayerBatch(List<Player> players) {
-		items = new Player[players.size()];
+	public PlayerBatch(List<Player> players, List<Long> fails) {
+		this.items = new Player[players.size()];
+		this.fails = fails.toArray(new Long[0]);
 		AtomicInteger integer = new AtomicInteger();
 		for (Player item :players) {
 			items[integer.getAndIncrement()] = item;
@@ -46,6 +48,10 @@ public class PlayerBatch implements CustomList<Player> {
 
 	public Player getById(long id) {
 		return getAsStream().filter(o -> o.getId() == id).findFirst().orElse(null);
+	}
+
+	public Long[] getFails() {
+		return fails;
 	}
 
 	@Override

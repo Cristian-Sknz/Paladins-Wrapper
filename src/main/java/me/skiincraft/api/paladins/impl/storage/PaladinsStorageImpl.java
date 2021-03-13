@@ -1,18 +1,18 @@
 package me.skiincraft.api.paladins.impl.storage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import me.skiincraft.api.paladins.entity.champions.Champions;
 import me.skiincraft.api.paladins.entity.champions.objects.Cards;
+import me.skiincraft.api.paladins.entity.champions.objects.Skins;
 import me.skiincraft.api.paladins.entity.match.Match;
-import me.skiincraft.api.paladins.enums.Language;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
 import me.skiincraft.api.paladins.storage.PaladinsStorage;
 import me.skiincraft.api.paladins.storage.Storage;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Is the PaladinsStorage implementation class</p>
@@ -22,12 +22,13 @@ public class PaladinsStorageImpl implements PaladinsStorage {
 	private final Storage<Champions> championMemory;
 	private final Storage<Match> matchMemory;
 	private final Storage<Cards> cardsMemory;
+	private final Storage<Skins> skinMemory;
 
-	public PaladinsStorageImpl(Storage<Champions> champ, Storage<Match> match,
-							   Storage<Cards> cards) {
-		this.championMemory = champ;
-		this.matchMemory = match;
-		this.cardsMemory = cards;
+	public PaladinsStorageImpl(Storage<Champions> championMemory, Storage<Match> matchMemory, Storage<Cards> cardsMemory, Storage<Skins> skinMemory) {
+		this.championMemory = championMemory;
+		this.matchMemory = matchMemory;
+		this.cardsMemory = cardsMemory;
+		this.skinMemory = skinMemory;
 	}
 
 	public Storage<Champions> getChampionsStorage() {
@@ -40,6 +41,11 @@ public class PaladinsStorageImpl implements PaladinsStorage {
 
 	public Storage<Cards> getCardsStorage() {
 		return cardsMemory;
+	}
+
+	@Override
+	public Storage<Skins> getSkinStorage() {
+		return skinMemory;
 	}
 
 	@Nullable
@@ -60,6 +66,14 @@ public class PaladinsStorageImpl implements PaladinsStorage {
 	@Override
 	public Match getMatchFromStorage(long matchId) {
 		return matchMemory.getById(matchId);
+	}
+
+	@Nullable
+	@Override
+	public Skins getSkinFromStorage(long championId, Language language) {
+		return skinMemory.getAsList().stream()
+				.filter(skin -> skin.get(0).getLanguage() == language)
+				.filter(skin -> skin.get(0).getChampionId() == championId).findFirst().orElse(null);
 	}
 
 	/**
@@ -107,12 +121,24 @@ public class PaladinsStorageImpl implements PaladinsStorage {
 		impl.item = cc.toArray(new Cards[0]);
 	}
 
+	public synchronized void addSkin(Skins skin) {
+		StorageImpl<Skins> impl = (StorageImpl<Skins>) skinMemory;
+		List<Skins> cc = new ArrayList<>(Arrays.asList(impl.item));
+		cc.removeAll(cc.stream().filter(cham -> cham.get(0).getChampionId() == skin.get(0).getChampionId()
+				&& cham.get(0).getLanguage() == skin.get(0).getLanguage()).collect(Collectors.toList()));
+		cc.add(skin);
+
+		impl.lastupdate = System.currentTimeMillis();
+		impl.item = cc.toArray(new Skins[0]);
+	}
+
 	@Override
 	public String toString() {
 		return "PaladinsStorage{" +
 				"championMemory=" + championMemory.size() +
 				", matchMemory=" + matchMemory.size() +
 				", cardsMemory=" + cardsMemory.size() +
+				", skinMemory=" + skinMemory.size() +
 				'}';
 	}
 }

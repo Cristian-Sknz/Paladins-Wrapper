@@ -7,8 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import me.skiincraft.api.paladins.common.CustomList;
-import me.skiincraft.api.paladins.objects.SearchPlayer;
+import me.skiincraft.api.paladins.internal.CustomList;
+import me.skiincraft.api.paladins.objects.player.SearchPlayer;
 
 import javax.annotation.Nonnull;
 
@@ -23,7 +23,11 @@ public class SearchPlayers implements CustomList<SearchPlayer> {
 			items[integer.getAndIncrement()] = item;
 		}
 	}
-	
+
+	public SearchPlayers(SearchPlayer[] items) {
+		this.items = items;
+	}
+
 	@Nonnull
     public Iterator<SearchPlayer> iterator() {
 		return Arrays.stream(items).iterator();

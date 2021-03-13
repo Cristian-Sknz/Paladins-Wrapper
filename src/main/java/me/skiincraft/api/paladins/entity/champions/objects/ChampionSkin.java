@@ -1,9 +1,9 @@
 package me.skiincraft.api.paladins.entity.champions.objects;
 
-import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.champions.Champion;
-import me.skiincraft.api.paladins.enums.Language;
-import me.skiincraft.api.paladins.enums.Rarity;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
+import me.skiincraft.api.paladins.objects.miscellany.Rarity;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
 
 /**
  * <h1>Skin</h1>
@@ -24,7 +24,7 @@ public interface ChampionSkin {
 	 *
 	 * @return Champion
 	 */
-	Request<Champion> getChampion(Language language);
+	APIRequest<Champion> getChampion(Language language);
 
 	/**
 	 * <p>Is the Champion Id</p>

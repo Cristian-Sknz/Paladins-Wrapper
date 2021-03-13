@@ -1,101 +1,53 @@
 package me.skiincraft.api.paladins.impl.champion;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import me.skiincraft.api.paladins.common.EndPoint;
-import me.skiincraft.api.paladins.common.Request;
+import com.google.gson.annotations.SerializedName;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.champions.objects.Cards;
 import me.skiincraft.api.paladins.entity.champions.objects.Skins;
-import me.skiincraft.api.paladins.enums.DamageType;
-import me.skiincraft.api.paladins.enums.Language;
-import me.skiincraft.api.paladins.objects.Ability;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
+import me.skiincraft.api.paladins.objects.champion.Role;
+import me.skiincraft.api.paladins.objects.champion.Ability;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
+
+import java.util.List;
 
 public class ChampionImpl implements Champion {
 
-	private final EndPoint endpoint;
-	private final JsonObject object;
-	private final Language language;
-	
-	public ChampionImpl(JsonObject object, Language language, EndPoint endPoint) {
-		this.endpoint = endPoint;
-		this.object = object;
+	@SerializedName("id")
+	private final long id;
+	@SerializedName("Name")
+	private final String name;
+	@SerializedName("ChampionIcon_URL")
+	private final String icon;
+	@SerializedName("Title")
+	private final String title;
+	@SerializedName("Roles")
+	private final String roles;
+	@SerializedName("Lore")
+	private final String lore;
+	@SerializedName("Health")
+	private final int health;
+	@SerializedName("Speed")
+	private final double speed;
+
+	private List<Ability> abilities;
+	private Language language;
+	private EndPoint endpoint;
+
+
+	public ChampionImpl(long id, String name, String icon, String title, String roles, String lore, int health, double speed, List<Ability> abilities, Language language, EndPoint endpoint) {
+		this.id = id;
+		this.name = name;
+		this.icon = icon;
+		this.title = title;
+		this.roles = roles;
+		this.lore = lore;
+		this.health = health;
+		this.speed = speed;
+		this.abilities = abilities;
 		this.language = language;
-	}
-
-	protected JsonElement get(String key) {
-		return object.get(key);
-	}
-	
-	public long getId() {
-		return get("id").getAsLong();
-	}
-
-	public String getName() {
-		return get("Name").getAsString();
-	}
-
-	public String getIcon() {
-		return get("ChampionIcon_URL").getAsString();
-	}
-
-	public String getTitle() {
-		return get("Title").getAsString();
-	}
-
-	@Override
-	public String getRoleString() {
-		return get("Roles").getAsString();
-	}
-
-	public String getLore() {
-		return get("Lore").getAsString();
-	}
-
-	public int getHealth() {
-		return get("Health").getAsInt();
-	}
-
-	public double getSpeed() {
-		return get("Speed").getAsDouble();
-	}
-
-	public List<Ability> getAbilities() {
-		List<JsonObject> objects = new ArrayList<>();
-		for (int i = 1; i < 5;i++) {
-			objects.add(get("Ability_" + i).getAsJsonObject());
-		}
-		
-		List<Ability> abilities = new ArrayList<>();
-		for (JsonObject ab: objects) {
-			String name = ab.get("Summary").getAsString();
-			long id = ab.get("Id").getAsLong();
-			String url = ab.get("URL").getAsString();
-			String damageType = ab.get("damageType").getAsString();
-			String description = ab.get("Description").getAsString();
-			int rechargeSeconds = ab.get("rechargeSeconds").getAsInt();
-			
-			abilities.add(new Ability(name, description, id, url, DamageType.getByOriginal(damageType), rechargeSeconds,
-					rechargeSeconds != 0));
-		}
-		objects.clear();
-		return abilities;
-	}
-
-	public Request<Cards> getCards() {
-		return endpoint.getChampionCards(getId(), getLanguage());
-	}
-
-	public Request<Skins> getSkins() {
-		return endpoint.getChampionSkin(getId(), getLanguage());
-	}
-
-	public Language getLanguage() {
-		return language;
+		this.endpoint = endpoint;
 	}
 
 	@Override
@@ -106,5 +58,85 @@ public class ChampionImpl implements Champion {
 				", role=" + getRole() +
 				", language=" + language +
 				'}';
+	}
+
+	public ChampionImpl setAbilities(List<Ability> abilities) {
+		this.abilities = abilities;
+		return this;
+	}
+
+	public ChampionImpl setEndpoint(EndPoint endpoint) {
+		this.endpoint = endpoint;
+		return this;
+	}
+
+	public ChampionImpl setLanguage(Language language) {
+		this.language = language;
+		return this;
+	}
+
+	@Override
+	public long getId() {
+		return id;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String getIcon() {
+		return icon;
+	}
+
+	@Override
+	public String getTitle() {
+		return title;
+	}
+
+	@Override
+	public String getRoleString() {
+		return roles;
+	}
+
+	@Override
+	public Role getRole() {
+		return Role.getRoleByName(roles.split(" ")[1]);
+	}
+
+	@Override
+	public String getLore() {
+		return lore;
+	}
+
+	@Override
+	public int getHealth() {
+		return health;
+	}
+
+	@Override
+	public double getSpeed() {
+		return speed;
+	}
+
+	@Override
+	public List<Ability> getAbilities() {
+		return abilities;
+	}
+
+	@Override
+	public APIRequest<Cards> getCards() {
+		return endpoint.getChampionCards(this);
+	}
+
+	@Override
+	public APIRequest<Skins> getSkins() {
+		return endpoint.getChampionSkin(this);
+	}
+
+	@Override
+	public Language getLanguage() {
+		return language;
 	}
 }

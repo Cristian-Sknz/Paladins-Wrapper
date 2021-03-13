@@ -1,8 +1,8 @@
 package me.skiincraft.api.paladins.entity.leaderboard;
 
-import me.skiincraft.api.paladins.common.CustomList;
-import me.skiincraft.api.paladins.enums.Tier;
-import me.skiincraft.api.paladins.objects.Place;
+import me.skiincraft.api.paladins.internal.CustomList;
+import me.skiincraft.api.paladins.objects.ranking.Tier;
+import me.skiincraft.api.paladins.objects.ranking.Place;
 
 /**
  * <h1>LeaderBoard</h1>

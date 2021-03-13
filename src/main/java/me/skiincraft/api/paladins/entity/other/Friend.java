@@ -1,7 +1,7 @@
 package me.skiincraft.api.paladins.entity.other;
 
-import me.skiincraft.api.paladins.common.Request;
 import me.skiincraft.api.paladins.entity.player.Player;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
 
 public interface Friend {
 
@@ -9,6 +9,10 @@ public interface Friend {
 	 *<p>Is the player's Id</p>
 	 */
 	long getId();
+
+	/**
+	 *<p>Is the player's Id</p>
+	 */
 	int getFriendFlags();
 
 	/**
@@ -30,6 +34,6 @@ public interface Friend {
 	 *
 	 * @return Player
 	 */
-	Request<Player> getPlayer();
+	APIRequest<Player> getPlayer();
 	
 }

@@ -1,15 +1,15 @@
 package me.skiincraft.api.paladins.entity.match.objects;
 
-import me.skiincraft.api.paladins.common.EndPoint;
-import me.skiincraft.api.paladins.common.Request;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.entity.champions.Champion;
-import me.skiincraft.api.paladins.enums.Language;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
 
 public class Ban {
 
 	private final long championId;
 	private final String championName;
-	private Request<Champion> champion;
+	private APIRequest<Champion> champion;
 	
 	private final EndPoint endPoint;
 	
@@ -36,7 +36,7 @@ public class Ban {
 	 *
 	 * @return Champion
 	 */
-	public Request<Champion> getChampion(Language language) {
+	public APIRequest<Champion> getChampion(Language language) {
 		if (champion == null) {
 			champion = endPoint.getChampion(getChampionId(), language);
 		}

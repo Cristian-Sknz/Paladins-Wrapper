@@ -1,6 +1,6 @@
 package me.skiincraft.api.paladins.entity.match.objects;
 
-import me.skiincraft.api.paladins.enums.ShopItem;
+import me.skiincraft.api.paladins.objects.match.ShopItem;
 
 public class ActiveItem {
     private ShopItem item;

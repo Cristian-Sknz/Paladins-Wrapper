@@ -1,75 +1,83 @@
 package me.skiincraft.api.paladins.impl.match;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.skiincraft.api.paladins.common.EndPoint;
+import com.google.gson.*;
+import com.google.gson.annotations.SerializedName;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.entity.match.LiveMatch;
 import me.skiincraft.api.paladins.entity.match.LivePlayer;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import me.skiincraft.api.paladins.enums.Queue;
+import me.skiincraft.api.paladins.objects.match.Queue;
+import me.skiincraft.api.paladins.json.PaladinsDateAdapter;
 
 public class LiveMatchImpl implements LiveMatch {
 
-	private final JsonArray array;
-	private final JsonObject object;
-	private final EndPoint endPoint;
+	@SerializedName("Queue")
+	private final int queue;
+	@SerializedName("Match")
+	private final long matchId;
+	@SerializedName("mapGame")
+	private final String mapName;
+
+	private EndPoint endPoint;
 	
-	private final List<LivePlayer> team1 = new ArrayList<>();
-	private final List<LivePlayer> team2 = new ArrayList<>();
-	
-	public LiveMatchImpl(JsonArray array, EndPoint endPoint) {
-		this.endPoint = endPoint;
-		this.array = array;
-		this.object = array.get(0).getAsJsonObject();
+	private List<LivePlayer> team1;
+	private List<LivePlayer> team2;
+
+	public LiveMatchImpl(int queue, long matchId, String mapName, List<LivePlayer> team1, List<LivePlayer> team2) {
+		this.queue = queue;
+		this.matchId = matchId;
+		this.mapName = mapName;
+		this.team1 = team1;
+		this.team2 = team2;
 	}
 
 	public Queue getQueue() {
-		return Queue.getQueueById(object.get("Queue").getAsInt());
+		return Queue.getQueueById(queue);
 	}
 	
 	public long getMatchId() {
-		return object.get("Match").getAsLong();
+		return matchId;
 	}
 
 	public String getMapName() {
-		if (!object.has("mapGame") || object.get("mapGame").isJsonNull()){
-			return null;
+		return mapName;
+	}
+
+	public LiveMatchImpl buildMethods(JsonArray array, EndPoint endPoint){
+		this.endPoint = endPoint;
+		if (team1 != null || array == null)
+			return this;
+
+		Gson gson = new GsonBuilder()
+				.registerTypeAdapter(OffsetDateTime.class, new PaladinsDateAdapter())
+				.create();
+		this.team1 = buildPlayers(array, gson, 1);
+		this.team2 = buildPlayers(array, gson, 2);
+		return this;
+	}
+
+	private List<LivePlayer> buildPlayers(JsonArray array, Gson gson, int taskForce) {
+		List<LivePlayer> players = new ArrayList<>();
+		for (JsonElement ele : array) {
+			JsonObject ob = ele.getAsJsonObject();
+			if (ob.get("TaskForce").getAsInt() != taskForce) {
+				continue;
+			}
+			players.add(gson.fromJson(ob, LivePlayerImpl.class).buildMethods(ob, endPoint));
 		}
 
-		return object.get("mapGame").getAsString();
+		return players;
 	}
 
 	public List<LivePlayer> getTeamBlue() {
-		if (team1.size() != 0) {
-			return team1;
-		}
-		for (JsonElement ele : array) {
-			JsonObject blue = ele.getAsJsonObject();
-			if (blue.get("taskForce").getAsInt() != 1) {
-				continue;
-			}
-			team1.add(new LivePlayerImpl(blue, endPoint));
-		}
-		
 		return team1;
 	}
 
 	public List<LivePlayer> getTeamRed() {
-		if (team2.size() != 0) {
-			return team2;
-		}
-		for (JsonElement ele : array) {
-			JsonObject red = ele.getAsJsonObject();
-			if (red.get("taskForce").getAsInt() != 2) {
-				continue;
-			}
-			team2.add(new LivePlayerImpl(red, endPoint));
-		}
-		
 		return team2;
 	}
 

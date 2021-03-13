@@ -1,77 +1,102 @@
 package me.skiincraft.api.paladins.impl.player;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import me.skiincraft.api.paladins.common.EndPoint;
-import me.skiincraft.api.paladins.common.Request;
+import com.google.gson.annotations.SerializedName;
+import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.player.Loadout;
 import me.skiincraft.api.paladins.entity.player.Player;
-import me.skiincraft.api.paladins.enums.Language;
-import me.skiincraft.api.paladins.objects.LoadoutItem;
+import me.skiincraft.api.paladins.objects.miscellany.Language;
+import me.skiincraft.api.paladins.objects.miscellany.LoadoutItem;
+import me.skiincraft.api.paladins.internal.requests.APIRequest;
+
+import java.util.List;
 
 public class LoadoutImpl implements Loadout {
-	
-	private final EndPoint endPoint;
-	private final JsonObject object;
-	private final Language language;
-	
-	public LoadoutImpl(EndPoint endPoint, JsonObject object, Language lang) {
-		this.endPoint = endPoint;
-		this.object = object;
-		this.language = lang;
-	}
-	
-	protected JsonElement get(String key) {
-		return object.get(key);
+
+	@SerializedName("DeckName")
+	private final String deckName;
+	@SerializedName("DeckId")
+	private final long deckId;
+
+	@SerializedName("LoadoutItems")
+	private final List<LoadoutItem> loadoutItems;
+	@SerializedName("ChampionId")
+	private final long championId;
+	@SerializedName("ChampionName")
+	private final String championName;
+	@SerializedName("playerName")
+	private final String ownerName;
+	@SerializedName("playerId")
+	private final long ownerId;
+
+	private EndPoint endPoint;
+	private Language language;
+
+	public LoadoutImpl(String deckName, long deckId, List<LoadoutItem> loadoutItems, long championId, String championName, String ownerName, long ownerId) {
+		this.deckName = deckName;
+		this.deckId = deckId;
+		this.loadoutItems = loadoutItems;
+		this.championId = championId;
+		this.championName = championName;
+		this.ownerName = ownerName;
+		this.ownerId = ownerId;
 	}
 
-	public Request<Champion> getChampion() {
+	public LoadoutImpl(String deckName, long deckId, List<LoadoutItem> loadoutItems, long championId, String championName, String ownerName, long ownerId, EndPoint endPoint, Language language) {
+		this.deckName = deckName;
+		this.deckId = deckId;
+		this.loadoutItems = loadoutItems;
+		this.championId = championId;
+		this.championName = championName;
+		this.ownerName = ownerName;
+		this.ownerId = ownerId;
+		this.endPoint = endPoint;
+		this.language = language;
+	}
+
+	public LoadoutImpl setLanguage(Language language) {
+		this.language = language;
+		return this;
+	}
+
+	public LoadoutImpl setEndPoint(EndPoint endPoint) {
+		this.endPoint = endPoint;
+		return this;
+	}
+
+	public APIRequest<Champion> getChampion() {
 		return endPoint.getChampion(getChampionId(), getLanguage());
 	}
 
-	public String getDeckname() {
-		return get("DeckName").getAsString();
+	public String getDeckName() {
+		return deckName;
 	}
 
 	public long getDeckId() {
-		return get("DeckId").getAsLong();
+		return deckId;
 	}
 
 	public List<LoadoutItem> getItems() {
-		JsonArray array = get("LoadoutItems").getAsJsonArray();
-		List<LoadoutItem> items = new ArrayList<>();
-		for (JsonElement ele :array) {
-			JsonObject o = ele.getAsJsonObject();
-			items.add(new LoadoutItem(
-					o.get("ItemId").getAsLong(), o.get("ItemName").getAsString(), o.get("Points").getAsInt()));
-		}
-		
-		return items;
+		return loadoutItems;
 	}
 
 	public long getChampionId() {
-		return get("ChampionId").getAsLong();
+		return championId;
 	}
 
 	public String getChampionName() {
-		return get("ChampionName").getAsString();
+		return championName;
 	}
 
 	public String getOwnername() {
-		return get("playerName").getAsString();
+		return ownerName;
 	}
 
 	public long getOwnerId() {
-		return get("playerId").getAsLong();
+		return ownerId;
 	}
 
-	public Request<Player> getOwner() {
+	public APIRequest<Player> getOwner() {
 		return endPoint.getPlayer(getOwnerId());
 	}
 
@@ -82,9 +107,9 @@ public class LoadoutImpl implements Loadout {
 	@Override
 	public String toString() {
 		return "Loadout{" +
-				"deckName=" + getDeckname() +
-				", userId=" + getOwnername() +
-				", championId=" + getChampionId() +
+				"deckName=" + deckName +
+				", userId=" + deckId +
+				", championId=" + championName +
 				", language=" + language +
 				'}';
 	}
