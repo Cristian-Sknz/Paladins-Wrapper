@@ -12,6 +12,7 @@ import me.skiincraft.api.paladins.internal.requests.APIRequest;
 import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.json.PaladinsDateAdapter;
 import me.skiincraft.api.paladins.objects.match.Team;
+import me.skiincraft.api.paladins.objects.player.MergedPlayer;
 import me.skiincraft.api.paladins.objects.player.Platform;
 import me.skiincraft.api.paladins.objects.player.PlayerStatus;
 import me.skiincraft.api.paladins.objects.ranking.RankedKBM;
@@ -50,8 +51,8 @@ public class PlayerImpl implements Player {
     private final String loadingFrame;
     @SerializedName(value = "MasteryLevel")
     private final int masteryLevel;
-    @SerializedName(value = "MergedPlayers")
-    private final Object mergedPlayers;
+    @SerializedName(value = "MergedPlayer")
+    private final List<MergedPlayer> mergedPlayers;
     @SerializedName(value = "Name")
     private final String name;
     @SerializedName(value = "Personal_Status_Message")
@@ -86,7 +87,7 @@ public class PlayerImpl implements Player {
     @Expose
     private JsonElement raw;
 
-    public PlayerImpl(long activePlayerId, long avatarId, String avatarUrl, OffsetDateTime created, long minutesPlayed, long id, OffsetDateTime lastLoginDate, int leaves, int level, int losses, String loadingFrame, int masteryLevel, Object mergedPlayers, String name, String personalStatusMessage, String platform, RankedKBM rankedKBM, String region, String title, int totalAchievements, long totalWorshippers, long totalXp, int wins, String hirezName, String hirezGamerTag) {
+    public PlayerImpl(long activePlayerId, long avatarId, String avatarUrl, OffsetDateTime created, long minutesPlayed, long id, OffsetDateTime lastLoginDate, int leaves, int level, int losses, String loadingFrame, int masteryLevel, List<MergedPlayer> mergedPlayers, String name, String personalStatusMessage, String platform, RankedKBM rankedKBM, String region, String title, int totalAchievements, long totalWorshippers, long totalXp, int wins, String hirezName, String hirezGamerTag) {
         this.activePlayerId = activePlayerId;
         this.avatarId = avatarId;
         this.avatarUrl = avatarUrl;
@@ -163,7 +164,7 @@ public class PlayerImpl implements Player {
         return masteryLevel;
     }
 
-    public Object getMergedPlayers() {
+    public List<MergedPlayer> getMergedPlayers() {
         return mergedPlayers;
     }
 

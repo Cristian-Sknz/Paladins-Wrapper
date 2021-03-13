@@ -8,6 +8,8 @@ import me.skiincraft.api.paladins.internal.requests.APIRequest;
 import me.skiincraft.api.paladins.objects.match.Kills;
 import me.skiincraft.api.paladins.objects.miscellany.Language;
 import me.skiincraft.api.paladins.objects.miscellany.LoadoutItem;
+import me.skiincraft.api.paladins.objects.player.MergedPlayer;
+import me.skiincraft.api.paladins.objects.player.Platform;
 import me.skiincraft.api.paladins.objects.ranking.LeagueSeason;
 import me.skiincraft.api.paladins.objects.ranking.Tier;
 
@@ -36,6 +38,11 @@ public interface MatchPlayer {
     long getChampionId();
 
     /**
+     * <p>Is the level of the champion of this player</p>
+     */
+    int getChampionLevel();
+
+    /**
      * <p>Make an API request to return this player's champion from the match</p>
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *
@@ -52,9 +59,14 @@ public interface MatchPlayer {
     long getId();
 
     /**
+     * <p>Is the player's account active Id</p>
+     */
+    long getActivePlayerId();
+
+    /**
      * <p>Is the player's account level</p>
      */
-    int getLevel();
+    int getAccountLevel();
 
     /**
      * <p>Are the different damages that occurred in the match by a player</p>
@@ -172,8 +184,32 @@ public interface MatchPlayer {
      */
     Match getMatch();
 
+    /**
+     * <p>Is this player's Tier (in casual matches it may not be available)</p>
+     */
     Tier getTier();
 
+    /**
+     * <p>Is this player's Tier (in casual matches it may not be available)</p>
+     */
     LeagueSeason getTierDetails();
 
+    /**
+     * <p>These are the capture points that this player obtained</p>
+     */
+    int getObjectiveAssist();
+
+    List<MergedPlayer> getMergedPlayers();
+
+    default Platform getPlatform() {
+        return Platform.getPlatformByPortalId(getPortalId());
+    }
+
+    String getChampionSkin();
+
+    long getChampionSkinId();
+
+    String getHirezGamerTag();
+
+    String getHirezPlayerName();
 }

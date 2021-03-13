@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import me.skiincraft.api.paladins.entity.champions.Champion;
+import me.skiincraft.api.paladins.entity.match.HistoryMatch;
 import me.skiincraft.api.paladins.entity.match.Match;
 import me.skiincraft.api.paladins.entity.match.MatchPlayer;
 import me.skiincraft.api.paladins.entity.match.objects.ActiveItem;
@@ -17,6 +18,8 @@ import me.skiincraft.api.paladins.objects.match.Kills;
 import me.skiincraft.api.paladins.objects.match.ShopItem;
 import me.skiincraft.api.paladins.objects.miscellany.Language;
 import me.skiincraft.api.paladins.objects.miscellany.LoadoutItem;
+import me.skiincraft.api.paladins.objects.player.MergedPlayer;
+import me.skiincraft.api.paladins.objects.player.Platform;
 import me.skiincraft.api.paladins.objects.ranking.LeagueSeason;
 import me.skiincraft.api.paladins.objects.ranking.Tier;
 
@@ -27,46 +30,61 @@ import java.util.List;
 public class MatchPlayerImpl implements MatchPlayer {
 
     @SerializedName("playerName")
-    private String name;
+    private final String name;
     @SerializedName("playerId")
-    private long id;
+    private final long id;
     @SerializedName("Region")
-    private String region;
+    private final String region;
     @SerializedName("Account_Level")
-    private int accountLevel;
-
+    private final int accountLevel;
+    @SerializedName("MergedPlayers")
+    private final List<MergedPlayer> mergedPlayers;
     @SerializedName("Assists")
-    private int assists;
+    private final int assists;
     @SerializedName("Deaths")
-    private int deaths;
+    private final int deaths;
 
     @SerializedName("Healing")
-    private int healing;
+    private final int healing;
     @SerializedName("Healing_Bot")
-    private int healingBot;
+    private final int healingBot;
     @SerializedName("Healing_Player_Self")
-    private int selfHealing;
+    private final int selfHealing;
     @SerializedName("Gold_Earned")
-    private int creditsEarned;
+    private final int creditsEarned;
     @SerializedName("Gold_Per_Minute")
-    private int creditsPerMinute;
+    private final int creditsPerMinute;
     @SerializedName("Killing_Spree")
-    private int killingSpree;
+    private final int killingSpree;
+    @SerializedName("ActivePlayerId")
+    private final long activePlayerId;
     @SerializedName("playerPortalId")
-    private int portalId;
+    private final int portalId;
     @SerializedName("playerPortalUserId")
-    private long portalUserId;
+    private final long portalUserId;
+    @SerializedName("hz_gamer_tag")
+    private final String hzGamerTag;
+    @SerializedName("hz_player_name")
+    private final String hzPlayerName;
     @SerializedName("Win_Status")
-    private String winStatus;
+    private final String winStatus;
     @SerializedName("League_Tier")
-    private String tier;
+    private final String tier;
     @SerializedName("PartyId")
-    private long partyId;
+    private final long partyId;
+    @SerializedName("Objective_Assists")
+    private final int objectiveAssists;
 
     @SerializedName(value = "Champion", alternate = "Reference_Name")
-    private String championName;
+    private final String championName;
     @SerializedName("ChampionId")
-    private long championId;
+    private final long championId;
+    @SerializedName("Skin")
+    private final String championSkin;
+    @SerializedName("SkinId")
+    private final long championSkinId;
+    @SerializedName("Mastery_Level")
+    private final int championLevel;
 
     private Damage damage;
     private Kills kills;
@@ -78,6 +96,44 @@ public class MatchPlayerImpl implements MatchPlayer {
 
     private EndPoint endPoint;
     private Match match;
+
+    public MatchPlayerImpl(String name, long id, String region, int accountLevel, List<MergedPlayer> mergedPlayers, int assists, int deaths, int healing, int healingBot, int selfHealing, int creditsEarned, int creditsPerMinute, int killingSpree, long activePlayerId, int portalId, long portalUserId, String hzGamerTag, String hzPlayerName, String winStatus, String tier, long partyId, int objectiveAssists, String championName, long championId, String championSkin, long championSkinId, int championLevel, Damage damage, Kills kills, ActiveItems activeItems, LeagueSeason leagueSeason, List<LoadoutItem> loadout, LoadoutItem talent, EndPoint endPoint, Match match) {
+        this.name = name;
+        this.id = id;
+        this.region = region;
+        this.accountLevel = accountLevel;
+        this.mergedPlayers = mergedPlayers;
+        this.assists = assists;
+        this.deaths = deaths;
+        this.healing = healing;
+        this.healingBot = healingBot;
+        this.selfHealing = selfHealing;
+        this.creditsEarned = creditsEarned;
+        this.creditsPerMinute = creditsPerMinute;
+        this.killingSpree = killingSpree;
+        this.activePlayerId = activePlayerId;
+        this.portalId = portalId;
+        this.portalUserId = portalUserId;
+        this.hzGamerTag = hzGamerTag;
+        this.hzPlayerName = hzPlayerName;
+        this.winStatus = winStatus;
+        this.tier = tier;
+        this.partyId = partyId;
+        this.objectiveAssists = objectiveAssists;
+        this.championName = championName;
+        this.championId = championId;
+        this.championSkin = championSkin;
+        this.championSkinId = championSkinId;
+        this.championLevel = championLevel;
+        this.damage = damage;
+        this.kills = kills;
+        this.activeItems = activeItems;
+        this.leagueSeason = leagueSeason;
+        this.loadout = loadout;
+        this.talent = talent;
+        this.endPoint = endPoint;
+        this.match = match;
+    }
 
     public String getName() {
         return name;
@@ -98,6 +154,11 @@ public class MatchPlayerImpl implements MatchPlayer {
     }
 
     @Override
+    public int getChampionLevel() {
+        return championLevel;
+    }
+
+    @Override
     public APIRequest<Champion> getChampion(Language language) {
         return endPoint.getChampion(getChampionId(), language);
     }
@@ -106,7 +167,12 @@ public class MatchPlayerImpl implements MatchPlayer {
         return id;
     }
 
-    public int getLevel() {
+    @Override
+    public long getActivePlayerId() {
+        return activePlayerId;
+    }
+
+    public int getAccountLevel() {
         return accountLevel;
     }
 
@@ -116,11 +182,13 @@ public class MatchPlayerImpl implements MatchPlayer {
         Gson gson = new Gson();
         this.damage = buildDamage(object, gson);
         this.kills = buildKills(object, gson);
-        this.activeItems = buildActiveItems(object);
-        this.leagueSeason = buildLeagueSeason(object);
         this.loadout = buildLoadout(object);
         this.talent = loadout.get(loadout.size() - 1);
         this.loadout.remove(loadout.size() - 1);
+        this.activeItems = buildActiveItems(object);
+        if (!(match instanceof HistoryMatch)) {
+            this.leagueSeason = buildLeagueSeason(object);
+        }
         return this;
     }
 
@@ -145,7 +213,7 @@ public class MatchPlayerImpl implements MatchPlayer {
     }
 
     public int getKillsRaw() {
-        return kills.getKills() + kills.getKillsBot();
+        return kills.getKills();
     }
 
     @Override
@@ -239,6 +307,41 @@ public class MatchPlayerImpl implements MatchPlayer {
         return leagueSeason;
     }
 
+    @Override
+    public int getObjectiveAssist() {
+        return objectiveAssists;
+    }
+
+    @Override
+    public List<MergedPlayer> getMergedPlayers() {
+        return mergedPlayers;
+    }
+
+    @Override
+    public Platform getPlatform() {
+        return Platform.getPlatformByPortalId(getPortalId());
+    }
+
+    @Override
+    public String getChampionSkin() {
+        return championSkin;
+    }
+
+    @Override
+    public long getChampionSkinId() {
+        return championSkinId;
+    }
+
+    @Override
+    public String getHirezGamerTag() {
+        return hzGamerTag;
+    }
+
+    @Override
+    public String getHirezPlayerName() {
+        return hzPlayerName;
+    }
+
     public APIRequest<Player> getPlayer() {
         if (isPrivateProfile()) {
             throw new PlayerException("The requested player has a private profile", PlayerException.PlayerExceptionType.PRIVATE_PROFILE);
@@ -255,7 +358,7 @@ public class MatchPlayerImpl implements MatchPlayer {
         List<LoadoutItem> items = new ArrayList<>();
         for (int i = 1; i <= 6; i++) {
             long id = object.get("ItemId" + i).getAsLong();
-            String name = object.get("Item_Purch_" + i).getAsString();
+            String name = (object.has("Item_Purch_" + i)) ? object.get("Item_Purch_" + i).getAsString() :object.get("Item_" + i).getAsString();
             int level = object.get("ItemLevel" + i).getAsInt();
             items.add(new LoadoutItem(id, name, level));
         }

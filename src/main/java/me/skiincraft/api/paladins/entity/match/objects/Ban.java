@@ -1,5 +1,6 @@
 package me.skiincraft.api.paladins.entity.match.objects;
 
+import com.google.gson.annotations.Expose;
 import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.internal.requests.APIRequest;
 import me.skiincraft.api.paladins.internal.session.EndPoint;
@@ -9,7 +10,9 @@ public class Ban {
 
     private final long championId;
     private final String championName;
+    @Expose
     private final EndPoint endPoint;
+    @Expose
     private APIRequest<Champion> champion;
 
     public Ban(long banId, String banName, EndPoint endPoint) {

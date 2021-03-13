@@ -81,7 +81,7 @@ public class Damage {
      * <p>Is the total damage done</p>
      */
     public int getDamage() {
-        return damage + damageBot;
+        return damage;
     }
 
     /**

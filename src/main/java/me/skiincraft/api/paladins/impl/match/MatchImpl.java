@@ -88,11 +88,11 @@ public class MatchImpl implements Match {
     private List<MatchPlayer> buildPlayers(JsonArray array, Gson gson, int taskForce) {
         List<MatchPlayer> players = new ArrayList<>();
         for (JsonElement ele : array) {
-            JsonObject ob = ele.getAsJsonObject();
-            if (ob.get("TaskForce").getAsInt() != taskForce) {
+            JsonObject object = ele.getAsJsonObject();
+            if (object.get("TaskForce").getAsInt() != taskForce) {
                 continue;
             }
-            players.add(gson.fromJson(ob, MatchPlayerImpl.class));
+            players.add(gson.fromJson(object, MatchPlayerImpl.class).buildMethods(object, this, endPoint));
         }
 
         return players;

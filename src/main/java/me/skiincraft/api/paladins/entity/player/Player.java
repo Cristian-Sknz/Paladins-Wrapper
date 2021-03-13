@@ -6,6 +6,7 @@ import me.skiincraft.api.paladins.entity.other.Friends;
 import me.skiincraft.api.paladins.entity.player.objects.PlayerChampions;
 import me.skiincraft.api.paladins.internal.requests.APIRequest;
 import me.skiincraft.api.paladins.objects.match.Team;
+import me.skiincraft.api.paladins.objects.player.MergedPlayer;
 import me.skiincraft.api.paladins.objects.player.Platform;
 import me.skiincraft.api.paladins.objects.player.PlayerStatus;
 import me.skiincraft.api.paladins.objects.ranking.RankedKBM;
@@ -92,7 +93,7 @@ public interface Player {
     /**
      * A function will soon be put in place.
      */
-    Object getMergedPlayers();
+    List<MergedPlayer> getMergedPlayers();
 
     /**
      * <p>Is the amount of time the player has played in minutes</p>

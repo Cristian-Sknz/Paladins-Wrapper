@@ -3,6 +3,7 @@ package me.skiincraft.api.paladins.entity.match.objects;
 import me.skiincraft.api.paladins.objects.match.ShopItem;
 
 public class ActiveItem {
+
     private final ShopItem item;
     private final int level;
 

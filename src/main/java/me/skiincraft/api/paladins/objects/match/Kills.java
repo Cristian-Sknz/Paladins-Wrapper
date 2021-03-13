@@ -99,4 +99,23 @@ public class Kills {
     public int getKillsBot() {
         return killsBot;
     }
+
+    @Override
+    public String toString() {
+        return "Kills{" +
+                "kills=" + kills +
+                ", killsBot=" + killsBot +
+                ", multikills=" + multikills +
+                ", firstblood=" + firstblood +
+                ", solokills=" + solokills +
+                ", doublekills=" + doublekills +
+                ", triplekills=" + triplekills +
+                ", quadrakills=" + quadrakills +
+                ", pentakills=" + pentakills +
+                ", goldfury=" + goldfury +
+                ", pheonix=" + pheonix +
+                ", siege_juggernaut=" + siege_juggernaut +
+                ", wild_juggernaut=" + wild_juggernaut +
+                '}';
+    }
 }

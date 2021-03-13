@@ -49,7 +49,7 @@ public class HistoryMatchImpl extends MatchImpl implements HistoryMatch {
 
     public HistoryMatchImpl buildMethods(JsonObject object, EndPoint endPoint) {
         this.endPoint = endPoint;
-        this.player = new Gson().fromJson(object, MatchPlayerImpl.class);
+        this.player = new Gson().fromJson(object, MatchPlayerImpl.class).buildMethods(object, this, endPoint);
         return this;
     }
 
