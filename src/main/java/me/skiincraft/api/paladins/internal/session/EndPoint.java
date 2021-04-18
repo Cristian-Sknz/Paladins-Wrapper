@@ -27,6 +27,7 @@ import java.util.List;
  *
  * <p>This class contains all Paladins API methods.
  * <br>All methods will use data such as SessionId, DevId, Signature and etc.</br>
+ * @see Session
  * </p>
  */
 public interface EndPoint {
@@ -36,7 +37,7 @@ public interface EndPoint {
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *
      * @param userId the player id;
-     * @return Player
+     * @return {@link Player}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.PlayerException  If the player has a private profile or does not exist.
      */
@@ -49,7 +50,7 @@ public interface EndPoint {
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *
      * @param player the player nickname;
-     * @return Player
+     * @return {@link Player}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.PlayerException  If the player has a private profile or does not exist.
      */
@@ -63,7 +64,7 @@ public interface EndPoint {
      *
      * @param queue    search
      * @param platform Platform than the player you want
-     * @return SearchPlayers
+     * @return {@link SearchPlayers}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.SearchException  If no player is found.
      */
@@ -74,7 +75,7 @@ public interface EndPoint {
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *
      * @param userId the player id;
-     * @return PlayerStatus
+     * @return {@link PlayerStatus}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.PlayerException  If the player has a private profile or does not exist.
      */
@@ -87,7 +88,7 @@ public interface EndPoint {
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *
      * @param player the player nickname;
-     * @return PlayerStatus
+     * @return {@link PlayerStatus}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.PlayerException  If the player has a private profile or does not exist.
      */
@@ -99,7 +100,7 @@ public interface EndPoint {
      * <p>This request will count as 1, and will return all champions</p>
      *
      * @param language the language you want to receive the champions;
-     * @return Champions
+     * @return {@link Champions}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      */
     APIRequest<Champions> getChampions(Language language);
@@ -112,7 +113,7 @@ public interface EndPoint {
      *
      * @param championId the id of the champion
      * @param language   the language you want to receive the champions;
-     * @return Champion
+     * @return {@link Champion}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException  If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.ChampionException In case the champion Id is wrong.
      */
@@ -126,7 +127,7 @@ public interface EndPoint {
      *
      * @param championName the name of the champion
      * @param language     the language you want to receive the champions;
-     * @return Champion
+     * @return {@link Champion}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException  If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.ChampionException In case the champion Id is wrong.
      */
@@ -139,7 +140,7 @@ public interface EndPoint {
      * <p>It is the same as getChampionsCard (long, Language), but the values are filled according to the Champion</p>
      *
      * @param champion the champion
-     * @return Cards
+     * @return {@link Cards}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException  If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.ChampionException In case the champion Id is wrong.
      */
@@ -153,7 +154,7 @@ public interface EndPoint {
      *
      * @param championsId the name of the champion
      * @param language    the language you want to receive the champion cards;
-     * @return Cards
+     * @return {@link Cards}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException  If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.ChampionException In case the champion Id is wrong.
      */
@@ -166,7 +167,7 @@ public interface EndPoint {
      * <p>It is the same as getChampionsSkins(long, Language), but the values are filled according to the Champion</p>
      *
      * @param champion the champion
-     * @return Cards
+     * @return {@link Cards}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException  If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.ChampionException In case the champion Id is wrong.
      */
@@ -180,7 +181,7 @@ public interface EndPoint {
      *
      * @param championsId the name of the champion
      * @param language    the language you want to receive the champion skins;
-     * @return Skins
+     * @return {@link Skins}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException  If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.ChampionException In case the champion Id is wrong.
      */
@@ -192,7 +193,7 @@ public interface EndPoint {
      * <p><br>It will not raise the exception {@link me.skiincraft.api.paladins.exceptions.PlayerException} but will not be added to the list if the player's profile is private or does not exist</br></p>
      *
      * @param ids the player ids
-     * @return PlayerBatch
+     * @return {@link PlayerBatch}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.ContextException If only 1 player is requested in the batch.
      */
@@ -203,7 +204,7 @@ public interface EndPoint {
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *
      * @param userId the player id
-     * @return PlayerChampions
+     * @return {@link PlayerChampions}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.PlayerException  If the player has a private profile or does not exist.
      */
@@ -214,7 +215,7 @@ public interface EndPoint {
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *
      * @param userId the player id
-     * @return PlayerQueue
+     * @return {@link QueueChampions}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.PlayerException  If the player has a private profile or does not exist.
      */
@@ -225,7 +226,7 @@ public interface EndPoint {
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *
      * @param userId the player id
-     * @return Friends
+     * @return {@link Friends}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.SearchException  If you can't find any friends
      */
@@ -237,7 +238,7 @@ public interface EndPoint {
      *
      * @param userId   the player id
      * @param language the language the items that will be returned
-     * @return Loadouts
+     * @return {@link Loadouts}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.PlayerException  If the player has a private profile or does not exist.
      * @throws me.skiincraft.api.paladins.exceptions.SearchException  If no loadout is found for this player
@@ -249,7 +250,7 @@ public interface EndPoint {
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *
      * @param matchId Id of any match, as long as it is valid
-     * @return Match
+     * @return {@link Match}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.MatchException   If no match is found
      */
@@ -262,7 +263,7 @@ public interface EndPoint {
      * <p><br>It will not raise the exception {@link me.skiincraft.api.paladins.exceptions.MatchException} but will not be added to the list if the match is not found</br></p>
      *
      * @param matchbatch Id of any match, as long as it is valid
-     * @return List<Match>
+     * @return List&lt;{@link Match}&gt;
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.ContextException If only 1 match is requested in the batch.
      */
@@ -277,7 +278,7 @@ public interface EndPoint {
      * </p>
      *
      * @param userId the player id
-     * @return HistoryMatch
+     * @return {@link HistoryMatch}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.MatchException   If no match is found
      */
@@ -289,7 +290,7 @@ public interface EndPoint {
      *
      * @param tier   the tier you want to get
      * @param season Season you want to get information
-     * @return LeaderBoard
+     * @return {@link LeaderBoard}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.SearchException  If no results are returned
      */
@@ -300,7 +301,7 @@ public interface EndPoint {
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *
      * @param matchId the tier you want to get
-     * @return LiveMatch
+     * @return {@link LiveMatch}
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.MatchException   If no results are returned
      */
@@ -310,10 +311,13 @@ public interface EndPoint {
      * <p>Make an API request to return items from the bounty store</p>
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *
-     * @return List&lt;BountyItem&gt;
+     * @return List&lt;{@link me.skiincraft.api.paladins.objects.miscellany.BountyItem}&gt;
+     * @deprecated Bounty Store has been withdrawn indefinitely from the game, as it will have some rework.
+     *
      * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
      * @throws me.skiincraft.api.paladins.exceptions.ContextException If no results are returned
      */
+    @Deprecated
     APIRequest<List<BountyItem>> getBountyItems();
 
     /**

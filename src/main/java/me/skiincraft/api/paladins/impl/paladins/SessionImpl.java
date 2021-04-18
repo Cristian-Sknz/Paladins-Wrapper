@@ -1,8 +1,10 @@
 package me.skiincraft.api.paladins.impl.paladins;
 
 import me.skiincraft.api.paladins.Paladins;
+import me.skiincraft.api.paladins.internal.logging.PaladinsLogger;
 import me.skiincraft.api.paladins.internal.session.EndPoint;
 import me.skiincraft.api.paladins.internal.session.Session;
+import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.Timer;
@@ -30,6 +32,7 @@ public class SessionImpl implements Session {
     private final String requestMessage;
     private final EndPoint endPoint;
     private final Paladins paladins;
+    private Logger logger;
     private Timer timer;
     private Consumer<Session> validating;
     private boolean testresponse;
@@ -54,7 +57,7 @@ public class SessionImpl implements Session {
         this.testresponse = true;
 
         endPoint = new EndpointImpl(this);
-
+        this.logger = PaladinsLogger.getLogger(Session.class);
         worker();
     }
 
@@ -128,19 +131,20 @@ public class SessionImpl implements Session {
             timer = null;
         }
         final int worker = serialNumber();
+        final Session api = this;
         timer = new Timer("SessionWorker-" + worker);
         timer.schedule(new TimerTask() {
 
             public void run() {
+                logger.debug("Checking if the session is still valid");
                 testresponse = testSession().get();
                 if (testresponse) {
                     if (validating != null) {
-                        validating.accept(null);
+                        validating.accept(api);
                     }
-                    System.err.println("[SessionWorker-" + worker + "] Session [" + sessionId + "] is still valid.");
                     return;
                 }
-                System.err.println("[SessionWorker-" + worker + "] Session [" + sessionId + "] is no longer valid, and will be removed from the storage.");
+                logger.warn("Session [{}] is no longer valid, and will be removed from the storage.", sessionId);
             }
         }, TimeUnit.MINUTES.toMillis(10), TimeUnit.MINUTES.toMillis(14));
     }

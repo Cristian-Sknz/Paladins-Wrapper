@@ -7,6 +7,7 @@ import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class DefaultAPIRequest<T> implements APIRequest<T> {
     private T item = null;
     private Function<Response, T> function;
     private Function<Response, ResponseParser<T>> responseParser;
+    private Logger logger;
 
     public DefaultAPIRequest(@Nonnull String endpoint, String[] args, @Nonnull Paladins api) {
         this.endpoint = endpoint;
@@ -32,6 +34,7 @@ public class DefaultAPIRequest<T> implements APIRequest<T> {
         this.api = api;
         this.request = null;
         this.responseParser = (r) -> new DefaultResponseParser<>(r, function);
+        this.logger = api.getLogger();
     }
 
     public DefaultAPIRequest(@Nonnull String endpoint, String sessionId, String[] args, @Nonnull Paladins api) {
@@ -41,6 +44,7 @@ public class DefaultAPIRequest<T> implements APIRequest<T> {
         this.api = api;
         this.request = null;
         this.responseParser = (r) -> new DefaultResponseParser<>(r, function);
+        this.logger = api.getLogger();
     }
 
     public DefaultAPIRequest(@Nonnull Request request, @Nonnull Paladins api) {
@@ -50,6 +54,7 @@ public class DefaultAPIRequest<T> implements APIRequest<T> {
         this.api = api;
         this.request = request;
         this.responseParser = (r) -> new DefaultResponseParser<>(r, function);
+        this.logger = api.getLogger();
     }
 
     public DefaultAPIRequest(@Nonnull String endpoint, String[] args, @Nonnull Function<Response, T> function, @Nonnull Paladins api) {
@@ -60,6 +65,7 @@ public class DefaultAPIRequest<T> implements APIRequest<T> {
         this.api = api;
         this.request = null;
         this.responseParser = (r) -> new DefaultResponseParser<>(r, function);
+        this.logger = api.getLogger();
     }
 
     public DefaultAPIRequest(@Nonnull String endpoint, String sessionId, String[] args, @Nonnull Function<Response, T> function, @Nonnull Paladins api) {
@@ -70,6 +76,7 @@ public class DefaultAPIRequest<T> implements APIRequest<T> {
         this.api = api;
         this.request = null;
         this.responseParser = (r) -> new DefaultResponseParser<>(r, function);
+        this.logger = api.getLogger();
     }
 
     public DefaultAPIRequest(@Nonnull Request request, @Nonnull Function<Response, T> function, @Nonnull Paladins api) {
@@ -80,6 +87,7 @@ public class DefaultAPIRequest<T> implements APIRequest<T> {
         this.api = api;
         this.request = request;
         this.responseParser = (r) -> new DefaultResponseParser<>(r, function);
+        this.logger = api.getLogger();
     }
 
     public void setResponseParser(@Nonnull Function<Response, ResponseParser<T>> responseParser) {
@@ -90,6 +98,11 @@ public class DefaultAPIRequest<T> implements APIRequest<T> {
         this.function = function;
     }
 
+    public DefaultAPIRequest<T> setLogger(Logger logger) {
+        this.logger = logger;
+        return this;
+    }
+
     @Override
     public T get() {
         if (item != null) {
@@ -97,13 +110,15 @@ public class DefaultAPIRequest<T> implements APIRequest<T> {
         }
         try {
             OkHttpClient client = getClient();
-            Call call = client.newCall(buildRequest());
+            Request request = buildRequest();
+            logger.trace("Calling request: " + request);
+            Call call = client.newCall(request);
             ResponseParser<T> parser = responseParser.apply(call.execute())
                     .setFunction(function);
 
             return this.item = parser.parse();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("There was an error making a request:", e);
             this.code = 400;
             return null;
         }
@@ -115,6 +130,7 @@ public class DefaultAPIRequest<T> implements APIRequest<T> {
         }
         String endPoint = Objects.requireNonNull(endpoint, "endpoint method is null");
         String url = (sessionId == null) ? api.getAccessUtils().makeUrl(endPoint, args) : api.getAccessUtils().makeUrl(endPoint, sessionId, args);
+        logger.debug("Creating a API URL: " + url);
         Request.Builder request = new Request.Builder()
                 .url(Objects.requireNonNull(url, "url is null"))
                 .addHeader("Accept", "application/json")

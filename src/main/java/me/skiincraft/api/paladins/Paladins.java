@@ -11,6 +11,7 @@ import me.skiincraft.api.paladins.exceptions.RequestException;
 import me.skiincraft.api.paladins.impl.paladins.SessionImpl;
 import me.skiincraft.api.paladins.impl.storage.PaladinsStorageImpl;
 import me.skiincraft.api.paladins.impl.storage.StorageImpl;
+import me.skiincraft.api.paladins.internal.logging.PaladinsLogger;
 import me.skiincraft.api.paladins.internal.requests.APIRequest;
 import me.skiincraft.api.paladins.internal.requests.impl.DefaultAPIRequest;
 import me.skiincraft.api.paladins.internal.requests.impl.FakeAPIRequest;
@@ -20,7 +21,9 @@ import me.skiincraft.api.paladins.objects.AccessUtils;
 import me.skiincraft.api.paladins.objects.miscellany.DataUsed;
 import me.skiincraft.api.paladins.storage.PaladinsStorage;
 import okhttp3.OkHttpClient;
+import org.slf4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +45,8 @@ public class Paladins {
     private final AccessUtils accessUtils;
     private final PaladinsStorage storage;
     private final List<Session> sessions;
-    private final OkHttpClient client;
+    private OkHttpClient client;
+    private final Logger logger;
 
     private int devId;
     private String authkey;
@@ -51,6 +55,7 @@ public class Paladins {
         this.accessUtils = new AccessUtils(this);
         this.sessions = new ArrayList<>();
         this.client = new OkHttpClient();
+        this.logger = PaladinsLogger.getLogger(Paladins.class);
         this.storage = new PaladinsStorageImpl(
                 new StorageImpl<Champions>(new Champions[0]) {
                     public Champions getById(long id) {
@@ -77,9 +82,14 @@ public class Paladins {
      */
     public static Paladins getInstance() {
         if (instance == null) {
+            PaladinsLogger.getLogger(Paladins.class).debug("Creating a new instance of the Paladins class");
             instance = new Paladins();
         }
         return instance;
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 
     /**
@@ -99,8 +109,10 @@ public class Paladins {
                         .fromJson(Objects.requireNonNull(response.body(), "response is null")
                                 .string(), SessionImpl.class);
                 sessions.add(session);
+                logger.info("A new session has been created {}", session.getSessionId());
                 return session;
             } catch (IOException e) {
+                logger.error("There was a problem connecting with the API:", e);
                 e.printStackTrace();
                 return null;
             }
@@ -122,11 +134,13 @@ public class Paladins {
             try {
                 String json = Objects.requireNonNull(response.body(), "response is null").string();
                 if (AccessUtils.checkResponse(json)) {
+                    logger.info("TestSession: Session {} is still valid", sessionId);
                     return true;
                 }
                 Stream<Session> activeSessions = sessions.stream().filter((session) -> session.getSessionId().equalsIgnoreCase(sessionId));
                 if (activeSessions.count() >= 1) {
-                    System.err.println(activeSessions.count() + " Sessions have been removed for being invalid.");
+                    logger.warn("[{}] Sessions have been removed for being invalid.", activeSessions.count());
+                    logger.debug("Session [{}] is invalid", sessionId);
                     sessions.removeAll(activeSessions.collect(Collectors.toList()));
                 }
                 throw new RequestException(json, json);
@@ -149,6 +163,7 @@ public class Paladins {
      */
     public synchronized APIRequest<Session> resumeSession(String sessionId) {
         if (testSession(sessionId).get()) {
+            logger.info("Session [{}] was successfully resumed", sessionId);
             return new FakeAPIRequest<>(new SessionImpl(sessionId, null, null, this), 200);
         }
         throw new RequestException("You tried to resume an invalid session.");
@@ -162,7 +177,7 @@ public class Paladins {
      * @throws RequestException Will throw an exception if the session is invalid.
      */
     public synchronized APIRequest<DataUsed> getDataUsed(String sessionId) {
-        return new DefaultAPIRequest<>("testsession", sessionId, null, (response) -> {
+        return new DefaultAPIRequest<>("getdataused", sessionId, null, (response) -> {
             try {
                 String json = Objects.requireNonNull(response.body(), "response is null").string();
                 if (AccessUtils.checkResponse(json)) {
@@ -254,6 +269,11 @@ public class Paladins {
 
     public OkHttpClient getClient() {
         return client;
+    }
+
+    public Paladins setClient(@Nonnull OkHttpClient client) {
+        this.client = client;
+        return this;
     }
 
     @Override

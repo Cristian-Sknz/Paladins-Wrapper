@@ -25,6 +25,7 @@ import me.skiincraft.api.paladins.impl.player.FriendImpl;
 import me.skiincraft.api.paladins.impl.player.LoadoutImpl;
 import me.skiincraft.api.paladins.impl.player.PlayerImpl;
 import me.skiincraft.api.paladins.impl.storage.PaladinsStorageImpl;
+import me.skiincraft.api.paladins.internal.logging.PaladinsLogger;
 import me.skiincraft.api.paladins.internal.requests.APIRequest;
 import me.skiincraft.api.paladins.internal.requests.impl.DefaultAPIRequest;
 import me.skiincraft.api.paladins.internal.requests.impl.FakeAPIRequest;
@@ -43,6 +44,7 @@ import me.skiincraft.api.paladins.objects.player.SearchPlayer;
 import me.skiincraft.api.paladins.objects.ranking.Place;
 import me.skiincraft.api.paladins.objects.ranking.Tier;
 import me.skiincraft.api.paladins.storage.PaladinsStorage;
+import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,6 +62,7 @@ public class EndpointImpl implements EndPoint {
     private final Session session;
     private final Paladins paladins;
     private final PaladinsStorage paladinsStorage;
+    private final Logger logger;
 
     private final PaladinsStorageImpl storageImpl;
 
@@ -68,10 +71,7 @@ public class EndpointImpl implements EndPoint {
         this.paladins = session.getPaladins();
         this.paladinsStorage = paladins.getStorage();
         this.storageImpl = (PaladinsStorageImpl) paladinsStorage;
-    }
-
-    private String makeUrl(String method, String[] args) {
-        return paladins.getAccessUtils().makeUrl(method, session.getSessionId(), args);
+        this.logger = PaladinsLogger.getLogger(EndPoint.class);
     }
 
     public APIRequest<Player> getPlayer(String player) {
@@ -79,7 +79,6 @@ public class EndpointImpl implements EndPoint {
             try {
                 JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string())
                         .getAsJsonArray();
-
                 if (array.size() == 0) {
                     throw new PlayerException(String.format("The player '%s' does not exist.", player), PlayerException.PlayerExceptionType.NOT_EXIST);
                 }
@@ -107,8 +106,8 @@ public class EndpointImpl implements EndPoint {
                 if (array.size() == 0)
                     throw new SearchException("No players found");
 
+                logger.debug("SearchPlayers: found {} total results for {}", array.size(), queue);
                 SearchPlayer[] search = new Gson().fromJson(array, SearchPlayer[].class);
-
                 return (platform != null) ? new SearchPlayers(Arrays.stream(search).filter(s -> Platform.getPlatformByPortalId(s.getPortalId()) == platform)
                         .toArray(SearchPlayer[]::new)) : new SearchPlayers(search);
             } catch (IOException e) {
@@ -490,6 +489,7 @@ public class EndpointImpl implements EndPoint {
     }
 
     @Override
+    @Deprecated
     public APIRequest<List<BountyItem>> getBountyItems() {
         return new DefaultAPIRequest<>("getBountyItems", session.getSessionId(), null, (response) -> {
             try {
