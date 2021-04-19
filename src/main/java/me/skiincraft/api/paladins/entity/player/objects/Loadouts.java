@@ -1,5 +1,6 @@
 package me.skiincraft.api.paladins.entity.player.objects;
 
+import me.skiincraft.api.paladins.entity.champions.Champion;
 import me.skiincraft.api.paladins.entity.player.Loadout;
 import me.skiincraft.api.paladins.internal.CustomList;
 
@@ -45,6 +46,10 @@ public class Loadouts implements CustomList<Loadout> {
 
     public List<Loadout> getFromSpecific(long championId) {
         return Arrays.stream(items).filter(o -> o.getChampionId() == championId).collect(Collectors.toList());
+    }
+
+    public List<Loadout> getFromSpecific(Champion champion) {
+        return this.getFromSpecific(champion.getId());
     }
 
     public Loadout getById(long id) {
