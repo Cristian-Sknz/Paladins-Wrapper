@@ -25,6 +25,9 @@ public class DefaultResponseParser<T> extends ResponseParser<T> {
             if (code == 404) {
                 throw new IOException("This resource was not found by the API.\n" + (response.body() != null ? response.body().string() : null));
             }
+            if (code == 503) {
+                throw new RequestException("Internal Error: The API is temporarily unavailable, please try again later.");
+            }
             return true;
         } catch (IOException e) {
             e.printStackTrace();

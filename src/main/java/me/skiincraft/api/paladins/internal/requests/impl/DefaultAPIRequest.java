@@ -1,6 +1,7 @@
 package me.skiincraft.api.paladins.internal.requests.impl;
 
 import me.skiincraft.api.paladins.Paladins;
+import me.skiincraft.api.paladins.exceptions.RequestException;
 import me.skiincraft.api.paladins.internal.requests.APIRequest;
 import me.skiincraft.api.paladins.internal.requests.ResponseParser;
 import okhttp3.Call;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -120,6 +122,10 @@ public class DefaultAPIRequest<T> implements APIRequest<T> {
         } catch (IOException e) {
             logger.error("There was an error making a request:", e);
             this.code = 400;
+            if (e instanceof SocketTimeoutException) {
+                this.code = 503;
+                throw new RequestException("Internal Error: The API is temporarily unavailable, please try again later.");
+            }
             return null;
         }
     }
