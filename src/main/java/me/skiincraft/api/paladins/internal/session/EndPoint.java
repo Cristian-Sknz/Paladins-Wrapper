@@ -57,6 +57,18 @@ public interface EndPoint {
     APIRequest<Player> getPlayer(String player);
 
     /**
+     * <p>Make an api request to return a Player</p>
+     * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
+     *
+     * @param player the player nickname;
+     * @param platform platform;
+     * @return {@link Player}
+     * @throws me.skiincraft.api.paladins.exceptions.RequestException If anything is wrong with the session.
+     * @throws me.skiincraft.api.paladins.exceptions.PlayerException  If the player has a private profile or does not exist.
+     */
+    APIRequest<Player> getPlayer(String player, Platform platform);
+
+    /**
      * <p>Make an API request to search for and return a list of players</p>
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *

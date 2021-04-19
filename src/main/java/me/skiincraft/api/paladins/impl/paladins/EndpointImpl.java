@@ -99,6 +99,35 @@ public class EndpointImpl implements EndPoint {
         }, paladins);
     }
 
+    @Override
+    public APIRequest<Player> getPlayer(String player, Platform platform) {
+        if (platform == Platform.PC || platform == Platform.Console){
+            throw new ContextException("You need to specify the subplatform!");
+        }
+        return new DefaultAPIRequest<>("getplayer", session.getSessionId(), new String[]{player, String.valueOf(platform.getPortalId()[0])}, (response) -> {
+            try {
+                JsonArray array = JsonParser.parseString(Objects.requireNonNull(response.body(), "json is null").string())
+                        .getAsJsonArray();
+                if (array.size() == 0) {
+                    throw new PlayerException(String.format("The player '%s' does not exist.", player), PlayerException.PlayerExceptionType.NOT_EXIST);
+                }
+                JsonObject object = array.get(0).getAsJsonObject();
+                if (!object.get("ret_msg").isJsonNull()) {
+                    if (object.get("ret_msg").getAsString().contains("Player Privacy Flag set for"))
+                        throw new PlayerException(String.format("The '%s' player has the private profile.", player), PlayerException.PlayerExceptionType.PRIVATE_PROFILE);
+                }
+
+                return new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new PaladinsDateAdapter())
+                        .create().fromJson(object, PlayerImpl.class)
+                        .setEndpoint(this)
+                        .setRaw(object);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }, paladins);
+    }
+
     public APIRequest<SearchPlayers> searchPlayer(String queue, Platform platform) {
         return new DefaultAPIRequest<>("searchplayers", session.getSessionId(), new String[]{queue}, (response) -> {
             try {
@@ -108,7 +137,7 @@ public class EndpointImpl implements EndPoint {
 
                 logger.debug("SearchPlayers: found {} total results for {}", array.size(), queue);
                 SearchPlayer[] search = new Gson().fromJson(array, SearchPlayer[].class);
-                return (platform != null) ? new SearchPlayers(Arrays.stream(search).filter(s -> Platform.getPlatformByPortalId(s.getPortalId()) == platform)
+                return (platform != null) ? new SearchPlayers(Arrays.stream(search).filter(s -> platform.isSubplatform(Platform.getPlatformByPortalId(s.getPortalId())))
                         .toArray(SearchPlayer[]::new)) : new SearchPlayers(search);
             } catch (IOException e) {
                 e.printStackTrace();
