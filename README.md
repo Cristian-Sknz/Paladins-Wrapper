@@ -42,99 +42,12 @@ dependencies {
 </dependency>
 ```
 ## :man_teacher: Simple Use
-I recommend that you read the official Documentation to know the limits of the API and among other things
+I recommend that you read the official Documentation to know the limits of the API and among other things.
+<br>To see how the Wrapper works [click here](https://github.com/Cristian-Sknz/Paladins-Wrapper/wiki) to be redirected to the [Wiki](https://github.com/Cristian-Sknz/Paladins-Wrapper/wiki).
 
-[Paladins /Realm API Developer Guide](https://docs.google.com/document/d/1OFS-3ocSx-1Rvg4afAnEHlT3917MAK_6eJTR6rzr-BM/view#)
-
+[Paladins /Realm API Developer Guide](https://docs.google.com/document/d/1OFS-3ocSx-1Rvg4afAnEHlT3917MAK_6eJTR6rzr-BM/view#)<br>
 [Json API Responses](https://github.com/luissilva1044894/hirez-api-docs/tree/master/api)
 
-### :asterisk: Create a Instance
-<p align="center">
-:page_facing_up:
-</p>
 
-```java
-/*
-ONLY ONE INSTANCE can be created. If you have an active session, it is not possible to change AuthKey and DevId 
-*/
-Paladins paladins = new PaladinsBuilder()
-        .setAuthKey("YOUR API TOKEN")
-        .setDevId(0000) //DEV ID
-        .build();
-        // Or
-Paladins paladins = Paladins.getInstance()
-         .setAuthKey("YOUR API TOKEN")
-         .setDevId(0000);
-```
-
-### :asterisk: Create a Session
-<p align="center">
-:page_facing_up:
-</p>
-
-```java
-Session session = paladins.createSession().get();
-
-/*
-This is an event that will be launched every time a validation occurs
-It is not necessary to set a runnable in this event.
-This verification is necessary to keep the session active.
-*/
-session.setOnValidating(() -> {
-     System.out.println("The session is valid!");
-});
-```
-
-#### :link: Resume Session
-<p align="center">
-:page_facing_up:
-</p>
-
-```java
-/*
-This method will make a request to see if the session is valid
-If not valid, it will throw an exception
-*/
-Session session = paladins.resumeSession("SESSIONID").get();
-
-```
-
-#### :link: Test Session
-<p align="center">
-:page_facing_up:
-</p>
-
-```java
-/**
-* This method will make a request to see if the session is valid
-* If not valid, it will throw an exception
-*/
-boolean isValid = paladins.testSession("SESSIONID").get();
-
-```
-
-### :asterisk: Using a Session
-<p align="center">
-:page_facing_up:
-</p>
-
-```java
-// Getting an active session
-Session session = paladins.getSessions().get(0);
-EndPoint endpoint = session.getEndPoint();
-
-/*
-These champions will be saved in the API instance.
-The next time you want to get them, the API will not make another request,
-it will simply take the previous result. (For the results are the same)
-*/
-Champions champions = endpoint.getChampions(Language.English).get();
-Champion champion = champions.get(0);
-        
-// Printing the information obtained
-System.out.println(champion.getName());
-champion.getAbilities().forEach(System.out::println);
-
-```
 This project is not complete, I intend to update whenever I can.
 Thanks for reading me :D
