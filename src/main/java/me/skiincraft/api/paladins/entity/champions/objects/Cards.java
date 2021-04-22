@@ -22,11 +22,13 @@ import java.util.stream.Stream;
 public class Cards implements CustomList<Card> {
 
     private final Card[] cards;
-    private long championId;
-    private Language language;
+    private final long championId;
+    private final Language language;
 
     public Cards(List<Card> card, long championId, Language language) {
-        cards = new Card[card.size()];
+        this.cards = new Card[card.size()];
+        this.championId = championId;
+        this.language = language;
         AtomicInteger integer = new AtomicInteger();
         for (Card item : card) {
             cards[integer.getAndIncrement()] = item;
