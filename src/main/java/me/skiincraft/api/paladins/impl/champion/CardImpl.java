@@ -1,33 +1,46 @@
 package me.skiincraft.api.paladins.impl.champion;
 
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import me.skiincraft.api.paladins.objects.champion.Card;
 import me.skiincraft.api.paladins.objects.miscellany.Language;
 import me.skiincraft.api.paladins.objects.miscellany.Rarity;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 
-public class CardImpl {
+public class CardImpl implements JsonDeserializer<Card> {
 
-    public static Card parseCard(JsonObject object, long championId, Language language) {
-        Rarity rarity = Arrays.stream(Rarity.values())
-                .filter(r -> r.name().equalsIgnoreCase(object.get("rarity").getAsString())).findAny().orElse(null);
+    private final long championId;
+    private final Language language;
+
+    public CardImpl(long championId, Language language) {
+        this.championId = championId;
+        this.language = language;
+    }
+
+    @Override
+    public Card deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        JsonObject object = json.getAsJsonObject();
+        Rarity rarity = parseRarity(object);
         String description = object.get("card_description").getAsString();
         float multiply = cardValueMultiplicator(description);
-        try {
-            multiply = cardValueMultiplicator(object.get("card_description").getAsString());
-            String multiplystring = String.valueOf(multiply).replace(".0", "");
-            description = object.get("card_description").getAsString()
-                    .replace("{scale=" + multiplystring + "|" + multiplystring + "}", "%s")
-                    .replace("{scale=" + multiplystring + "|" + multiplystring + ")", "%s");
-        } catch (StringIndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }
+        String multiplyString = String.valueOf(multiply).replace(".0", "");
+        description = object.get("card_description").getAsString()
+                .replace("{scale=" + multiplyString + "|" + multiplyString + "}", "%s")
+                .replace("{scale=" + multiplyString + "|" + multiplyString + ")", "%s");
 
         return new Card(object.get("card_name").getAsString(), object.get("card_name_english").getAsString(),
                 object.get("card_id1").getAsLong(), object.get("card_id2").getAsLong(), championId, description,
                 object.get("exclusive").getAsString().contains("y"), object.get("rank").getAsInt(), rarity, language,
                 object.get("recharge_seconds").getAsInt(), multiply, object.get("championCard_URL").getAsString());
+    }
+
+
+    private Rarity parseRarity(JsonObject object){
+        return Arrays.stream(Rarity.values())
+                .filter(r -> r.name().equalsIgnoreCase(object.get("rarity").getAsString()))
+                .findAny()
+                .orElse(null);
     }
 
     private static float cardValueMultiplicator(String cardDescription) {

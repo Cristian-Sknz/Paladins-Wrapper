@@ -215,11 +215,11 @@ public class EndpointImpl implements EndPoint {
                         if (array.size() == 0)
                             throw new ChampionException("This requested champion does not exist.");
 
-                        List<Card> cardsList = new ArrayList<>();
-                        for (JsonElement element : array) {
-                            cardsList.add(CardImpl.parseCard(element.getAsJsonObject(), championsId, language));
-                        }
-                        Cards cards = new Cards(cardsList, championsId, language);
+                        Gson gson = new GsonBuilder()
+                                .registerTypeAdapter(Card.class, new CardImpl(championsId, language))
+                                .create();
+
+                        Cards cards = new Cards(new ArrayList<>(Arrays.asList(gson.fromJson(array, Card[].class))), championsId, language);
                         storageImpl.addCard(cards);
                         return cards;
                     } catch (IOException e) {
