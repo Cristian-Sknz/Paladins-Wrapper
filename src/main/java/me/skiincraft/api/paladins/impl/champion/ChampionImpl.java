@@ -30,13 +30,19 @@ public class ChampionImpl implements Champion {
     private final int health;
     @SerializedName("Speed")
     private final double speed;
+    @SerializedName("OnFreeRotation")
+    private final boolean freerotation;
+    @SerializedName("OnFreeWeeklyRotation")
+    private final boolean freeweaklyrotation;
+    @SerializedName("latestChampion")
+    private final boolean latestChampion;
 
     private List<Ability> abilities;
     private Language language;
     private EndPoint endpoint;
 
 
-    public ChampionImpl(long id, String name, String icon, String title, String roles, String lore, int health, double speed, List<Ability> abilities, Language language, EndPoint endpoint) {
+    public ChampionImpl(long id, String name, String icon, String title, String roles, String lore, int health, double speed, boolean freerotation, boolean freeweaklyrotation, boolean latestChampion, List<Ability> abilities, Language language, EndPoint endpoint) {
         this.id = id;
         this.name = name;
         this.icon = icon;
@@ -45,6 +51,9 @@ public class ChampionImpl implements Champion {
         this.lore = lore;
         this.health = health;
         this.speed = speed;
+        this.freerotation = freerotation;
+        this.freeweaklyrotation = freeweaklyrotation;
+        this.latestChampion = latestChampion;
         this.abilities = abilities;
         this.language = language;
         this.endpoint = endpoint;
@@ -113,6 +122,21 @@ public class ChampionImpl implements Champion {
     @Override
     public List<Ability> getAbilities() {
         return abilities;
+    }
+
+    @Override
+    public boolean isLatestChampion() {
+        return latestChampion;
+    }
+
+    @Override
+    public boolean inFreeRotation() {
+        return freerotation;
+    }
+
+    @Override
+    public boolean inFreeWeeklyRotation() {
+        return freeweaklyrotation;
     }
 
     public ChampionImpl setAbilities(List<Ability> abilities) {

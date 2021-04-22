@@ -24,7 +24,7 @@ public class ChampionAdapter implements JsonDeserializer<Champion> {
     @Override
     public Champion deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject object = json.getAsJsonObject();
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().registerTypeAdapter(Boolean.TYPE, new BooleanAdapter()).create();
         ChampionImpl championImpl = gson.fromJson(object, ChampionImpl.class);
         List<Ability> abilityList = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {

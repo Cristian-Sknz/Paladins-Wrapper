@@ -67,6 +67,21 @@ public interface Champion {
     List<Ability> getAbilities();
 
     /**
+     * Check if this champion is the last champion added to the game
+     */
+    boolean isLatestChampion();
+
+    /**
+     * Check if this champion is in free rotation
+     */
+    boolean inFreeRotation();
+
+    /**
+     * Check if this champion is in free weekly rotation
+     */
+    boolean inFreeWeeklyRotation();
+    
+    /**
      * <p>Make an API request to return all cards from the champion.</p>
      * <p>After the order is completed, the API will receive a Json, which will be converted into a class and returned</p>
      *
