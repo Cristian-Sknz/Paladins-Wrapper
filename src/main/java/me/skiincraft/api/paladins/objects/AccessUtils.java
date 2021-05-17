@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class AccessUtils {
 
-    private static final String ENDPOINT = "http://api.paladins.com/paladinsapi.svc";
+    private static final String ENDPOINT = "https://api.paladins.com/paladinsapi.svc";
     private final Paladins paladins;
 
     public AccessUtils(Paladins paladins) {
