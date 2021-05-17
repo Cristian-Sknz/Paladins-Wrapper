@@ -1,5 +1,5 @@
 <p align= "center">
-<img src="https://web2.hirez.com/paladins/assets/paladins-logo.png" alt="Paladins" width="300"/>	
+<img src="http://web2.hirez.com/paladins/assets/paladins-logo.png" alt="Paladins" width="300"/>	
 <h1 align= "center"> A Paladins API wrapper for Java</h1>
 </p>
 
