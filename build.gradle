@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'me.skiincraft'
-version '2021.0417.1'
+version '2021.0417.3'
 
 repositories {
     maven { url 'https://jitpack.io' }
